@@ -1,0 +1,11 @@
+{
+  "name": "ttv-chat-light",
+  "version": "0.1.0",
+  "description": "Twitch TV chat reader to control internet connected lights",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Brian Clark",
+  "license": "MIT"
+}
