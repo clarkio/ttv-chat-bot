@@ -1,5 +1,6 @@
 const tmi = require('tmi.js');
 const fetch = require('node-fetch');
+const Discord = require('discord.js');
 require('dotenv').config();
 
 const channels = process.env.ttvChannels.toString().split(',');
@@ -22,13 +23,16 @@ const options = {
 };
 
 const ttvChatClient = new tmi.client(options);
+const discordHook = new Discord.WebhookClient(process.env.discordHookId, process.env.discordHookToken);
+const logger = require('./logger')(discordHook);
+discordHook.send('Client is online and running...');
 
 let conversationId;
 let conversationToken;
 let expiration;
 let azureBotToken = process.env.AzureBotToken;
 let moderators = [clientUsername];
-let isChatClientEnabled = false;
+let isChatClientEnabled = true;
 
 createNewBotConversation();
 
@@ -54,14 +58,16 @@ ttvChatClient.on('chat', function(channel, user, message, self) {
   let lowerCaseMessage = message.toLowerCase();
 
   if (moderators.indexOf(userName.toLowerCase()) > -1 && message.startsWith(lightControlCommand)) {
-    console.log(`Moderator (${userName}) sent a message`);
+    let logMessage = `Moderator (${userName}) sent a message`;
+    logger('info', logMessage);
+
     if (lowerCaseMessage.includes('enable light')) {
       isChatClientEnabled = true;
-      console.log('TTV Chat Listener to control the lights has been enabled');
+      logger('info', 'TTV Chat Listener to control the lights has been enabled');
       return;
     } else if (lowerCaseMessage.includes('disable light')) {
       isChatClientEnabled = false;
-      console.log('TTV Chat Listener to control the lights has been disabled');
+      logger('info', 'TTV Chat Listener to control the lights has been disabled');
       return;
     }
   }
@@ -75,9 +81,10 @@ function parseChat(message, userName) {
   if (message.startsWith(lightControlCommand)) {
     let commandMessage = message.slice(lightControlCommand.length);
     if (commandMessage) {
+      discordHook.send(`Received a command from ${userName}: ${commandMessage}`);
       return sendCommand(commandMessage, userName)
         .then(result => {
-          console.log(`Successfully Sent a message from ${userName}`);
+          logger('info', `Successfully sent the command from ${userName}`);
           return result;
         })
         .catch(error => {
