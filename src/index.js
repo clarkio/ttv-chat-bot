@@ -74,6 +74,8 @@ ttvChatClient.on('chat', function(channel, user, message, self) {
 
   if (isChatClientEnabled) {
     parseChat(lowerCaseMessage, userName);
+  } else {
+    logger('info', 'Command was ignored because the TTV Chat Listener is disabled');
   }
 });
 
