@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "snyk test",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": "Brian Clark",
   "license": "MIT",
@@ -13,6 +15,8 @@
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "node-fetch": "^2.1.1",
-    "tmi.js": "^1.2.1"
-  }
+    "tmi.js": "^1.2.1",
+    "snyk": "^1.70.2"
+  },
+  "snyk": true
 }

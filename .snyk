@@ -1,0 +1,11 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.10.2
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:ws:20160624':
+    - tmi.js > ws:
+        patched: '2018-03-22T15:12:30.072Z'
+  'npm:ws:20160920':
+    - tmi.js > ws:
+        patched: '2018-03-22T15:12:30.072Z'
