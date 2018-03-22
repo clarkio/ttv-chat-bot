@@ -2,6 +2,10 @@ const tmi = require('tmi.js');
 const fetch = require('node-fetch');
 require('dotenv').config();
 
+const channels = process.env.ttvChannels.toString().split(',');
+const clientUsername = process.env.clientUsername.toString();
+const lightControlCommand = process.env.lightCommand;
+
 const options = {
   options: {
     clientId: process.env.TwitchClientId,
@@ -10,7 +14,11 @@ const options = {
   connection: {
     reconnect: true
   },
-  channels: ['clarkio']
+  identity: {
+    username: clientUsername,
+    password: process.env.clientToken
+  },
+  channels: channels
 };
 
 const ttvChatClient = new tmi.client(options);
@@ -19,16 +27,53 @@ let conversationId;
 let conversationToken;
 let expiration;
 let azureBotToken = process.env.AzureBotToken;
+let moderators = [clientUsername];
+let isChatClientEnabled = false;
 
 createNewBotConversation();
 
 ttvChatClient.connect();
+
+ttvChatClient.on('join', function(channel, username, self) {
+  console.log(`${username} has joined the channel`);
+  if (self) {
+    console.log('This client joined the channel...');
+    // Assume first channel in channels array is 'self' - owner monitoring their own channel
+    ttvChatClient
+      .mods(channels[0])
+      .then(modsFromTwitch => {
+        moderators = moderators.concat(modsFromTwitch);
+      })
+      .catch(error => console.log(`There was an error getting moderators: ${error}`));
+  }
+});
+
 ttvChatClient.on('chat', function(channel, user, message, self) {
   let userName = user['display-name'] || user['username'];
-  console.log(`Here's the raw message ${message} from ${userName}`);
+  console.log(`Here's the raw message from ${userName}: ${message}`);
+  let lowerCaseMessage = message.toLowerCase();
 
-  if (message.startsWith('!bulb')) {
-    let commandMessage = message.slice(5);
+  if (moderators.indexOf(userName.toLowerCase()) > -1 && message.startsWith(lightControlCommand)) {
+    console.log(`Moderator (${userName}) sent a message`);
+    if (lowerCaseMessage.includes('enable light')) {
+      isChatClientEnabled = true;
+      console.log('TTV Chat Listener to control the lights has been enabled');
+      return;
+    } else if (lowerCaseMessage.includes('disable light')) {
+      isChatClientEnabled = false;
+      console.log('TTV Chat Listener to control the lights has been disabled');
+      return;
+    }
+  }
+
+  if (isChatClientEnabled) {
+    parseChat(lowerCaseMessage, userName);
+  }
+});
+
+function parseChat(message, userName) {
+  if (message.startsWith(lightControlCommand)) {
+    let commandMessage = message.slice(lightControlCommand.length);
     if (commandMessage) {
       return sendCommand(commandMessage, userName)
         .then(result => {
@@ -45,12 +90,11 @@ ttvChatClient.on('chat', function(channel, user, message, self) {
       return triggerEffect(message, userName);
     }
   }
-});
+}
 
 function createNewBotConversation() {
   console.log(`Starting a new bot conversation at: ${new Date()}`);
   startBotConversation().then(result => {
-    console.log(`Successfully started a new conversation ${result.conversationId}`);
     conversationId = result.conversationId;
     conversationToken = result.token;
     expiration = new Date().getSeconds() + parseInt(result['expires_in']) - 30;
@@ -59,7 +103,6 @@ function createNewBotConversation() {
 }
 
 function createTimeout(expirationTime) {
-  console.log(`creating a new timeout for ${expirationTime}`);
   let timeInMilliseconds = expirationTime * 1000;
   setTimeout(createNewBotConversation, timeInMilliseconds);
 }
@@ -80,7 +123,6 @@ function startBotConversation() {
 }
 
 function sendCommand(commandMessage, user) {
-  console.log(`About to send the following command: ${commandMessage}`);
   let fullMessage = { text: commandMessage, from: user };
   let url = `https://directline.botframework.com/api/conversations/${conversationId}/messages`;
   return fetch(url, {
@@ -101,16 +143,15 @@ function sendCommand(commandMessage, user) {
 
 function triggerEffect(message, userName) {
   let effect;
-  if (message.contains('following')) {
+  if (message.includes('following')) {
     effect = 'trigger new follower';
-  } else if (message.contains('subscribed')) {
+  } else if (message.includes('subscribed')) {
     effect = 'trigger new subscriber';
   }
 
   if (effect) {
     return sendCommand(effect, userName)
       .then(result => {
-        console.log(result);
         console.log(`Successfully triggered new follower command from ${userName}`);
         return result;
       })
