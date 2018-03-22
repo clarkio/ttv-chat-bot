@@ -61,11 +61,11 @@ ttvChatClient.on('chat', function(channel, user, message, self) {
     let logMessage = `Moderator (${userName}) sent a message`;
     logger('info', logMessage);
 
-    if (lowerCaseMessage.includes('enable light')) {
+    if (lowerCaseMessage.includes('enable')) {
       isChatClientEnabled = true;
       logger('info', 'TTV Chat Listener to control the lights has been enabled');
       return;
-    } else if (lowerCaseMessage.includes('disable light')) {
+    } else if (lowerCaseMessage.includes('disable')) {
       isChatClientEnabled = false;
       logger('info', 'TTV Chat Listener to control the lights has been disabled');
       return;
