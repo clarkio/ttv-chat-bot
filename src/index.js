@@ -1,7 +1,12 @@
 const tmi = require('tmi.js');
 const fetch = require('node-fetch');
 const Discord = require('discord.js');
+const crypto = require('crypto');
+// const express = require('express');
+// let app = express();
 require('dotenv').config();
+const net = require('net');
+net.createServer().listen();
 
 const channels = process.env.ttvChannels.toString().split(',');
 const clientUsername = process.env.clientUsername.toString();
@@ -173,3 +178,71 @@ function triggerEffect(message, userName) {
     return;
   }
 }
+
+// let hueAuthCode = 'nNs1G8sC';
+// let realm;
+// let nonce;
+// let hueClientAccessToken = process.env.hueClientAccessToken;
+// let hueClientRefreshToken = process.env.hueClientRefreshToken;
+// initiateHueAuth().then(getHueToken);
+
+// function initiateHueAuth() {
+//   return fetch(`https://api.meethue.com/oauth2/token?code=${hueAuthCode}&grant_type=authorization_code`, {
+//     method: 'POST',
+//     mode: 'cors'
+//   }).then(response => {
+//     let hueHeader = response.headers.get('www-authenticate');
+//     realm = parseHueRealm(hueHeader);
+//     nonce = parseHueNonce(hueHeader);
+//     return response;
+//   });
+// }
+
+// function getHueToken() {
+//   let digest = createHueDigest();
+//   return fetch(`https://api.meethue.com/oauth2/token?code=${hueAuthCode}&grant_type=authorization_code`, {
+//     method: 'POST',
+//     headers: {
+//       Authorization: `Digest ${digest}`
+//     },
+//     mode: 'cors'
+//   }).then(response => {
+//     console.log(response);
+//   });
+// }
+
+// function createHueDigest() {
+//   let response = calculateHueDigestResponse();
+//   return `username="${hueClientId}", realm="${realm}", nonce="${nonce}", uri="/oauth2/token", response="${response}"`;
+// }
+
+// function calculateHueDigestResponse() {
+//   let hash1String = `${hueClientId}:${realm}:${hueClientSecret}`;
+//   let hash2String = 'POST:/oauth2/token';
+//   let hash1 = crypto
+//     .createHash('md5')
+//     .update(hash1String)
+//     .digest('hex');
+//   let hash2 = crypto
+//     .createHash('md5')
+//     .update(hash2String)
+//     .digest('hex');
+//   return crypto
+//     .createHash('md5')
+//     .update(hash1 + `:${nonce}:` + hash2)
+//     .digest('hex');
+// }
+
+// function parseHueRealm(rawHeader) {
+//   const realmKey = 'realm="';
+//   let realmKeyIndex = rawHeader.indexOf(realmKey);
+//   let realmEndIndex = rawHeader.indexOf('",');
+//   return rawHeader.substring(realmKeyIndex + realmKey.length, realmEndIndex);
+// }
+
+// function parseHueNonce(rawHeader) {
+//   const nonceKey = 'nonce="';
+//   let nonceKeyIndex = rawHeader.indexOf(nonceKey);
+//   let nonceEndIndex = rawHeader.lastIndexOf('"');
+//   return rawHeader.substring(nonceKeyIndex + nonceKey.length, nonceEndIndex);
+// }
