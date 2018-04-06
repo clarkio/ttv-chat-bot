@@ -2,15 +2,11 @@ const tmi = require('tmi.js');
 const fetch = require('node-fetch');
 const Discord = require('discord.js');
 const crypto = require('crypto');
-// const express = require('express');
-// let app = express();
 require('dotenv').config();
-const net = require('net');
-net.createServer().listen();
 
 const channels = process.env.ttvChannels.toString().split(',');
 const clientUsername = process.env.clientUsername.toString();
-const lightControlCommand = process.env.lightCommand;
+const lightControlCommands = process.env.lightCommand.toString().split(',');
 
 const options = {
   options: {
@@ -62,7 +58,7 @@ ttvChatClient.on('chat', function(channel, user, message, self) {
   console.log(`Here's the raw message from ${userName}: ${message}`);
   let lowerCaseMessage = message.toLowerCase();
 
-  if (moderators.indexOf(userName.toLowerCase()) > -1 && message.startsWith(lightControlCommand)) {
+  if (moderators.indexOf(userName.toLowerCase()) > -1 && isLightControlCommand(message)) {
     let logMessage = `Moderator (${userName}) sent a message`;
     logger('info', logMessage);
 
@@ -84,6 +80,17 @@ ttvChatClient.on('chat', function(channel, user, message, self) {
   }
 });
 
+function isLightControlCommand(message) {
+  lightControlCommands.forEach(command => {
+    if(message.startsWith(command)) {
+      return true;
+    } else {
+      continue;
+    }
+  });
+  return false;
+}
+
 function parseChat(message, userName) {
   if (message.startsWith(lightControlCommand)) {
     let commandMessage = message.slice(lightControlCommand.length);
@@ -100,7 +107,7 @@ function parseChat(message, userName) {
         });
     }
   } else if (userName.toLowerCase() === 'streamelements') {
-    if (message.indexOf('following') > -1 || message.indexOf('subscribed') > -1) {
+    if (message.includes('following') || message.includes('subscribed') || message.includes('cheered')) {
       return triggerEffect(message, userName);
     }
   }
@@ -159,7 +166,7 @@ function triggerEffect(message, userName) {
   let effect;
   if (message.includes('following')) {
     effect = 'trigger new follower';
-  } else if (message.includes('subscribed')) {
+  } else if (message.includes('subscribed') || message.includes('cheered')) {
     effect = 'trigger new subscriber';
   }
 
