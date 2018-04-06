@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const channels = process.env.ttvChannels.toString().split(',');
 const clientUsername = process.env.clientUsername.toString();
-const lightControlCommands = process.env.lightCommand.toString().split(',');
+const lightControlCommands = process.env.lightCommands.toString().split(',');
 
 const options = {
   options: {
@@ -34,6 +34,7 @@ let expiration;
 let azureBotToken = process.env.AzureBotToken;
 let moderators = [clientUsername];
 let isChatClientEnabled = true;
+let lightCommandUsed = '';
 
 createNewBotConversation();
 
@@ -86,19 +87,19 @@ ttvChatClient.on('chat', function(channel, user, message, self) {
 });
 
 function isLightControlCommand(message) {
-  lightControlCommands.forEach(command => {
-    if(message.startsWith(command)) {
+  return lightControlCommands.some(command => {
+    if (message.startsWith(command.toLowerCase())) {
+      lightCommandUsed = command;
       return true;
     } else {
-      continue;
+      return false;
     }
   });
-  return false;
 }
 
 function parseChat(message, userName) {
-  if (message.startsWith(lightControlCommand)) {
-    let commandMessage = message.slice(lightControlCommand.length);
+  if (isLightControlCommand(message)) {
+    let commandMessage = message.slice(lightCommandUsed.length);
     if (commandMessage) {
       discordHook.send(`Received a command from ${userName}: ${commandMessage}`);
       return sendCommand(commandMessage, userName)
