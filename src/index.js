@@ -2,15 +2,11 @@ const tmi = require('tmi.js');
 const fetch = require('node-fetch');
 const Discord = require('discord.js');
 const crypto = require('crypto');
-// const express = require('express');
-// let app = express();
 require('dotenv').config();
-const net = require('net');
-net.createServer().listen();
 
 const channels = process.env.ttvChannels.toString().split(',');
 const clientUsername = process.env.clientUsername.toString();
-const lightControlCommand = process.env.lightCommand;
+const lightControlCommands = process.env.lightCommands.toString().split(',');
 
 const options = {
   options: {
@@ -38,6 +34,7 @@ let expiration;
 let azureBotToken = process.env.AzureBotToken;
 let moderators = [clientUsername];
 let isChatClientEnabled = true;
+let lightCommandUsed = '';
 
 createNewBotConversation();
 
@@ -67,7 +64,7 @@ ttvChatClient.on('chat', function(channel, user, message, self) {
   console.log(`Here's the raw message from ${userName}: ${message}`);
   let lowerCaseMessage = message.toLowerCase();
 
-  if (moderators.indexOf(userName.toLowerCase()) > -1 && message.startsWith(lightControlCommand)) {
+  if (moderators.indexOf(userName.toLowerCase()) > -1 && isLightControlCommand(message)) {
     let logMessage = `Moderator (${userName}) sent a message`;
     logger('info', logMessage);
 
@@ -89,9 +86,20 @@ ttvChatClient.on('chat', function(channel, user, message, self) {
   }
 });
 
+function isLightControlCommand(message) {
+  return lightControlCommands.some(command => {
+    if (message.startsWith(command.toLowerCase())) {
+      lightCommandUsed = command;
+      return true;
+    } else {
+      return false;
+    }
+  });
+}
+
 function parseChat(message, userName) {
-  if (message.startsWith(lightControlCommand)) {
-    let commandMessage = message.slice(lightControlCommand.length);
+  if (isLightControlCommand(message)) {
+    let commandMessage = message.slice(lightCommandUsed.length);
     if (commandMessage) {
       discordHook.send(`Received a command from ${userName}: ${commandMessage}`);
       return sendCommand(commandMessage, userName)
@@ -105,7 +113,7 @@ function parseChat(message, userName) {
         });
     }
   } else if (userName.toLowerCase() === 'streamelements') {
-    if (message.indexOf('following') > -1 || message.indexOf('subscribed') > -1) {
+    if (message.includes('following') || message.includes('subscribed') || message.includes('cheered')) {
       return triggerEffect(message, userName);
     }
   }
@@ -164,7 +172,7 @@ function triggerEffect(message, userName) {
   let effect;
   if (message.includes('following')) {
     effect = 'trigger new follower';
-  } else if (message.includes('subscribed')) {
+  } else if (message.includes('subscribed') || message.includes('cheered')) {
     effect = 'trigger new subscriber';
   }
 
