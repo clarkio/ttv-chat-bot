@@ -39,11 +39,16 @@ createNewBotConversation();
 
 ttvChatClient.connect();
 
+function pingTtv() {
+  ttvChatClient.ping();
+}
+
 ttvChatClient.on('join', function(channel, username, self) {
   console.log(`${username} has joined the channel`);
   if (self) {
     console.log('This client joined the channel...');
     // Assume first channel in channels array is 'self' - owner monitoring their own channel
+    setTimeout(pingTtv, 30000);
     ttvChatClient
       .mods(channels[0])
       .then(modsFromTwitch => {
