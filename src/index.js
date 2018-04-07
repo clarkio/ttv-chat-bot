@@ -3,6 +3,10 @@ const fetch = require('node-fetch');
 const Discord = require('discord.js');
 const crypto = require('crypto');
 require('dotenv').config();
+const express = require('express');
+const app = express();
+const port = process.env.Port || 8080;
+app.listen(port, () => console.log(`App listening on port ${port}`));
 
 const channels = process.env.ttvChannels.toString().split(',');
 const clientUsername = process.env.clientUsername.toString();
