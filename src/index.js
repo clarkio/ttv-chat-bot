@@ -5,8 +5,26 @@ const crypto = require('crypto');
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 8080;
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+const port = process.env.PORT || 1337;
+const runningMessage = 'Overlay server is running on port ' + port;
 app.use(express.static('./'));
+app.get('/', function(req, res) {
+  res.sendFile(__dirname + '/index.html');
+});
+
+app.get('/lights/:color', (req, res, next) => {
+  io.emit('color-change', req.params.color);
+  res.send('Done');
+});
+
+io.on('connection', function(socket) {
+  console.log('a user connected');
+  socket.on('disconnect', function() {
+    console.log('user disconnected');
+  });
+});
 
 // NOTE: it's ussing http to start the server and NOT app
 // This is so the socket.io host starts as well
