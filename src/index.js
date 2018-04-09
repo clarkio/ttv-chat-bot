@@ -6,7 +6,13 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 8080;
-app.listen(port, () => console.log(`App listening on port ${port}`));
+app.use(express.static('./'));
+
+// NOTE: it's ussing http to start the server and NOT app
+// This is so the socket.io host starts as well
+http.listen(port, () => {
+  console.log(runningMessage);
+});
 
 const channels = process.env.ttvChannels.toString().split(',');
 const clientUsername = process.env.clientUsername.toString();
