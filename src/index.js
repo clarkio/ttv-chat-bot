@@ -32,6 +32,8 @@ http.listen(port, () => {
   console.log(runningMessage);
 });
 
+const cannedColors = ['blue', 'red', 'green', 'purple', 'pink', 'yellow', 'orange'];
+
 const channels = process.env.ttvChannels.toString().split(',');
 const clientUsername = process.env.clientUsername.toString();
 const lightControlCommands = process.env.lightCommands.toString().split(',');
@@ -130,6 +132,7 @@ function parseChat(message, userName) {
     let commandMessage = message.slice(lightCommandUsed.length);
     if (commandMessage) {
       discordHook.send(`Received a command from ${userName}: ${commandMessage}`);
+      updateOverlay(commandMessage);
       return sendCommand(commandMessage, userName)
         .then(result => {
           logger('info', `Successfully sent the command from ${userName}`);
@@ -145,6 +148,14 @@ function parseChat(message, userName) {
       return triggerEffect(message, userName);
     }
   }
+}
+
+function updateOverlay(command) {
+  cannedColors.forEach(color => {
+    if (command.includes(color)) {
+      io.emit('color-change', color);
+    }
+  });
 }
 
 function createNewBotConversation() {
