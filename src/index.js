@@ -14,6 +14,10 @@ app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/main/greenscreen', (req, res) => {
+  res.sendFile(__dirname + '/gs.html');
+});
+
 app.get('/lights/:color', (req, res, next) => {
   io.emit('color-change', req.params.color);
   res.send('Done');

@@ -1,0 +1,55 @@
+<html>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io();
+
+    socket.on('color-change', function (color) {
+        console.log(`Changing color to ${color}`);
+        setOverlayColor(color);
+    });
+    function setOverlayColor(color) {
+        localStorage.setItem('streamOverlayColor', color);
+        let filterValueRotateText = 'hue-rotate(';
+        let filterValue = '';
+        let rotateDeg = '0deg';
+        if (color === 'purple') {
+            filterValue = filterValueRotateText + '70deg)';
+        } else if (color === 'pink') {
+            filterValue = filterValueRotateText + '125deg)';
+        } else if (color === 'red') {
+            filterValue = filterValueRotateText + '160deg)';
+        } else if (color === 'orange') {
+            filterValue = filterValueRotateText + '200deg)';
+        } else if (color === 'yellow') {
+            filterValue = filterValueRotateText + '214deg)';
+        } else if (color === 'green') {
+            filterValue = filterValueRotateText + '295deg)';
+        } else if (color === 'gray') {
+            filterValue = 'grayscale(100)';
+        } else if (color === 'black') {
+            filterValue = 'brightness(0)';
+        } else {
+            filterValue = filterValueRotateText + '0deg)';
+        }
+        $('#container').css({ 'filter': filterValue });
+    }
+</script>
+
+<body style="overflow: hidden">
+    <div id="container">
+    </div>
+</body>
+
+</html>
+<script>
+    $(document).ready(function () {
+        $('#container').append('<iframe src="https://streamelements.com/overlay/5ab55e6ec01f4f276719df26/3nzv5LKrgewVEDjcJFuJ" width="100%" height="100%" frameBorder="0" overflow="hidden" scrolling="no" seamless="seamless" />');
+        let color = localStorage.getItem('streamOverlayColor');
+        if (color) {
+            console.log(`Existing color change was found and is set to ${color}`);
+            setOverlayColor(color);
+        }
+    });
+</script>

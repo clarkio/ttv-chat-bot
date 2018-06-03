@@ -1,11 +1,37 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.10.2
-ignore: {}
+version: v1.12.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  'npm:hoek:20180212':
+    - tmi.js > request > hawk > hoek:
+        reason: None given
+        expires: '2018-07-03T06:04:03.337Z'
+    - tmi.js > request > hawk > boom > hoek:
+        reason: None given
+        expires: '2018-07-03T06:04:03.338Z'
+    - tmi.js > request > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-07-03T06:04:03.338Z'
+    - tmi.js > request > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-07-03T06:04:03.338Z'
+  'npm:open:20180512':
+    - snyk > open:
+        reason: None given
+        expires: '2018-07-03T06:04:03.338Z'
+  'npm:tunnel-agent:20170305':
+    - tmi.js > request > tunnel-agent:
+        reason: None given
+        expires: '2018-07-03T06:04:03.338Z'
+  'npm:ws:20171108':
+    - tmi.js > ws:
+        reason: None given
+        expires: '2018-07-03T06:04:03.338Z'
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   'npm:ws:20160624':
     - tmi.js > ws:
-        patched: '2018-03-22T15:12:30.072Z'
+        patched: '2018-06-03T06:02:28.366Z'
   'npm:ws:20160920':
     - tmi.js > ws:
         patched: '2018-03-22T15:12:30.072Z'
