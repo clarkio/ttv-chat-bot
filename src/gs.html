@@ -1,11 +1,34 @@
 <html>
+
+<head>
+    <link href="/assets/styles.css" type="text/css" rel="stylesheet" />
+</head>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>
+    let beeDooAudio = new Audio('/assets/beedoo_minions.mp3');
     var socket = io();
+    socket.on('color-effect', (effect) => {
+        if (effect.toLocaleLowerCase() === 'cop mode') {
+            triggerCopModeEffect();
+        }
+    });
+    function triggerCopModeEffect() {
+        let minionDiv = $('#minion-bee-doo');
+        minionDiv.removeClass('copmode-hidden');
+        minionDiv.addClass('copmode-visible');
+        beeDooAudio.loop = true;
+        beeDooAudio.play();
 
-    socket.on('color-change', function (color) {
+        window.setTimeout(
+            () => {
+                minionDiv.removeClass('copmode-visible');
+                minionDiv.addClass('copmode-hidden');
+                beeDooAudio.pause();
+            }, 10000);
+    }
+    socket.on('color-change', (color) => {
         console.log(`Changing color to ${color}`);
         setOverlayColor(color);
     });
@@ -37,14 +60,20 @@
     }
 </script>
 
-<body style="overflow: hidden">
+<body>
+    <div id="minion-bee-doo" class="copmode-hidden">
+        <h3>Cop Mode Initiated!</h3>
+        <img height="300px" width="300px" src="https://78.media.tumblr.com/ebfed6cf7e8b2ca4112ff45d92dd3c47/tumblr_msu0ppJNgp1srxi3eo5_250.gif"
+        />
+    </div>
+    <!-- <iframe id="minion-bee-doo" src="https://giphy.com/embed/YAlhwn67KT76E" width="480" height="480" frameBorder="0"></iframe> -->
     <div id="container">
     </div>
 </body>
 
 </html>
 <script>
-    $(document).ready(function () {
+    $(document).ready(() => {
         $('#container').append('<iframe src="https://streamelements.com/overlay/5ab55e6ec01f4f276719df26/3nzv5LKrgewVEDjcJFuJ" width="100%" height="100%" frameBorder="0" overflow="hidden" scrolling="no" seamless="seamless" />');
         let color = localStorage.getItem('streamOverlayColor');
         if (color) {

@@ -1,15 +1,18 @@
 const tmi = require('tmi.js');
 const fetch = require('node-fetch');
 const Discord = require('discord.js');
-const crypto = require('crypto');
+// const crypto = require('crypto');
 require('dotenv').config();
 const express = require('express');
 const app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
 const port = process.env.PORT || 1337;
 const runningMessage = 'Overlay server is running on port ' + port;
-app.use(express.static('./'));
+
+app.use(express.static(__dirname));
+
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
@@ -23,6 +26,11 @@ app.get('/lights/:color', (req, res, next) => {
   res.send('Done');
 });
 
+app.get('/lights/effects/:effect', (req, res, next) => {
+  io.emit('color-effect', req.params.effect);
+  res.send('Done');
+});
+
 io.on('connection', function(socket) {
   console.log('a user connected');
   socket.on('disconnect', function() {
@@ -30,7 +38,7 @@ io.on('connection', function(socket) {
   });
 });
 
-// NOTE: it's ussing http to start the server and NOT app
+// NOTE: it's using http to start the server and NOT app
 // This is so the socket.io host starts as well
 http.listen(port, () => {
   console.log(runningMessage);
@@ -41,6 +49,7 @@ const cannedColors = ['blue', 'red', 'green', 'purple', 'pink', 'yellow', 'orang
 const channels = process.env.ttvChannels.toString().split(',');
 const clientUsername = process.env.clientUsername.toString();
 const lightControlCommands = process.env.lightCommands.toString().split(',');
+const specialEffectCommands = process.env.specialEffectCommands.toString().split(',');
 
 const options = {
   options: {
@@ -120,6 +129,16 @@ ttvChatClient.on('chat', function(channel, user, message, self) {
   }
 });
 
+function isSpecialEffectCommand(message) {
+  return specialEffectCommands.some(command => {
+    if (message.includes(command)) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+}
+
 function isLightControlCommand(message) {
   return lightControlCommands.some(command => {
     if (message.startsWith(command.toLowerCase())) {
@@ -136,6 +155,9 @@ function parseChat(message, userName) {
     let commandMessage = message.slice(lightCommandUsed.length);
     if (commandMessage) {
       discordHook.send(`Received a command from ${userName}: ${commandMessage}`);
+      if (isSpecialEffectCommand(commandMessage)) {
+        triggerSpecialEffect(commandMessage, userName);
+      }
       updateOverlay(commandMessage);
       return sendCommand(commandMessage, userName)
         .then(result => {
@@ -151,6 +173,14 @@ function parseChat(message, userName) {
     if (message.includes('following') || message.includes('subscribed') || message.includes('cheered')) {
       return triggerEffect(message, userName);
     }
+  }
+}
+
+function triggerSpecialEffect(message) {
+  let effect;
+  if (message.includes('cop mode')) {
+    effect = 'cop mode';
+    io.emit('color-effect', effect);
   }
 }
 
