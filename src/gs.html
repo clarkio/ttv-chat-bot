@@ -7,6 +7,7 @@
     crossorigin="anonymous"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>
+    let STORE_OVERLAY_COLOR_NAME = 'streamOverlayColor';
     let beeDooAudio = new Audio('/assets/beedoo_minions.mp3');
     var socket = io();
     socket.on('color-effect', (effect) => {
@@ -27,13 +28,31 @@
                 minionDiv.addClass('copmode-hidden');
                 beeDooAudio.pause();
             }, 10000);
+
+        let originalColor = localStorage.getItem(STORE_OVERLAY_COLOR_NAME);
+        let counter = 0;
+        let copModeColor = 'red';
+        let overlayCopModeInterval = setInterval(() => {
+            counter += 1;
+            if (counter === 20) {
+                setOverlayColor(originalColor);
+                clearInterval(overlayCopModeInterval);
+            } else {
+                setOverlayColor(copModeColor);
+                copModeColor = copModeColor === 'red' ? 'blue' : 'red';
+            };
+
+        }, 500)
+
     }
+
     socket.on('color-change', (color) => {
         console.log(`Changing color to ${color}`);
         setOverlayColor(color);
     });
+
     function setOverlayColor(color) {
-        localStorage.setItem('streamOverlayColor', color);
+        localStorage.setItem(STORE_OVERLAY_COLOR_NAME, color);
         let filterValueRotateText = 'hue-rotate(';
         let filterValue = '';
         let rotateDeg = '0deg';
@@ -49,6 +68,8 @@
             filterValue = filterValueRotateText + '214deg)';
         } else if (color === 'green') {
             filterValue = filterValueRotateText + '295deg)';
+        } else if (color === 'teal') {
+            filterValue = filterValueRotateText + '325deg)';
         } else if (color === 'gray') {
             filterValue = 'grayscale(100)';
         } else if (color === 'black') {
@@ -60,7 +81,7 @@
     }
 </script>
 
-<body>
+<body style="overflow: hidden">
     <div id="minion-bee-doo" class="copmode-hidden">
         <h3>Cop Mode Initiated!</h3>
         <img height="300px" width="300px" src="https://78.media.tumblr.com/ebfed6cf7e8b2ca4112ff45d92dd3c47/tumblr_msu0ppJNgp1srxi3eo5_250.gif"
@@ -75,7 +96,7 @@
 <script>
     $(document).ready(() => {
         $('#container').append('<iframe src="https://streamelements.com/overlay/5ab55e6ec01f4f276719df26/3nzv5LKrgewVEDjcJFuJ" width="100%" height="100%" frameBorder="0" overflow="hidden" scrolling="no" seamless="seamless" />');
-        let color = localStorage.getItem('streamOverlayColor');
+        let color = localStorage.getItem(STORE_OVERLAY_COLOR_NAME);
         if (color) {
             console.log(`Existing color change was found and is set to ${color}`);
             setOverlayColor(color);
