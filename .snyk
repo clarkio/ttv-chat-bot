@@ -26,12 +26,28 @@ ignore:
   'npm:ws:20171108':
     - tmi.js > ws:
         reason: None given
-        expires: '2018-07-03T06:04:03.338Z'
+        expires: '2018-08-28T07:24:30.928Z'
+  'npm:cryptiles:20180710':
+    - tmi.js > request > hawk > cryptiles:
+        reason: None given
+        expires: '2018-08-28T07:24:30.928Z'
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   'npm:ws:20160624':
     - tmi.js > ws:
-        patched: '2018-06-03T06:02:28.366Z'
+        patched: '2018-07-29T07:24:07.513Z'
   'npm:ws:20160920':
     - tmi.js > ws:
-        patched: '2018-03-22T15:12:30.072Z'
+        patched: '2018-07-29T07:24:07.513Z'
+  'npm:hoek:20180212':
+    - tmi.js > request > hawk > boom > hoek:
+        patched: '2018-07-29T07:24:07.513Z'
+    - tmi.js > request > hawk > sntp > hoek:
+        patched: '2018-07-29T07:24:07.513Z'
+    - tmi.js > request > hawk > cryptiles > boom > hoek:
+        patched: '2018-07-29T07:24:07.513Z'
+    - tmi.js > request > hawk > hoek:
+        patched: '2018-07-29T07:24:07.513Z'
+  'npm:tunnel-agent:20170305':
+    - tmi.js > request > tunnel-agent:
+        patched: '2018-07-29T07:24:07.513Z'
