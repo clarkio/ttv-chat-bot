@@ -1,23 +1,77 @@
-#minion-bee-doo {
+body {
+  overflow: hidden;
+  margin: 0px;
+}
+
+iframe {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.minion-div {
   z-index: 14;
   border: none;
   position: absolute;
   overflow: hidden;
   transition: all 0.5s ease;
-  position: absolute;
   width: 300px;
   height: 300px;
-  left: 0;
-  right: 0;
-  margin: auto;
+  left: 810px;
+  margin: 0px;
   text-align: center;
-}
-
-.copmode-hidden {
   opacity: 0;
   top: -300px;
 }
-.copmode-visible {
+
+.minion-div h3 {
+  position: relative;
+  top: 50px;
+  color: white;
+}
+
+.minion-div img {
+  border-radius: 10px;
+}
+
+.copmode {
   opacity: 1;
   top: calc(50% - 50px);
+}
+
+.purple {
+  filter: hue-rotate(70deg);
+}
+
+.pink {
+  filter: hue-rotate(125deg);
+}
+
+.red {
+  filter: hue-rotate(160deg);
+}
+
+.orange {
+  filter: hue-rotate(200deg);
+}
+
+.yellow {
+  filter: hue-rotate(214deg);
+}
+
+.green {
+  filter: hue-rotate(295deg);
+}
+
+.teal {
+  filter: hue-rotate(325deg);
+}
+
+.gray {
+  filter: grayscale(100);
+}
+
+.black {
+  filter: brightness(0);
 }

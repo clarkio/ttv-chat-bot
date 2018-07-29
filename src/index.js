@@ -1,7 +1,6 @@
 const tmi = require('tmi.js');
 const fetch = require('node-fetch');
 const Discord = require('discord.js');
-// const crypto = require('crypto');
 require('dotenv').config();
 const express = require('express');
 const app = express();
@@ -11,8 +10,14 @@ const io = require('socket.io')(http);
 const port = process.env.PORT || 1337;
 const runningMessage = 'Overlay server is running on port ' + port;
 
+const mongoClient = require('mongodb').MongoClient;
+const mongoUrl = process.env.mongoUrl;
+const mongoCollectionName = process.env.mongoCollectionName;
+const mongoDbName = process.env.mongoDbName;
+
 app.use(express.static(__dirname));
 
+// #region site
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
@@ -21,22 +26,25 @@ app.get('/main/greenscreen', (req, res) => {
   res.sendFile(__dirname + '/gs.html');
 });
 
-app.get('/lights/:color', (req, res, next) => {
+app.get('/main/guest', (req, res) => {
+  res.sendFile(__dirname + '/guest.html');
+});
+
+app.get('/lights/:color', (req, res) => {
   io.emit('color-change', req.params.color);
   res.send('Done');
 });
 
-app.get('/lights/effects/:effect', (req, res, next) => {
+app.get('/lights/effects/:effect', (req, res) => {
   io.emit('color-effect', req.params.effect);
   res.send('Done');
 });
 
-io.on('connection', function(socket) {
-  console.log('a user connected');
-  socket.on('disconnect', function() {
-    console.log('user disconnected');
-  });
+app.get('/bulb/color', (req, res) => {
+  res.json({ color: currentBulbColor });
 });
+
+// #endregion site
 
 // NOTE: it's using http to start the server and NOT app
 // This is so the socket.io host starts as well
@@ -44,7 +52,8 @@ http.listen(port, () => {
   console.log(runningMessage);
 });
 
-const cannedColors = ['blue', 'red', 'green', 'purple', 'pink', 'yellow', 'orange'];
+const cannedColors = ['blue', 'red', 'green', 'purple', 'pink', 'yellow', 'orange', 'teal', 'black', 'gray'];
+let currentBulbColor = 'blue';
 
 const channels = process.env.ttvChannels.toString().split(',');
 const clientUsername = process.env.clientUsername.toString();
@@ -88,7 +97,15 @@ function pingTtv() {
 }
 
 ttvChatClient.on('join', function(channel, username, self) {
-  console.log(`${username} has joined the channel`);
+  let date = new Date();
+  let rawMinutes = date.getMinutes();
+  let rawHours = date.getHours();
+  let hours = rawHours < 10 ? '0' + rawHours.toLocaleString() : rawHours.toLocaleString();
+  let minutes = rawMinutes < 10 ? '0' + rawMinutes.toLocaleString() : rawMinutes.toLocaleString();
+  console.log(`[${hours}:${minutes}] ${username} has JOINED the channel`);
+
+  checkViewer(username);
+
   if (self) {
     console.log('This client joined the channel...');
     // Assume first channel in channels array is 'self' - owner monitoring their own channel
@@ -102,9 +119,48 @@ ttvChatClient.on('join', function(channel, username, self) {
   }
 });
 
+function checkViewer(viewerName) {
+  console.log(`Checking user: ${viewerName}...`);
+  mongoClient
+    .connect(mongoUrl)
+    .then(client => {
+      let db = client.db(mongoDbName);
+      db.collection(mongoCollectionName)
+        .findOne({ viewerName })
+        .then(viewer => {
+          if (viewer) {
+            console.log(`Already added ${viewer.viewerName}`);
+            return;
+          }
+          return db
+            .collection(mongoCollectionName)
+            .insertOne({ viewerName })
+            .then(() => {
+              console.log(`Successfully added ${viewerName}`);
+              client.close();
+            })
+            .catch(err => handleMongDbError(err, client));
+        })
+        .catch(err => handleMongDbError(err, client));
+    })
+    .catch(err => handleMongDbError(err));
+}
+
+function handleMongDbError(error, client) {
+  console.error(error);
+  if (client) {
+    client.close();
+  }
+  return;
+}
+
+ttvChatClient.on('part', function(channel, username, self) {
+  let date = new Date();
+  console.log(`[${date.getHours()}:${date.getMinutes()}] ${username} has LEFT the channel`);
+});
+
 ttvChatClient.on('chat', function(channel, user, message, self) {
   let userName = user['display-name'] || user['username'];
-  console.log(`Here's the raw message from ${userName}: ${message}`);
   let lowerCaseMessage = message.toLowerCase();
 
   if (moderators.indexOf(userName.toLowerCase()) > -1 && isLightControlCommand(message)) {
@@ -187,6 +243,7 @@ function triggerSpecialEffect(message) {
 function updateOverlay(command) {
   cannedColors.forEach(color => {
     if (command.includes(color)) {
+      currentBulbColor = color;
       io.emit('color-change', color);
     }
   });
@@ -264,71 +321,3 @@ function triggerEffect(message, userName) {
     return;
   }
 }
-
-// let hueAuthCode = 'nNs1G8sC';
-// let realm;
-// let nonce;
-// let hueClientAccessToken = process.env.hueClientAccessToken;
-// let hueClientRefreshToken = process.env.hueClientRefreshToken;
-// initiateHueAuth().then(getHueToken);
-
-// function initiateHueAuth() {
-//   return fetch(`https://api.meethue.com/oauth2/token?code=${hueAuthCode}&grant_type=authorization_code`, {
-//     method: 'POST',
-//     mode: 'cors'
-//   }).then(response => {
-//     let hueHeader = response.headers.get('www-authenticate');
-//     realm = parseHueRealm(hueHeader);
-//     nonce = parseHueNonce(hueHeader);
-//     return response;
-//   });
-// }
-
-// function getHueToken() {
-//   let digest = createHueDigest();
-//   return fetch(`https://api.meethue.com/oauth2/token?code=${hueAuthCode}&grant_type=authorization_code`, {
-//     method: 'POST',
-//     headers: {
-//       Authorization: `Digest ${digest}`
-//     },
-//     mode: 'cors'
-//   }).then(response => {
-//     console.log(response);
-//   });
-// }
-
-// function createHueDigest() {
-//   let response = calculateHueDigestResponse();
-//   return `username="${hueClientId}", realm="${realm}", nonce="${nonce}", uri="/oauth2/token", response="${response}"`;
-// }
-
-// function calculateHueDigestResponse() {
-//   let hash1String = `${hueClientId}:${realm}:${hueClientSecret}`;
-//   let hash2String = 'POST:/oauth2/token';
-//   let hash1 = crypto
-//     .createHash('md5')
-//     .update(hash1String)
-//     .digest('hex');
-//   let hash2 = crypto
-//     .createHash('md5')
-//     .update(hash2String)
-//     .digest('hex');
-//   return crypto
-//     .createHash('md5')
-//     .update(hash1 + `:${nonce}:` + hash2)
-//     .digest('hex');
-// }
-
-// function parseHueRealm(rawHeader) {
-//   const realmKey = 'realm="';
-//   let realmKeyIndex = rawHeader.indexOf(realmKey);
-//   let realmEndIndex = rawHeader.indexOf('",');
-//   return rawHeader.substring(realmKeyIndex + realmKey.length, realmEndIndex);
-// }
-
-// function parseHueNonce(rawHeader) {
-//   const nonceKey = 'nonce="';
-//   let nonceKeyIndex = rawHeader.indexOf(nonceKey);
-//   let nonceEndIndex = rawHeader.lastIndexOf('"');
-//   return rawHeader.substring(nonceKeyIndex + nonceKey.length, nonceEndIndex);
-// }
