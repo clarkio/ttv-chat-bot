@@ -17,6 +17,8 @@ const mongoDbName = process.env.mongoDbName;
 
 app.use(express.static(__dirname));
 
+console.log('Overlay', process.env.greenscreenOverlayIframe);
+
 // #region site
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -42,6 +44,18 @@ app.get('/lights/effects/:effect', (req, res) => {
 
 app.get('/bulb/color', (req, res) => {
   res.json({ color: currentBulbColor });
+});
+
+app.get('/main/greenscreen/overlay', (req, res) => {
+  res.json({ overlayIframe: process.env.greenscreenOverlayIframe });
+});
+
+app.get('/main/overlay', (req, res) => {
+  res.json({ overlayIframe: process.env.mainOverlayIframe });
+});
+
+app.get('/main/guest/overlay', (req, res) => {
+  res.json({ overlayIframe: process.env.guestOverlayIframe });
 });
 
 // #endregion site
