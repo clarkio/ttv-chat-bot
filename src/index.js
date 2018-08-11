@@ -250,8 +250,12 @@ function triggerSpecialEffect(message) {
   let effect;
   if (message.includes('cop mode')) {
     effect = 'cop mode';
-    io.emit('color-effect', effect);
+  } else if (message.includes('subscribe')) {
+    effect = 'subscribe';
+  } else if (message.includes('follow')) {
+    effect = 'follow';
   }
+  io.emit('color-effect', effect);
 }
 
 function updateOverlay(command) {
