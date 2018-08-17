@@ -10,11 +10,6 @@ const io = require('socket.io')(http);
 const port = process.env.PORT || 1337;
 const runningMessage = 'Overlay server is running on port ' + port;
 
-const mongoClient = require('mongodb').MongoClient;
-const mongoUrl = process.env.mongoUrl;
-const mongoCollectionName = process.env.mongoCollectionName;
-const mongoDbName = process.env.mongoDbName;
-
 app.use(express.static(__dirname));
 
 console.log('Overlay', process.env.greenscreenOverlayIframe);
@@ -118,8 +113,6 @@ ttvChatClient.on('join', function(channel, username, self) {
   let minutes = rawMinutes < 10 ? '0' + rawMinutes.toLocaleString() : rawMinutes.toLocaleString();
   console.log(`[${hours}:${minutes}] ${username} has JOINED the channel`);
 
-  checkViewer(username);
-
   if (self) {
     console.log('This client joined the channel...');
     // Assume first channel in channels array is 'self' - owner monitoring their own channel
@@ -132,41 +125,6 @@ ttvChatClient.on('join', function(channel, username, self) {
       .catch(error => console.log(`There was an error getting moderators: ${error}`));
   }
 });
-
-function checkViewer(viewerName) {
-  console.log(`Checking user: ${viewerName}...`);
-  mongoClient
-    .connect(mongoUrl)
-    .then(client => {
-      let db = client.db(mongoDbName);
-      db.collection(mongoCollectionName)
-        .findOne({ viewerName })
-        .then(viewer => {
-          if (viewer) {
-            console.log(`Already added ${viewer.viewerName}`);
-            return;
-          }
-          return db
-            .collection(mongoCollectionName)
-            .insertOne({ viewerName })
-            .then(() => {
-              console.log(`Successfully added ${viewerName}`);
-              client.close();
-            })
-            .catch(err => handleMongDbError(err, client));
-        })
-        .catch(err => handleMongDbError(err, client));
-    })
-    .catch(err => handleMongDbError(err));
-}
-
-function handleMongDbError(error, client) {
-  console.error(error);
-  if (client) {
-    client.close();
-  }
-  return;
-}
 
 ttvChatClient.on('part', function(channel, username, self) {
   let date = new Date();
