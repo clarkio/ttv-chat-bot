@@ -2,67 +2,11 @@ const tmi = require('tmi.js');
 const fetch = require('node-fetch');
 const Discord = require('discord.js');
 require('dotenv').config();
-const express = require('express');
-const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
 
-const port = process.env.PORT || 1337;
-const runningMessage = 'Overlay server is running on port ' + port;
-
-app.use(express.static(__dirname));
+const server = require('./server');
+server.start();
 
 console.log('Overlay', process.env.greenscreenOverlayIframe);
-
-// #region site
-app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/index.html');
-});
-
-app.get('/main/greenscreen', (req, res) => {
-  res.sendFile(__dirname + '/gs.html');
-});
-
-app.get('/main/guest', (req, res) => {
-  res.sendFile(__dirname + '/guest.html');
-});
-
-app.get('/lights/:color', (req, res) => {
-  io.emit('color-change', req.params.color);
-  res.send('Done');
-});
-
-app.get('/lights/effects/:effect', (req, res) => {
-  io.emit('color-effect', req.params.effect);
-  res.send('Done');
-});
-
-app.get('/bulb/color', (req, res) => {
-  res.json({ color: currentBulbColor });
-});
-
-app.get('/main/greenscreen/overlay', (req, res) => {
-  res.json({ overlayIframe: process.env.greenscreenOverlayIframe });
-});
-
-app.get('/main/overlay', (req, res) => {
-  res.json({ overlayIframe: process.env.mainOverlayIframe });
-});
-
-app.get('/main/guest/overlay', (req, res) => {
-  res.json({ overlayIframe: process.env.guestOverlayIframe });
-});
-
-// #endregion site
-
-// NOTE: it's using http to start the server and NOT app
-// This is so the socket.io host starts as well
-http.listen(port, () => {
-  console.log(runningMessage);
-});
-
-const cannedColors = ['blue', 'red', 'green', 'purple', 'pink', 'yellow', 'orange', 'teal', 'black', 'gray'];
-let currentBulbColor = 'blue';
 
 const channels = process.env.ttvChannels.toString().split(',');
 const clientUsername = process.env.clientUsername.toString();
@@ -98,6 +42,8 @@ let isChatClientEnabled = true;
 let lightCommandUsed = '';
 
 createNewBotConversation();
+
+// #region chat client code
 
 ttvChatClient.connect();
 
@@ -157,6 +103,32 @@ ttvChatClient.on('chat', function(channel, user, message, self) {
   }
 });
 
+function parseChat(message, userName) {
+  if (isLightControlCommand(message)) {
+    let commandMessage = message.slice(lightCommandUsed.length);
+    if (commandMessage) {
+      discordHook.send(`Received a command from ${userName}: ${commandMessage}`);
+      if (isSpecialEffectCommand(commandMessage)) {
+        server.triggerSpecialEffect(commandMessage, userName);
+      }
+      server.updateOverlay(commandMessage);
+      return sendCommand(commandMessage, userName)
+        .then(result => {
+          logger('info', `Successfully sent the command from ${userName}`);
+          return result;
+        })
+        .catch(error => {
+          console.log(error);
+          return error;
+        });
+    }
+  } else if (userName.toLowerCase() === 'streamelements') {
+    if (message.includes('following') || message.includes('subscribed') || message.includes('cheered')) {
+      return triggerEffect(message, userName);
+    }
+  }
+}
+
 function isSpecialEffectCommand(message) {
   return specialEffectCommands.some(command => {
     if (message.includes(command)) {
@@ -178,52 +150,13 @@ function isLightControlCommand(message) {
   });
 }
 
-function parseChat(message, userName) {
-  if (isLightControlCommand(message)) {
-    let commandMessage = message.slice(lightCommandUsed.length);
-    if (commandMessage) {
-      discordHook.send(`Received a command from ${userName}: ${commandMessage}`);
-      if (isSpecialEffectCommand(commandMessage)) {
-        triggerSpecialEffect(commandMessage, userName);
-      }
-      updateOverlay(commandMessage);
-      return sendCommand(commandMessage, userName)
-        .then(result => {
-          logger('info', `Successfully sent the command from ${userName}`);
-          return result;
-        })
-        .catch(error => {
-          console.log(error);
-          return error;
-        });
-    }
-  } else if (userName.toLowerCase() === 'streamelements') {
-    if (message.includes('following') || message.includes('subscribed') || message.includes('cheered')) {
-      return triggerEffect(message, userName);
-    }
-  }
-}
+// #endregion
 
-function triggerSpecialEffect(message) {
-  let effect;
-  if (message.includes('cop mode')) {
-    effect = 'cop mode';
-  } else if (message.includes('subscribe')) {
-    effect = 'subscribe';
-  } else if (message.includes('follow')) {
-    effect = 'follow';
-  }
-  io.emit('color-effect', effect);
-}
+// #region overlay update code
 
-function updateOverlay(command) {
-  cannedColors.forEach(color => {
-    if (command.includes(color)) {
-      currentBulbColor = color;
-      io.emit('color-change', color);
-    }
-  });
-}
+//#endregion
+
+// #region bot code
 
 function createNewBotConversation() {
   console.log(`Starting a new bot conversation at: ${new Date()}`);
@@ -297,3 +230,5 @@ function triggerEffect(message, userName) {
     return;
   }
 }
+
+// #endregion
