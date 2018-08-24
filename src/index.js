@@ -1,17 +1,20 @@
+const captains = console;
 const tmi = require('tmi.js');
 const fetch = require('node-fetch');
 const Discord = require('discord.js');
+const server = require('./server');
 require('dotenv').config();
 
-const server = require('./server');
 server.start();
 
-console.log('Overlay', process.env.greenscreenOverlayIframe);
+captains.log(`Overlay ${process.env.greenscreenOverlayIframe}`);
 
 const channels = process.env.ttvChannels.toString().split(',');
 const clientUsername = process.env.clientUsername.toString();
 const lightControlCommands = process.env.lightCommands.toString().split(',');
-const specialEffectCommands = process.env.specialEffectCommands.toString().split(',');
+const specialEffectCommands = process.env.specialEffectCommands
+  .toString()
+  .split(',');
 
 const options = {
   options: {
@@ -25,18 +28,23 @@ const options = {
     username: clientUsername,
     password: process.env.clientToken
   },
-  channels: channels
+  channels
 };
 
+// eslint-disable-next-line new-cap
 const ttvChatClient = new tmi.client(options);
-const discordHook = new Discord.WebhookClient(process.env.discordHookId, process.env.discordHookToken);
+const discordHook = new Discord.WebhookClient(
+  process.env.discordHookId,
+  process.env.discordHookToken
+);
 const logger = require('./logger')(discordHook);
+
 discordHook.send('Client is online and running...');
 
 let conversationId;
 let conversationToken;
 let expiration;
-let azureBotToken = process.env.AzureBotToken;
+const azureBotToken = process.env.AzureBotToken;
 let moderators = [clientUsername];
 let isChatClientEnabled = true;
 let lightCommandUsed = '';
@@ -51,16 +59,17 @@ function pingTtv() {
   ttvChatClient.ping();
 }
 
-ttvChatClient.on('join', function(channel, username, self) {
-  let date = new Date();
-  let rawMinutes = date.getMinutes();
-  let rawHours = date.getHours();
-  let hours = rawHours < 10 ? '0' + rawHours.toLocaleString() : rawHours.toLocaleString();
-  let minutes = rawMinutes < 10 ? '0' + rawMinutes.toLocaleString() : rawMinutes.toLocaleString();
-  console.log(`[${hours}:${minutes}] ${username} has JOINED the channel`);
+ttvChatClient.on('join', (channel, username, self) => {
+  const date = new Date();
+  const rawMinutes = date.getMinutes();
+  const rawHours = date.getHours();
+  const hours = (rawHours < 10 ? '0' : '') + rawHours.toLocaleString();
+  const minutes = (rawMinutes < 10 ? '0' : '') + rawMinutes.toLocaleString();
+
+  captains.log(`[${hours}:${minutes}] ${username} has JOINED the channel`);
 
   if (self) {
-    console.log('This client joined the channel...');
+    captains.log('This client joined the channel...');
     // Assume first channel in channels array is 'self' - owner monitoring their own channel
     setTimeout(pingTtv, 30000);
     ttvChatClient
@@ -68,46 +77,53 @@ ttvChatClient.on('join', function(channel, username, self) {
       .then(modsFromTwitch => {
         moderators = moderators.concat(modsFromTwitch);
       })
-      .catch(error => console.log(`There was an error getting moderators: ${error}`));
+      .catch(error =>
+        captains.log(`There was an error getting moderators: ${error}`)
+      );
   }
 });
 
-ttvChatClient.on('part', function(channel, username, self) {
-  let date = new Date();
-  console.log(`[${date.getHours()}:${date.getMinutes()}] ${username} has LEFT the channel`);
+ttvChatClient.on('part', (channel, username) => {
+  const date = new Date();
+  captains.log(
+    `[${date.getHours()}:${date.getMinutes()}] ${username} has LEFT the channel`
+  );
 });
 
-ttvChatClient.on('chat', function(channel, user, message, self) {
-  let userName = user['display-name'] || user['username'];
-  let lowerCaseMessage = message.toLowerCase();
+ttvChatClient.on('chat', (channel, user, message /* , self */) => {
+  const userName = user['display-name'] || user.username;
+  const lowerCaseMessage = message.toLowerCase();
 
-  if (moderators.indexOf(userName.toLowerCase()) > -1 && isLightControlCommand(message)) {
-    let logMessage = `Moderator (${userName}) sent a message`;
+  if (
+    moderators.indexOf(userName.toLowerCase()) > -1 &&
+    isLightControlCommand(message)
+  ) {
+    const logMessage = `Moderator (${userName}) sent a message`;
     logger('info', logMessage);
 
-    if (lowerCaseMessage.includes('enable')) {
-      isChatClientEnabled = true;
-      logger('info', 'TTV Chat Listener to control the lights has been enabled');
-      return;
-    } else if (lowerCaseMessage.includes('disable')) {
-      isChatClientEnabled = false;
-      logger('info', 'TTV Chat Listener to control the lights has been disabled');
-      return;
-    }
+    isChatClientEnabled = lowerCaseMessage.includes('enable');
+    const state = isChatClientEnabled ? 'enabled' : 'disabled';
+    logger('info', `TTV Chat Listener to control the lights has been ${state}`);
+    return;
   }
 
   if (isChatClientEnabled) {
     parseChat(lowerCaseMessage, userName);
   } else {
-    logger('info', 'Command was ignored because the TTV Chat Listener is disabled');
+    logger(
+      'info',
+      'Command was ignored because the TTV Chat Listener is disabled'
+    );
   }
 });
 
 function parseChat(message, userName) {
   if (isLightControlCommand(message)) {
-    let commandMessage = message.slice(lightCommandUsed.length);
+    const commandMessage = message.slice(lightCommandUsed.length);
     if (commandMessage) {
-      discordHook.send(`Received a command from ${userName}: ${commandMessage}`);
+      discordHook.send(
+        `Received a command from ${userName}: ${commandMessage}`
+      );
       if (isSpecialEffectCommand(commandMessage)) {
         server.triggerSpecialEffect(commandMessage, userName);
       }
@@ -118,35 +134,40 @@ function parseChat(message, userName) {
           return result;
         })
         .catch(error => {
-          console.log(error);
+          captains.log(error);
           return error;
         });
     }
-  } else if (userName.toLowerCase() === 'streamelements') {
-    if (message.includes('following') || message.includes('subscribed') || message.includes('cheered')) {
-      return triggerEffect(message, userName);
-    }
+    // it is a light control command, but not command message
   }
+
+  if (isStreamElements(userName) && iHappyCommand(message)) {
+    return triggerEffect(message, userName);
+  }
+
+  return Promise.resolve('there was nothing to do');
+}
+
+function isStreamElements(userName) {
+  return userName.toLowerCase() === 'streamelements';
+}
+
+function iHappyCommand(message) {
+  return (
+    message.includes('following') ||
+    message.includes('subscribed') ||
+    message.includes('cheered')
+  );
 }
 
 function isSpecialEffectCommand(message) {
-  return specialEffectCommands.some(command => {
-    if (message.includes(command)) {
-      return true;
-    } else {
-      return false;
-    }
-  });
+  return specialEffectCommands.some(command => message.includes(command));
 }
 
 function isLightControlCommand(message) {
   return lightControlCommands.some(command => {
-    if (message.startsWith(command.toLowerCase())) {
-      lightCommandUsed = command;
-      return true;
-    } else {
-      return false;
-    }
+    lightCommandUsed = message.startsWith(command.toLowerCase());
+    return !!lightCommandUsed;
   });
 }
 
@@ -154,27 +175,29 @@ function isLightControlCommand(message) {
 
 // #region overlay update code
 
-//#endregion
+// #endregion
 
 // #region bot code
 
 function createNewBotConversation() {
-  console.log(`Starting a new bot conversation at: ${new Date()}`);
+  captains.log(`Starting a new bot conversation at: ${new Date()}`);
   startBotConversation().then(result => {
+    // eslint-disable-next-line prefer-destructuring
     conversationId = result.conversationId;
     conversationToken = result.token;
-    expiration = new Date().getSeconds() + parseInt(result['expires_in']) - 30;
+    const expiresIn = parseInt(result.expires_in, 10);
+    expiration = new Date().getSeconds() + expiresIn - 30;
     createTimeout(expiration);
   });
 }
 
 function createTimeout(expirationTime) {
-  let timeInMilliseconds = expirationTime * 1000;
+  const timeInMilliseconds = expirationTime * 1000;
   setTimeout(createNewBotConversation, timeInMilliseconds);
 }
 
 function startBotConversation() {
-  let url = 'https://directline.botframework.com/api/conversations';
+  const url = 'https://directline.botframework.com/api/conversations';
   return fetch(url, {
     method: 'POST',
     headers: {
@@ -183,14 +206,16 @@ function startBotConversation() {
   })
     .then(response => response.json())
     .catch(error => {
-      console.log(`There was an error starting a conversation with the bot: ${error}`);
+      captains.log(
+        `There was an error starting a conversation with the bot: ${error}`
+      );
       return error;
     });
 }
 
 function sendCommand(commandMessage, user) {
-  let fullMessage = { text: commandMessage, from: user };
-  let url = `https://directline.botframework.com/api/conversations/${conversationId}/messages`;
+  const fullMessage = { text: commandMessage, from: user };
+  const url = `https://directline.botframework.com/api/conversations/${conversationId}/messages`;
   return fetch(url, {
     method: 'POST',
     headers: {
@@ -202,7 +227,7 @@ function sendCommand(commandMessage, user) {
   })
     .then(response => response)
     .catch(error => {
-      console.log(error);
+      captains.log(error);
       return error;
     });
 }
@@ -218,17 +243,18 @@ function triggerEffect(message, userName) {
   if (effect) {
     return sendCommand(effect, userName)
       .then(result => {
-        console.log(`Successfully triggered new follower command from ${userName}`);
+        captains.log(
+          `Successfully triggered new follower command from ${userName}`
+        );
         return result;
       })
       .catch(error => {
-        console.log(error);
+        captains.log(error);
         return error;
       });
-  } else {
-    console.warn(`Unsupported effect was received in the message: ${message}`);
-    return;
   }
+  captains.warn(`Unsupported effect was received in the message: ${message}`);
+  return Promise.resolve('TODO = put something useful here');
 }
 
 // #endregion

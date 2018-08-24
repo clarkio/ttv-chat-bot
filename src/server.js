@@ -3,9 +3,20 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
-const port = process.env.PORT || 1337;
+const port = process.env.PORT || 1338;
 const runningMessage = 'Overlay server is running on port ' + port;
-const cannedColors = ['blue', 'red', 'green', 'purple', 'pink', 'yellow', 'orange', 'teal', 'black', 'gray'];
+const cannedColors = [
+  'blue',
+  'red',
+  'green',
+  'purple',
+  'pink',
+  'yellow',
+  'orange',
+  'teal',
+  'black',
+  'gray'
+];
 let currentBulbColor = 'blue';
 
 app.get('/', function(req, res) {
@@ -18,6 +29,10 @@ app.get('/main/greenscreen', (req, res) => {
 
 app.get('/main/guest', (req, res) => {
   res.sendFile(__dirname + '/guest.html');
+});
+
+app.get('/main/guest2', (req, res) => {
+  res.sendFile(__dirname + '/guest2.html');
 });
 
 app.get('/lights/:color', (req, res) => {
@@ -44,6 +59,10 @@ app.get('/main/overlay', (req, res) => {
 
 app.get('/main/guest/overlay', (req, res) => {
   res.json({ overlayIframe: process.env.guestOverlayIframe });
+});
+
+app.get('/main/guest2/overlay', (req, res) => {
+  res.json({ overlayIframe: process.env.guest2OverlayIframe });
 });
 
 app.use(express.static(__dirname));
