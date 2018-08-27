@@ -3,7 +3,6 @@ const tmi = require('tmi.js');
 const fetch = require('node-fetch');
 const Discord = require('discord.js');
 const server = require('./server');
-require('dotenv').config();
 
 server.start();
 

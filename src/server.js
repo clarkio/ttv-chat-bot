@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+require('dotenv').config();
 
 const port = process.env.PORT || 1338;
 const runningMessage = 'Overlay server is running on port ' + port;
