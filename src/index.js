@@ -100,10 +100,18 @@ ttvChatClient.on('chat', (channel, user, message /* , self */) => {
     const logMessage = `Moderator (${userName}) sent a message`;
     logger('info', logMessage);
 
-    isChatClientEnabled = lowerCaseMessage.includes('enable');
-    const state = isChatClientEnabled ? 'enabled' : 'disabled';
-    logger('info', `TTV Chat Listener to control the lights has been ${state}`);
-    return;
+    if (
+      lowerCaseMessage.includes('enable') ||
+      lowerCaseMessage.includes('disable')
+    ) {
+      isChatClientEnabled = lowerCaseMessage.includes('enable');
+      const state = isChatClientEnabled ? 'enabled' : 'disabled';
+      logger(
+        'info',
+        `TTV Chat Listener to control the lights has been ${state}`
+      );
+      return;
+    }
   }
 
   if (isChatClientEnabled) {
@@ -140,7 +148,7 @@ function parseChat(message, userName) {
     // it is a light control command, but not command message
   }
 
-  if (isStreamElements(userName) && iHappyCommand(message)) {
+  if (isStreamElements(userName) && isSpecialEffectCommand(message)) {
     return triggerEffect(message, userName);
   }
 
@@ -149,14 +157,6 @@ function parseChat(message, userName) {
 
 function isStreamElements(userName) {
   return userName.toLowerCase() === 'streamelements';
-}
-
-function iHappyCommand(message) {
-  return (
-    message.includes('following') ||
-    message.includes('subscribed') ||
-    message.includes('cheered')
-  );
 }
 
 function isSpecialEffectCommand(message) {
@@ -233,17 +233,21 @@ function sendCommand(commandMessage, user) {
 
 function triggerEffect(message, userName) {
   let effect;
-  if (message.includes('following')) {
-    effect = 'trigger new follower';
-  } else if (message.includes('subscribed') || message.includes('cheered')) {
+  if (
+    message.includes('subscribed') ||
+    message.includes('cheered') ||
+    message.includes('tipped')
+  ) {
     effect = 'trigger new subscriber';
+  } else {
+    effect = 'trigger new follower';
   }
 
   if (effect) {
     return sendCommand(effect, userName)
       .then(result => {
         captains.log(
-          `Successfully triggered new follower command from ${userName}`
+          `Successfully triggered ${effect} command from ${userName}`
         );
         return result;
       })
