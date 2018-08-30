@@ -1,9 +1,9 @@
 require('dotenv').config();
 const tmi = require('tmi.js');
-const Discord = require('discord.js');
 
 const server = require('./server');
 const bot = require('./bot');
+const discordHook = require('./discord');
 const logger = require('./logger')(discordHook);
 
 const captains = console;
@@ -37,10 +37,6 @@ const options = {
 };
 // eslint-disable-next-line new-cap
 const ttvChatClient = new tmi.client(options);
-const discordHook = new Discord.WebhookClient(
-  process.env.discordHookId,
-  process.env.discordHookToken
-);
 
 function connect() {
   discordHook.send('Client is online and running...');
