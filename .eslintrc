@@ -1,0 +1,13 @@
+{
+  "extends": ["airbnb-base", "prettier"],
+  "rules": {
+    "no-use-before-define": "off"
+  },
+  "globals": {
+    "localStorage": false,
+    "window": false,
+    "Audio": false,
+    "io": false,
+    "$": false
+  }
+}
