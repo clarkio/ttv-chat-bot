@@ -1,9 +1,9 @@
-let discordHook;
+const discordHook = require('./discord');
 
-module.exports = function(discordHook) {
-  this.discordHook = discordHook;
-  return function log(level, message) {
+const captains = console;
+
+module.exports = () =>
+  function log(level, message) {
     discordHook.send(message);
-    console[level](message);
+    captains[level](message);
   };
-};
