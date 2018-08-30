@@ -1,7 +1,8 @@
 {
   "extends": ["airbnb-base", "prettier"],
   "rules": {
-    "no-use-before-define": "off"
+    "no-use-before-define": "off",
+    "linebreak-style": "off"
   },
   "globals": {
     "localStorage": false,
