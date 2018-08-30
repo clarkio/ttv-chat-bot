@@ -1,5 +1,5 @@
-const fetch = require('node-fetch');
 require('dotenv').config();
+const fetch = require('node-fetch');
 
 const captains = console;
 let conversationId;
