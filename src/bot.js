@@ -7,11 +7,15 @@ let conversationToken;
 let expiration;
 const azureBotToken = process.env.AzureBotToken;
 
-module.exports = {
-  createNewBotConversation,
-  triggerEffect,
-  sendCommand
+const noop = () => {};
+const botEnabled = process.env.BOT_ENABLED.toLocaleLowerCase() === 'true';
+const bot = {
+  createNewBotConversation: botEnabled ? createNewBotConversation : noop,
+  triggerEffect: botEnabled ? triggerEffect : noop,
+  sendCommand: botEnabled ? sendCommand : noop
 };
+
+module.exports = bot;
 
 function createNewBotConversation() {
   captains.log(`Starting a new bot conversation at: ${new Date()}`);

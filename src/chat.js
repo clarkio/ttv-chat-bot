@@ -48,6 +48,7 @@ function pingTtv() {
 }
 
 ttvChatClient.on('join', (channel, username, self) => {
+  // TODO: refactor this to be it's own function since it's not relative to this function
   const date = new Date();
   const rawMinutes = date.getMinutes();
   const rawHours = date.getHours();
