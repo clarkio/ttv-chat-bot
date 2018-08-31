@@ -1,16 +1,16 @@
-require('dotenv').config();
 const tmi = require('tmi.js');
 
 const server = require('./server');
 const bot = require('./bot');
 const discordHook = require('./discord');
 const logger = require('./logger')(discordHook);
+const config = require('./config');
 
 const captains = console;
-const channels = process.env.ttvChannels.toString().split(',');
-const clientUsername = process.env.clientUsername.toString();
-const lightControlCommands = process.env.lightCommands.toString().split(',');
-const specialEffectCommands = process.env.specialEffectCommands
+const channels = config.ttvChannels.toString().split(',');
+const clientUsername = config.ttvClientUsername.toString();
+const lightControlCommands = config.chatCommands.toString().split(',');
+const specialEffectCommands = config.specialEffectsChatCommands
   .toString()
   .split(',');
 let moderators = [clientUsername];
@@ -23,7 +23,7 @@ module.exports = {
 
 const options = {
   options: {
-    clientId: process.env.TwitchClientId,
+    clientId: config.ttvClientId,
     debug: true
   },
   connection: {
@@ -31,7 +31,7 @@ const options = {
   },
   identity: {
     username: clientUsername,
-    password: process.env.clientToken
+    password: config.ttvClientToken
   },
   channels
 };

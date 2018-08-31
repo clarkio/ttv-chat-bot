@@ -1,14 +1,14 @@
-require('dotenv').config();
 const fetch = require('node-fetch');
+const config = require('./config');
 
 const captains = console;
 let conversationId;
 let conversationToken;
 let expiration;
-const azureBotToken = process.env.AzureBotToken;
+const { azureBotToken } = config.azureBotToken;
 
 const noop = () => {};
-const botEnabled = process.env.BOT_ENABLED.toLocaleLowerCase() === 'true';
+const botEnabled = config.botEnabled.toLocaleLowerCase() === 'true';
 const bot = {
   createNewBotConversation: botEnabled ? createNewBotConversation : noop,
   triggerEffect: botEnabled ? triggerEffect : noop,
