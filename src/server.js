@@ -4,8 +4,9 @@ const captains = console;
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+const config = require('./config');
 
-const port = process.env.PORT || 1337;
+const { port } = config;
 const runningMessage = `Overlay server is running on port ${port}`;
 const cannedColors = [
   'blue',
