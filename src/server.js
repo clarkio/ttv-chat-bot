@@ -21,20 +21,18 @@ const cannedColors = [
 ];
 let currentBulbColor = 'blue';
 
-app.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/index.html`);
-});
+app.set('view engine', 'pug');
+app.set('views', `${__dirname}/views`);
 
-app.get('/main/greenscreen', (req, res) => {
-  res.sendFile(`${__dirname}/gs.html`);
-});
-
-app.get('/main/guest', (req, res) => {
-  res.sendFile(`${__dirname}/guest.html`);
-});
-
-app.get('/main/guest2', (req, res) => {
-  res.sendFile(`${__dirname}/guest2.html`);
+app.get('/scenes', (req, res) => {
+  const { sceneName } = req.query;
+  if (sceneName) {
+    res.render(`index`, {
+      iframeSrc: process.env[`${sceneName}`]
+    });
+  } else {
+    res.status(400);
+  }
 });
 
 app.get('/lights/:color', (req, res) => {
@@ -49,22 +47,6 @@ app.get('/lights/effects/:effect', (req, res) => {
 
 app.get('/bulb/color', (req, res) => {
   res.json({ color: currentBulbColor });
-});
-
-app.get('/main/greenscreen/overlay', (req, res) => {
-  res.json({ overlayIframe: process.env.greenscreenOverlayIframe });
-});
-
-app.get('/main/overlay', (req, res) => {
-  res.json({ overlayIframe: process.env.mainOverlayIframe });
-});
-
-app.get('/main/guest/overlay', (req, res) => {
-  res.json({ overlayIframe: process.env.guestOverlayIframe });
-});
-
-app.get('/main/guest2/overlay', (req, res) => {
-  res.json({ overlayIframe: process.env.guest2OverlayIframe });
 });
 
 app.use(express.static(__dirname));
