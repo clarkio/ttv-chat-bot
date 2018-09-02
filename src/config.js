@@ -7,16 +7,11 @@ const captains = console;
 let fileConfig;
 
 try {
-  const buffer = readFileSync(resolve(__dirname, '../../config.json'));
+  const buffer = readFileSync(resolve(__dirname, '../config.json'));
   fileConfig = JSON.parse(buffer.toString());
 } catch (e) {
-  try {
-    const buffer = readFileSync(resolve(__dirname, '../../../config.json'));
-    fileConfig = JSON.parse(buffer.toString());
-  } catch (e2) {
-    captains.log(e2);
-    fileConfig = {};
-  }
+  captains.log('There was an error retrieving configuration from a file', e);
+  fileConfig = {};
 }
 
 const {
