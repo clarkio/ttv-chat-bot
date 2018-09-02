@@ -8,11 +8,15 @@ let expiration;
 const { azureBotToken } = config.azureBotToken;
 
 const noop = () => {};
+const noopPromise = () => ({
+  then: () => Promise.resolve(),
+  catch: () => Promise.reject()
+});
 const botEnabled = config.botEnabled.toLocaleLowerCase() === 'true';
 const bot = {
   createNewBotConversation: botEnabled ? createNewBotConversation : noop,
   triggerEffect: botEnabled ? triggerEffect : noop,
-  sendCommand: botEnabled ? sendCommand : noop
+  sendCommand: botEnabled ? sendCommand : noopPromise
 };
 
 module.exports = bot;
