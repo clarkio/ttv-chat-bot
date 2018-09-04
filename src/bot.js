@@ -5,7 +5,7 @@ const captains = console;
 let conversationId;
 let conversationToken;
 let expiration;
-const { azureBotToken } = config.azureBotToken;
+const { azureBotToken } = config;
 
 const noop = () => {};
 const noopPromise = () => ({
@@ -24,13 +24,17 @@ module.exports = bot;
 function createNewBotConversation() {
   captains.log(`Starting a new bot conversation at: ${new Date()}`);
   startBotConversation().then(result => {
-    captains.log('Bot conversaion started');
+    if (result.error) {
+      captains.error(result.error);
+      return result.error;
+    }
+    captains.log('Bot conversation started');
     // eslint-disable-next-line prefer-destructuring
     conversationId = result.conversationId;
     conversationToken = result.token;
     const expiresIn = parseInt(result.expires_in, 10);
     expiration = new Date().getSeconds() + expiresIn - 30;
-    createTimeout(expiration);
+    return createTimeout(expiration);
   });
 }
 
@@ -40,7 +44,8 @@ function createTimeout(expirationTime) {
 }
 
 function startBotConversation() {
-  const url = 'https://directline.botframework.com/api/conversations';
+  // const url = 'https://directline.botframework.com/api/conversations';
+  const url = 'https://directline.botframework.com/v3/directline/conversations';
   return fetch(url, {
     method: 'POST',
     headers: {
