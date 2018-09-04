@@ -116,34 +116,41 @@ ttvChatClient.on('chat', (channel, user, message /* , self */) => {
 
 function parseChat(message, userName) {
   if (isLightControlCommand(message)) {
-    const commandMessage = message.slice(lightCommandUsed.length);
-    if (commandMessage) {
-      discordHook.send(
-        `Received a command from ${userName}: ${commandMessage}`
-      );
-      if (isSpecialEffectCommand(commandMessage)) {
-        server.triggerSpecialEffect(commandMessage, userName);
-      }
-      server.updateOverlay(commandMessage);
-      return bot
-        .sendCommand(commandMessage, userName)
-        .then(result => {
-          logger('info', `Successfully sent the command from ${userName}`);
-          return result;
-        })
-        .catch(error => {
-          captains.log(error);
-          return error;
-        });
+    // viewer attempting to control the overlay/lights
+    const commandMessage = message.slice(lightCommandUsed.length).trim();
+    discordHook.send(`Received a command from ${userName}: ${commandMessage}`);
+
+    if (isSpecialEffectCommand(commandMessage)) {
+      return startSpecialEffects(commandMessage, userName);
     }
-    // it is a light control command, but not command message
+    return startColorChange(commandMessage, userName);
+    // it is an intended, but not a supported command
   }
 
   if (isStreamElements(userName) && isSpecialEffectCommand(message)) {
-    return bot.triggerEffect(message, userName);
+    startSpecialEffects(message, userName);
   }
 
   return Promise.resolve('there was nothing to do');
+}
+
+function startSpecialEffects(message, userName) {
+  server.triggerSpecialEffect(message, userName);
+  return bot.triggerEffect(message, userName);
+}
+
+function startColorChange(commandMessage, userName) {
+  server.updateOverlay(commandMessage);
+  return bot
+    .sendCommand(commandMessage, userName)
+    .then(result => {
+      logger('info', `Successfully sent the command from ${userName}`);
+      return result;
+    })
+    .catch(error => {
+      captains.log(error);
+      return error;
+    });
 }
 
 function isStreamElements(userName) {
@@ -156,7 +163,8 @@ function isSpecialEffectCommand(message) {
 
 function isLightControlCommand(message) {
   return lightControlCommands.some(command => {
-    lightCommandUsed = message.startsWith(command.toLowerCase());
-    return !!lightCommandUsed;
+    const comparison = message.startsWith(command.toLowerCase());
+    lightCommandUsed = comparison ? command : '';
+    return comparison;
   });
 }
