@@ -8,7 +8,7 @@ const config = require('./config');
 
 const { port } = config;
 const runningMessage = `Overlay server is running on port ${port}`;
-const cannedColors = [
+const supportedOverlayColors = [
   'blue',
   'red',
   'green',
@@ -35,6 +35,10 @@ app.get('/scenes', (req, res) => {
   } else {
     res.status(400);
   }
+});
+
+app.get('/overlay-colors', (req, res) => {
+  res.render('overlay-colors');
 });
 
 app.get('/lights/:color', (req, res) => {
@@ -78,7 +82,7 @@ function triggerSpecialEffect(message) {
 }
 
 function updateOverlay(command) {
-  cannedColors.forEach(color => {
+  supportedOverlayColors.forEach(color => {
     if (command.includes(color)) {
       currentBulbColor = color;
       io.emit('color-change', color);

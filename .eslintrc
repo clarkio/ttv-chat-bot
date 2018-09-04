@@ -9,6 +9,7 @@
     "window": false,
     "Audio": false,
     "io": false,
-    "$": false
+    "$": false,
+    "document": false
   }
 }
