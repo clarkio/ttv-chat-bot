@@ -82,11 +82,7 @@ function sendCommand(commandMessage, user) {
 
 function triggerEffect(message, userName) {
   let effect;
-  if (
-    message.includes('subscribed') ||
-    message.includes('cheered') ||
-    message.includes('tipped')
-  ) {
+  if (!message.includes('follow')) {
     effect = 'trigger new subscriber';
   } else {
     effect = 'trigger new follower';

@@ -18,7 +18,8 @@ const cannedColors = [
   'orange',
   'teal',
   'black',
-  'gray'
+  'gray',
+  'white'
 ];
 let currentBulbColor = 'blue';
 
@@ -64,9 +65,13 @@ function triggerSpecialEffect(message) {
   let effect;
   if (message.includes('cop mode')) {
     effect = 'cop mode';
-  } else if (message.includes('subscribe')) {
+  } else if (
+    message.includes('subscribe') ||
+    message.includes('cheer') ||
+    message.includes('tip')
+  ) {
     effect = 'subscribe';
-  } else if (message.includes('follow')) {
+  } else {
     effect = 'follow';
   }
   io.emit('color-effect', effect);
