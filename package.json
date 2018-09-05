@@ -4,7 +4,7 @@
   "description": "Twitch TV chat reader to control internet connected lights",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/index.ts",
     "test": "snyk test",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect"
@@ -12,15 +12,19 @@
   "author": "Brian Clark",
   "license": "MIT",
   "dependencies": {
+    "@types/node": "^10.9.4",
     "discord.js": "^11.3.2",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "hoek": "^5.0.3",
     "node-fetch": "^2.1.1",
+    "nodemon": "^1.18.4",
     "pug": "^2.0.3",
     "snyk": "^1.70.2",
     "socket.io": "^2.1.0",
     "tmi.js": "^1.2.1",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.0.3",
     "uws": "^9.14.0",
     "ws": "^6.0.0"
   },
