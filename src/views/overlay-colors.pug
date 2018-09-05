@@ -5,11 +5,12 @@ html(lang='en')
         script(src='https://code.jquery.com/jquery-3.3.1.min.js', integrity='sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=', crossorigin='anonymous')
         script(src='../scripts/overlay-colors.js')
     body
+        <label>Enter Overlay URL:</label>
+        input#overlay-url(style={height:'40px;', width:'600px;'})
+        button#get-overlay(style={height:'40px;', width:'100px;'}) Submit
+        br
+        button#increase-hue(style={height:'40px;', width:'70px;'}) Up ⬆
+        button#decrease-hue(style={height:'40px;', width:'70px;'}) Down ⬇
+        br        
         div#container
-          <label>Enter Overlay URL:</label>
-          input#overlay-url(style={height:'40px;', width:'900px;'})
-          br
-          button#get-overlay(style={height:'40px;', width:'100px;'}) Submit
-          br
-          iframe#overlay-frame(style={height:'720px;', width:'1280px;'})
-          
+            iframe#overlay-frame(style={height:'720px;', width:'1280px;'})
