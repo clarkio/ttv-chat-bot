@@ -1,7 +1,11 @@
-const server = require('./server')
+import { Application } from 'express';
+import { App } from './server';
+
 const bot = require('./bot');
 const chat = require('./chat');
 
-server.start();
+const app: Application = new App().getApp();
 bot.createNewBotConversation();
 chat.connect();
+
+export { app };

@@ -1,3 +1,7 @@
+# compiled js files
+/src/**/*.js
+/src/**/*.js.map
+
 # Logs
 logs
 *.log
