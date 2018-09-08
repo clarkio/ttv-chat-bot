@@ -7,6 +7,7 @@ app.use(bodyParser.json());
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const config = require('./config');
+const files = require('./files');
 
 const { port } = config;
 const runningMessage = `Overlay server is running on port ${port}`;
@@ -44,7 +45,17 @@ app.post('/save', (req, res) => {
   captains.log(
     `Received overlay color, ${colorName} for a hue rotate of ${hueRotateDeg}`
   );
-  res.send({ message: 'Saved' });
+  const data = formatForCSS(colorName, hueRotateDeg);
+  files
+    .write(data)
+    .then(result => {
+      captains.log(result);
+      res.send({ message: 'Saved' });
+    })
+    .catch(error => {
+      captains.error(error);
+      res.status(500).send(error);
+    });
 });
 
 app.get('/overlay-colors', (req, res) => {
@@ -73,6 +84,12 @@ function start() {
   http.listen(port, () => {
     captains.log(runningMessage);
   });
+}
+
+function formatForCSS(colorName, hueRotateDeg) {
+  return `.${colorName}.${colorName} {
+    filter: hue-rotate(${hueRotateDeg})
+  }\n`;
 }
 
 function triggerSpecialEffect(message) {
