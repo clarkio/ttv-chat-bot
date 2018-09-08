@@ -1,7 +1,9 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const captains = console;
 const app = express();
+app.use(bodyParser.json());
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const config = require('./config');
@@ -35,6 +37,14 @@ app.get('/scenes', (req, res) => {
   } else {
     res.status(400);
   }
+});
+
+app.post('/save', (req, res) => {
+  const { colorName, hueRotateDeg } = req.body;
+  captains.log(
+    `Received overlay color, ${colorName} for a hue rotate of ${hueRotateDeg}`
+  );
+  res.send({ message: 'Saved' });
 });
 
 app.get('/overlay-colors', (req, res) => {
