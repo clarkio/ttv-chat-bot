@@ -3,6 +3,9 @@ import { log } from './log';
 
 const fetch = require('node-fetch');
 
+/**
+ * A Plugin of sorts to deal with the AzureBot if the user has decided to configure it
+ */
 export class AzureBot {
   private azureBotToken = azureBotToken;
   private azureBotEnabled = botEnabled;
@@ -16,6 +19,12 @@ export class AzureBot {
     //
   }
 
+  /**
+   * This will trigger specific effects based on the message
+   *
+   * @param message - The message sent in chat
+   * @param userName - The user who sent the message
+   */
   public triggerEffect = (message: string, userName: string) => {
     if (!this.azureBotEnabled) {
       log('info', 'Azure bot not configured, triggerEffect not sent');
@@ -46,6 +55,12 @@ export class AzureBot {
     return Promise.resolve('TODO = put something useful here');
   };
 
+  /**
+   * This will send the command to the azure bot if the user has configured it.
+   *
+   * @param commandMessage - The message to be sent
+   * @param user - The user who sent the message
+   */
   public sendCommand = (commandMessage: string, user: string) => {
     if (!this.azureBotEnabled) {
       log('info', 'Azure bot not configured, sendCommand not sent');
@@ -71,6 +86,9 @@ export class AzureBot {
       });
   };
 
+  /**
+   * Opens up communication with the Azure bot if configured
+   */
   public createNewBotConversation = () => {
     if (!this.azureBotEnabled) {
       log('info', 'Azure Bot is not configured');
@@ -92,6 +110,9 @@ export class AzureBot {
     });
   };
 
+  /**
+   * Contacts the bot url to authenticate the communication
+   */
   private startBotConversation = () => {
     // const url = 'https://directline.botframework.com/api/conversations';
     const url =
@@ -112,14 +133,26 @@ export class AzureBot {
       });
   };
 
+  /**
+   * This takes the time you pass in, converts to milliseconds then creates a timeout
+   *
+   * @param expirationTime - The time you want to timeout for
+   */
   private createTimeout = (expirationTime: number) => {
     const timeInMilliseconds = expirationTime * 1000;
     setTimeout(this.createNewBotConversation, timeInMilliseconds);
   };
 
+  /**
+   * Better than naming the function DoNothing
+   */
   private noop = (): void => {
     //
   };
+
+  /**
+   * A Promise to do nothing
+   */
   private noopPromise = () => ({
     catch: () => Promise.reject(),
     then: () => Promise.resolve()
