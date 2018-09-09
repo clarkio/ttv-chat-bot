@@ -1,5 +1,9 @@
-import express from 'express';
+import express = require('express');
+import { port } from './config';
+import { overlay } from './index';
 import { Overlay } from './overlay';
+import { changeLightColor, sendLightEffect } from './routes/lights';
+import { scenesRoute } from './routes/scenes';
 // import config from './config';
 // const config = require('./config');
 
@@ -10,9 +14,10 @@ class App {
   private overlay: Overlay;
   constructor() {
     this.app = express();
-    this.overlay = new Overlay();
+    this.overlay = overlay;
     this.routes();
     this.config();
+    this.listen();
   }
 
   public getApp(): express.Application {
@@ -26,40 +31,30 @@ class App {
   }
 
   private routes(): void {
-    const router = express.Router();
-
-    router.get('/scenes', (req, res) => {
-      const { sceneName } = req.query;
-      if (sceneName) {
-        res.render(`index`, {
-          iframeSrc: process.env[`${sceneName}`]
-        });
-      } else {
-        res.status(400);
-      }
-    });
+    const router: express.Router = express.Router();
+    router.get('/scenes', scenesRoute);
 
     router.get('/overlay-colors', (req, res) => {
       res.render('overlay-colors');
     });
 
-    router.get('/lights/:color', (req, res) => {
-      const io = this.overlay.getSocket();
-      io.emit('color-change', req.params.color);
-      res.send('Done');
-    });
-
-    router.get('/lights/effects/:effect', (req, res) => {
-      const io = this.overlay.getSocket();
-      io.emit('color-effect', req.params.effect);
-      res.send('Done');
-    });
+    router.get('/lights/:color', changeLightColor);
+    router.get('/lights/effects/:effect', sendLightEffect);
 
     router.get('/bulb/color', (req, res) => {
       const currentColor: string = this.overlay.getCurrentColor();
       res.json({ color: currentColor });
     });
+
+    this.app.use('/', router);
   }
+
+  private listen = (): void => {
+    const runningMessage = `Overlay server is running on port http://localhost:${port}`;
+    this.app.listen(port, () => {
+      console.log(runningMessage);
+    });
+  };
 }
 
 export { App };

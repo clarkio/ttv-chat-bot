@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const { readFileSync } = require('fs');
-const { resolve } = require('path');
+const fs_1 = require("fs");
+const path_1 = require("path");
 require('dotenv').config();
 const captains = console;
 let fileConfig;
 try {
-    const buffer = readFileSync(resolve(__dirname, '../config.json'));
+    const buffer = fs_1.readFileSync(path_1.resolve(__dirname, '../config.json'));
     fileConfig = JSON.parse(buffer.toString());
 }
 catch (e) {
@@ -42,17 +42,17 @@ exports.discordHookToken = DISCORD_HOOK_TOKEN ||
     fileConfig.discordHookToken ||
     'REQUIRED CONFIGURATION WAS NOT PROVIDED';
 module.exports = {
-    port: exports.port,
-    botEnabled: exports.botEnabled,
-    ttvClientId: exports.ttvClientId,
-    ttvClientToken: exports.ttvClientToken,
-    ttvClientUsername: exports.ttvClientUsername,
-    ttvChannels: exports.ttvChannels,
-    chatCommands: exports.chatCommands,
-    specialEffectsChatCommands: exports.specialEffectsChatCommands,
     azureBotToken: exports.azureBotToken,
+    botEnabled: exports.botEnabled,
+    chatCommands: exports.chatCommands,
     discordHookEnabled: exports.discordHookEnabled,
     discordHookId: exports.discordHookId,
-    discordHookToken: exports.discordHookToken
+    discordHookToken: exports.discordHookToken,
+    port: exports.port,
+    specialEffectsChatCommands: exports.specialEffectsChatCommands,
+    ttvChannels: exports.ttvChannels,
+    ttvClientId: exports.ttvClientId,
+    ttvClientToken: exports.ttvClientToken,
+    ttvClientUsername: exports.ttvClientUsername
 };
 //# sourceMappingURL=config.js.map

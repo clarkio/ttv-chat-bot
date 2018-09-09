@@ -25,7 +25,6 @@ export class Overlay {
   constructor() {
     this.server = createServer(app);
     this.io = socketIo(this.server);
-    this.listen();
   }
 
   public getCurrentColor = (): string => this.currentBulbColor;
@@ -54,13 +53,6 @@ export class Overlay {
         this.currentBulbColor = color;
         this.io.emit('color-change', color);
       }
-    });
-  };
-
-  private listen = (): void => {
-    const runningMessage = `Overlay server is running on port ${port}`;
-    this.server.listen(port, () => {
-      console.log(runningMessage);
     });
   };
 }
