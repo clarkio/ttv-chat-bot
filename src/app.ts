@@ -2,6 +2,7 @@ import { WebhookClient } from 'discord.js';
 import express = require('express');
 import { Server } from 'http';
 import io from 'socket.io';
+
 import { AzureBot } from './azure-bot';
 import {
   botEnabled as azureBotEnabled,
@@ -14,6 +15,10 @@ import { Overlay } from './overlay';
 import { changeLightColor, sendLightEffect } from './routes/lights';
 import { scenesRoute } from './routes/scenes';
 
+/**
+ * The base Express Application. This is where most of the other parts of the application
+ * will live. This allows for easy enabling and disabling of features within the application
+ */
 export class App {
   public overlay!: Overlay;
   public azureBot!: AzureBot;
@@ -31,16 +36,23 @@ export class App {
     this.listen();
   }
 
-  public getApp(): express.Application {
-    return this.app;
-  }
+  /**
+   * Return the Express Application
+   */
+  public getApp = (): express.Application => this.app;
 
+  /**
+   * Create the Overylay
+   */
   private startOverlay = () => {
     this.http = new Server(this.app);
     this.overlay = new Overlay();
     this.io = io(this.http);
   };
 
+  /**
+   * Create the AzureBot
+   */
   private startAzureBot = () => {
     if (!azureBotEnabled) {
       this.azureBot = new AzureBot();
@@ -48,6 +60,9 @@ export class App {
     }
   };
 
+  /**
+   * Start the Discord Hook
+   */
   private startDiscordHook = () => {
     if (discordHookEnabled) {
       this.discordHook = new DiscordBot().createDiscordHook();
@@ -55,12 +70,18 @@ export class App {
     this.discordHook = undefined;
   };
 
+  /**
+   * Config Express
+   */
   private config(): void {
     this.app.set('view engine', 'pug');
     this.app.set('views', `${__dirname}/views`);
     this.app.use(express.static(__dirname));
   }
 
+  /**
+   * Define the routes used in the application
+   */
   private defineRoutes(): void {
     const router: express.Router = express.Router();
     router.get('/scenes', scenesRoute);
@@ -85,6 +106,9 @@ export class App {
     this.app.use('/', router);
   }
 
+  /**
+   * Start the server
+   */
   private listen = (): void => {
     const runningMessage = `Overlay server is running on port http://localhost:${port}`;
     this.http.listen(port, () => {
