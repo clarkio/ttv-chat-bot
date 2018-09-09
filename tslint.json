@@ -7,7 +7,7 @@
     "linebreak-style": false,
     "trailing-comma": false,
     "no-magic-numbers": false,
-    "semicolon": true
+    "semicolon": [true, "always", "ignore-bound-class-methods"]
   },
   "rulesDirectory": []
 }

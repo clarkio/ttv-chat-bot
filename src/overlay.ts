@@ -1,6 +1,3 @@
-import { createServer, Server } from 'http';
-import socketIo from 'socket.io';
-import { port } from './config';
 import { app } from './index';
 
 export class Overlay {
@@ -19,17 +16,14 @@ export class Overlay {
     'white'
   ];
   public currentBulbColor: string = 'blue';
-  private io: SocketIO.Server;
-  private server: Server;
 
   constructor() {
-    this.server = createServer(app);
-    this.io = socketIo(this.server);
+    //
   }
 
   public getCurrentColor = (): string => this.currentBulbColor;
 
-  public getSocket = (): SocketIO.Server => this.io;
+  public getSocket = (): SocketIO.Server => app.io;
 
   public triggerSpecialEffect = (message: string): void => {
     let effect: string;
@@ -44,14 +38,14 @@ export class Overlay {
     } else {
       effect = 'follow';
     }
-    this.io.emit('color-effect', effect);
+    app.io.emit('color-effect', effect);
   };
 
   public updateOverlay = (command: string): void => {
     this.supportedOverlayColors.forEach((color: string) => {
       if (command.includes(color)) {
         this.currentBulbColor = color;
-        this.io.emit('color-change', color);
+        app.io.emit('color-change', color);
       }
     });
   };

@@ -1,13 +1,14 @@
 import { Application } from 'express';
-import { Overlay } from './overlay';
 import { App } from './server';
+import { TwitchChat } from './twitchChat';
 
 const bot = require('./bot');
-const chat = require('./chat');
+// const chat = require('./chat');
 
-const app: Application = new App().getApp();
-const overlay: Overlay = new Overlay();
+const app: App = new App();
+const twitchChat: TwitchChat = new TwitchChat();
 bot.createNewBotConversation();
-chat.connect();
+// chat.connect();
+twitchChat.connect();
 
-export { app, overlay };
+export { app };
