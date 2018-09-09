@@ -1,8 +1,7 @@
-import { app } from './index';
-import { log } from './logger';
+import { app } from '.';
+import { log } from './log';
 
 const tmi = require('tmi.js');
-const bot = require('./bot');
 
 import {
   chatCommands,
@@ -162,23 +161,28 @@ export class TwitchChat {
       message.includes(command)
     );
 
-  private startSpecialEffects(message: any, userName: any) {
+  private startSpecialEffects(message: string, userName: string) {
     app.overlay.triggerSpecialEffect(message);
-    return bot.triggerEffect(message, userName);
+    if (app.azureBot) {
+      return app.azureBot.triggerEffect(message, userName);
+    }
   }
 
   private startColorChange(commandMessage: string, userName: string) {
     app.overlay.updateOverlay(commandMessage);
-    return bot
-      .sendCommand(commandMessage, userName)
-      .then((result: any) => {
-        log('info', `Successfully sent the command from ${userName}`);
-        return result;
-      })
-      .catch((error: any) => {
-        log('error', error);
-        return error;
-      });
+
+    if (app.azureBot) {
+      return app.azureBot
+        .sendCommand(commandMessage, userName)
+        .then((result: any) => {
+          log('info', `Successfully sent the command from ${userName}`);
+          return result;
+        })
+        .catch((error: any) => {
+          log('error', error);
+          return error;
+        });
+    }
   }
   private isStreamElements = (userName: string) =>
     userName.toLowerCase() === 'streamelements';

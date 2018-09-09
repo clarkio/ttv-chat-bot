@@ -1,29 +1,32 @@
+import { WebhookClient } from 'discord.js';
 import express = require('express');
 import { Server } from 'http';
 import io from 'socket.io';
-
-import { port } from './config';
-import { log } from './logger';
+import { AzureBot } from './azure-bot';
+import {
+  botEnabled as azureBotEnabled,
+  discordHookEnabled,
+  port
+} from './config';
+import { DiscordBot } from './discord-bot';
+import { log } from './log';
 import { Overlay } from './overlay';
 import { changeLightColor, sendLightEffect } from './routes/lights';
 import { scenesRoute } from './routes/scenes';
 
-// import config from './config';
-// const config = require('./config');
-
-// const { port } = config;
-
-class App {
-  public overlay: Overlay;
+export class App {
+  public overlay!: Overlay;
+  public azureBot!: AzureBot;
   public app: express.Application;
-  public io: SocketIO.Server;
-  private http: Server;
+  public io!: SocketIO.Server;
+  public discordHook!: WebhookClient | undefined;
+  private http!: Server;
   constructor() {
     this.app = express();
-    this.http = new Server(this.app);
-    this.overlay = new Overlay();
-    this.io = io(this.http);
-    this.routes();
+    this.startDiscordHook();
+    this.startOverlay();
+    this.startAzureBot();
+    this.defineRoutes();
     this.config();
     this.listen();
   }
@@ -32,13 +35,33 @@ class App {
     return this.app;
   }
 
+  private startOverlay = () => {
+    this.http = new Server(this.app);
+    this.overlay = new Overlay();
+    this.io = io(this.http);
+  };
+
+  private startAzureBot = () => {
+    if (!azureBotEnabled) {
+      this.azureBot = new AzureBot();
+      this.azureBot.createNewBotConversation();
+    }
+  };
+
+  private startDiscordHook = () => {
+    if (discordHookEnabled) {
+      this.discordHook = new DiscordBot().createDiscordHook();
+    }
+    this.discordHook = undefined;
+  };
+
   private config(): void {
     this.app.set('view engine', 'pug');
     this.app.set('views', `${__dirname}/views`);
     this.app.use(express.static(__dirname));
   }
 
-  private routes(): void {
+  private defineRoutes(): void {
     const router: express.Router = express.Router();
     router.get('/scenes', scenesRoute);
 
@@ -69,5 +92,3 @@ class App {
     });
   };
 }
-
-export { App };
