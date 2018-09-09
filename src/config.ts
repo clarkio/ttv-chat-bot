@@ -1,8 +1,7 @@
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+import { log } from './log';
 require('dotenv').config();
-
-const captains = console;
 
 let fileConfig;
 
@@ -10,7 +9,7 @@ try {
   const buffer = readFileSync(resolve(__dirname, '../config.json'));
   fileConfig = JSON.parse(buffer.toString());
 } catch (e) {
-  captains.log('There was an error retrieving configuration from a file', e);
+  log('info', 'There was an error retrieving configuration from a file');
   fileConfig = {};
 }
 
