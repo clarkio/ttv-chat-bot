@@ -87,9 +87,7 @@ function start() {
 }
 
 function formatForCSS(colorName, hueRotateDeg) {
-  return `.${colorName}.${colorName} {
-    filter: hue-rotate(${hueRotateDeg})
-  }\n`;
+  return `.${colorName} {\n  filter: hue-rotate(${hueRotateDeg}deg);\n}\n`;
 }
 
 function triggerSpecialEffect(message) {
