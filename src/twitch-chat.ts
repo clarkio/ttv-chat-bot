@@ -30,14 +30,24 @@ export class TwitchChat {
     this.ttvChatClient.on('chat', this.ttvChat);
   }
 
+  /**
+   * Connect to the TTV Chat Client
+   */
   public connect = () => {
     log('info', 'Client is online and running...');
     this.ttvChatClient.connect();
   };
 
+  /**
+   * Ping twitch
+   */
   public pingTtv = () => {
     this.ttvChatClient.ping();
   };
+
+  /**
+   * Set the options for the twitch bot
+   */
   private setTwitchChatOptions = (): {} => {
     const channels = ttvChannels.toString().split(',');
 
@@ -57,6 +67,9 @@ export class TwitchChat {
     };
   };
 
+  /**
+   * When a user joins the channel
+   */
   private ttvJoin = (channel: any, username: any, self: any) => {
     // TODO: refactor this to be it's own function since it's not relative to this function
     const date = new Date();
@@ -83,6 +96,9 @@ export class TwitchChat {
     }
   };
 
+  /**
+   * When a user leaves the channel
+   */
   private ttvPart = (channel: any, username: any) => {
     const date = new Date();
     log(
@@ -90,6 +106,10 @@ export class TwitchChat {
       `[${date.getHours()}:${date.getMinutes()}] ${username} has LEFT the channel`
     );
   };
+
+  /**
+   * When a users send a message in chat
+   */
   private ttvChat = (channel: string, user: any, message: string) => {
     const userName = user['display-name'] || user.username;
     const lowerCaseMessage = message.toLowerCase();
@@ -125,6 +145,9 @@ export class TwitchChat {
     }
   };
 
+  /**
+   * Check if the message is a light control command
+   */
   private isLightControlCommand = (message: string) =>
     this.lightControlCommands.some(
       (command: string): boolean => {
@@ -133,6 +156,14 @@ export class TwitchChat {
         return comparison;
       }
     );
+
+  /**
+   * This weeds through the trolls and deciphers in the message is something that we want to do
+   * something about
+   *
+   * @param message the message sent by a user
+   * @param userName the user who sent the message
+   */
   private parseChat(message: string, userName: string) {
     if (this.isLightControlCommand(message)) {
       // viewer attempting to control the overlay/lights
@@ -156,11 +187,20 @@ export class TwitchChat {
     return Promise.resolve('there was nothing to do');
   }
 
+  /**
+   * Check if the message is for special effects!
+   */
   private isSpecialEffectCommand = (message: any) =>
     this.specialEffectCommands.some((command: any) =>
       message.includes(command)
     );
 
+  /**
+   * Do something cool when there is a special effect triggered
+   *
+   * @param message message sent
+   * @param userName user who sent
+   */
   private startSpecialEffects(message: string, userName: string) {
     app.overlay.triggerSpecialEffect(message);
     if (app.azureBot) {
@@ -168,6 +208,12 @@ export class TwitchChat {
     }
   }
 
+  /**
+   * Change the color in multiple places if needed
+   *
+   * @param commandMessage message sent
+   * @param userName who sent
+   */
   private startColorChange(commandMessage: string, userName: string) {
     app.overlay.updateOverlay(commandMessage);
 
@@ -184,6 +230,9 @@ export class TwitchChat {
         });
     }
   }
+  /**
+   * USER OUR BOT TO SEE OTHER BOTS
+   */
   private isStreamElements = (userName: string) =>
     userName.toLowerCase() === 'streamelements';
 }
