@@ -8,7 +8,7 @@
     "test": "snyk test",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect",
-    "copy-assets": "copyfiles -au 1 ./src/assets/* ./src/views/* dist/"
+    "copy-assets": "copyfiles -au 1 ./src/assets/* ./src/views/* ./src/scripts/* dist/"
   },
   "author": "Brian Clark",
   "license": "MIT",

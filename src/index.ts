@@ -1,4 +1,3 @@
-import { Application } from 'express';
 import { App } from './app';
 import { TwitchChat } from './twitch-chat';
 

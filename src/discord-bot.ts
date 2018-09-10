@@ -6,10 +6,6 @@ export class DiscordBot {
     //
   }
 
-  public createDiscordHook = (): WebhookClient | undefined => {
-    if (discordHookEnabled.toLocaleLowerCase() === 'true') {
-      return new WebhookClient(discordHookId, discordHookToken);
-    }
-    return;
-  };
+  public createDiscordHook = (): WebhookClient =>
+    new WebhookClient(discordHookId, discordHookToken);
 }

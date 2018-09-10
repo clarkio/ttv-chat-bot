@@ -1,4 +1,5 @@
 import { app } from '.';
+import { discordHookEnabled } from './config';
 
 /**
  * This will log to Discord if connected and the console
@@ -7,7 +8,7 @@ import { app } from '.';
  */
 export const log = (level: string, message: string) => {
   const captains: any = console;
-  if (app.discordHook) {
+  if (discordHookEnabled === 'true' || discordHookEnabled === true) {
     app.discordHook.send(message);
   }
   captains[level](message);

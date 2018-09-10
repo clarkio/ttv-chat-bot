@@ -24,7 +24,7 @@ export class App {
   public azureBot!: AzureBot;
   public app: express.Application;
   public io!: SocketIO.Server;
-  public discordHook!: WebhookClient | undefined;
+  public discordHook!: WebhookClient;
   private http!: Server;
   constructor() {
     this.app = express();
@@ -67,7 +67,6 @@ export class App {
     if (discordHookEnabled) {
       this.discordHook = new DiscordBot().createDiscordHook();
     }
-    this.discordHook = undefined;
   };
 
   /**
