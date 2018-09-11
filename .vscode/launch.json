@@ -7,8 +7,16 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Launch via NPM",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start"],
+      "port": 9229
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}\\src\\index.js"
+      "program": "${workspaceFolder}\\dist\\index.js"
     }
   ]
 }

@@ -4,7 +4,7 @@
   "description": "Twitch TV chat reader to control internet connected lights",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && npm run copy-assets && node ./dist/index.js",
+    "start": "tsc && npm run copy-assets && node --inspect ./dist/index.js",
     "test": "snyk test",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect",
