@@ -108,7 +108,7 @@ export class TwitchChat {
   };
 
   /**
-   * When a users send a message in chat
+   * When a user sends a message in chat
    */
   private ttvChat = (channel: string, user: any, message: string) => {
     const userName = user['display-name'] || user.username;
@@ -158,7 +158,7 @@ export class TwitchChat {
     );
 
   /**
-   * This weeds through the trolls and deciphers in the message is something that we want to do
+   * This weeds through the trolls and deciphers if the message is something that we want to do
    * something about
    *
    * @param message the message sent by a user

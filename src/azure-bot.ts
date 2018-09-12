@@ -1,7 +1,7 @@
 import { azureBotToken, botEnabled } from './config';
 import { log } from './log';
 
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 /**
  * A Plugin of sorts to deal with the AzureBot if the user has decided to configure it
@@ -26,10 +26,6 @@ export class AzureBot {
    * @param userName - The user who sent the message
    */
   public triggerEffect = (message: string, userName: string) => {
-    if (!this.azureBotEnabled) {
-      log('info', 'Azure bot not configured, triggerEffect not sent');
-      return this.noop;
-    }
     let effect: string;
     if (!message.includes('follow')) {
       effect = 'trigger new subscriber';
@@ -62,10 +58,6 @@ export class AzureBot {
    * @param user - The user who sent the message
    */
   public sendCommand = (commandMessage: string, user: string) => {
-    if (!this.azureBotEnabled) {
-      log('info', 'Azure bot not configured, sendCommand not sent');
-      return this.noopPromise;
-    }
     const fullMessage = { text: commandMessage, from: user };
     const url = `https://directline.botframework.com/api/conversations/${
       this.conversationId
@@ -90,24 +82,25 @@ export class AzureBot {
    * Opens up communication with the Azure bot if configured
    */
   public createNewBotConversation = () => {
-    if (!this.azureBotEnabled) {
-      log('info', 'Azure Bot is not configured');
-      return;
-    }
     log('info', `Starting a new bot conversation at: ${new Date()}`);
-    this.startBotConversation().then((result: any) => {
-      if (result.error) {
-        log('error', result.error);
-        return result.error;
-      }
-      log('info', 'Bot conversation started');
-      // eslint-disable-next-line prefer-destructuring
-      this.conversationId = result.conversationId;
-      this.conversationToken = result.token;
-      const expiresIn = parseInt(result.expires_in, 10);
-      this.expiration = new Date().getSeconds() + expiresIn - 30;
-      return this.createTimeout(this.expiration);
-    });
+    this.startBotConversation()
+      .then((result: any) => {
+        if (result.error) {
+          log('error', result.error);
+          return result.error;
+        }
+        log('info', 'Bot conversation started');
+        // eslint-disable-next-line prefer-destructuring
+        this.conversationId = result.conversationId;
+        this.conversationToken = result.token;
+        const expiresIn = parseInt(result.expires_in, 10);
+        this.expiration = new Date().getSeconds() + expiresIn - 30;
+        return this.createTimeout(this.expiration);
+      })
+      .catch((error: any) => {
+        log('error', error);
+        return error;
+      });
   };
 
   /**
