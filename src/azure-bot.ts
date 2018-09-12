@@ -68,8 +68,8 @@ export class AzureBot {
         Authorization: `Bearer ${this.conversationToken}`,
         'content-type': 'application/json'
       },
-      method: 'POST',
-      mode: 'cors'
+      method: 'POST'
+      // mode: 'cors'
     })
       .then((response: any) => response)
       .catch((error: string) => {

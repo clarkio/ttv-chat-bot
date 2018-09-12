@@ -1,7 +1,7 @@
 import { app } from '.';
 import { log } from './log';
 
-const tmi = require('tmi.js');
+import tmi from 'twitch-js';
 
 import {
   chatCommands,
