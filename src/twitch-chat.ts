@@ -1,4 +1,4 @@
-import { app } from '.';
+import { appServer } from './index';
 import { log } from './log';
 
 import tmi from 'twitch-js';
@@ -203,9 +203,9 @@ export class TwitchChat {
    * @param userName user who sent
    */
   private startSpecialEffects(message: string, userName: string) {
-    app.overlay.triggerSpecialEffect(message);
-    if (app.azureBot) {
-      return app.azureBot.triggerEffect(message, userName);
+    appServer.overlay.triggerSpecialEffect(message);
+    if (appServer.azureBot) {
+      return appServer.azureBot.triggerEffect(message, userName);
     }
   }
 
@@ -216,10 +216,10 @@ export class TwitchChat {
    * @param userName who sent
    */
   private startColorChange(commandMessage: string, userName: string) {
-    app.overlay.updateOverlay(commandMessage);
+    appServer.overlay.updateOverlay(commandMessage);
 
-    if (app.azureBot) {
-      return app.azureBot
+    if (appServer.azureBot) {
+      return appServer.azureBot
         .sendCommand(commandMessage, userName)
         .then((result: any) => {
           log('info', `Successfully sent the command from ${userName}`);

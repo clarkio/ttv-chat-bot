@@ -1,8 +1,8 @@
-import { App } from './app';
+import { AppServer } from './server';
 import { TwitchChat } from './twitch-chat';
 
-const app: App = new App();
+const appServer: AppServer = new AppServer();
 const twitchChat: TwitchChat = new TwitchChat();
 twitchChat.connect();
 
-export { app };
+export { appServer };

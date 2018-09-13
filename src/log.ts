@@ -1,5 +1,5 @@
-import { app } from '.';
-import { discordHookEnabled } from './config';
+import * as config from './config';
+import { appServer } from './index';
 
 /**
  * This will log to Discord if connected and the console
@@ -8,8 +8,11 @@ import { discordHookEnabled } from './config';
  */
 export const log = (level: string, message: string) => {
   const captains: any = console;
-  if (discordHookEnabled === 'true' || discordHookEnabled === true) {
-    app.discordHook.send(message).catch(captains.error);
+  if (config.discordHookEnabled) {
+    // tslint:disable-next-line:ter-arrow-parens
+    appServer.discordHook.send(message).catch(error => {
+      captains.error(`Discord: ${error}`);
+    });
   }
   captains[level](message);
 };

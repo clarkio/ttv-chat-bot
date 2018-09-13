@@ -1,4 +1,4 @@
-import { app } from './index';
+import { appServer } from './index';
 
 export class Overlay {
   public static readonly PORT: number = 1337;
@@ -45,7 +45,7 @@ export class Overlay {
       effect = 'follow';
     }
     // communicate with the client to cause effect
-    app.io.emit('color-effect', effect);
+    appServer.io.emit('color-effect', effect);
   };
 
   /**
@@ -58,7 +58,7 @@ export class Overlay {
       if (command.includes(color)) {
         this.currentBulbColor = color;
         // communicate with the client to change overlay color
-        app.io.emit('color-change', color);
+        appServer.io.emit('color-change', color);
       }
     });
   };

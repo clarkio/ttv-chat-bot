@@ -16,7 +16,7 @@ try {
 
 const {
   PORT,
-  BOT_ENABLED,
+  AZURE_BOT_ENABLED,
   TTV_CLIENT_ID,
   TTV_CLIENT_TOKEN,
   TTV_CLIENT_USERNAME,
@@ -29,52 +29,43 @@ const {
   DISCORD_HOOK_TOKEN
 } = process.env;
 
-export const port: number = PORT || fileConfig.port || 1337;
-export const botEnabled = BOT_ENABLED || fileConfig.botEnabled || 'false';
-export const ttvClientId =
-  TTV_CLIENT_ID ||
-  fileConfig.ttvClientId ||
-  'REQUIRED CONFIGURATION WAS NOT PROVIDED';
-export const ttvClientToken =
-  TTV_CLIENT_TOKEN ||
-  fileConfig.ttvClientToken ||
-  'REQUIRED CONFIGURATION WAS NOT PROVIDED';
-export const ttvClientUsername =
-  TTV_CLIENT_USERNAME || fileConfig.ttvClientUsername || 'clarkio';
-export const ttvChannels = TTV_CHANNELS ||
-  fileConfig.ttvChannels || ['clarkio'];
-export const chatCommands = CHAT_COMMANDS ||
-  fileConfig.chatCommands || ['REQUIRED CONFIGURATION WAS NOT PROVIDED'];
-export const specialEffectsChatCommands = SPECIAL_EFFECTS_CHAT_COMMANDS ||
-  fileConfig.specialEffectsChatCommands || [
-    'REQUIRED CONFIGURATION WAS NOT PROVIDED'
-  ];
-export const azureBotToken =
-  AZURE_BOT_TOKEN ||
-  fileConfig.azureBotToken ||
-  'REQUIRED CONFIGURATION WAS NOT PROVIDED';
-export const discordHookEnabled =
-  DISCORD_HOOK_ENABLED || fileConfig.discordHookEnabled || 'false';
-export const discordHookId =
-  DISCORD_HOOK_ID ||
-  fileConfig.discordHookId ||
-  'REQUIRED CONFIGURATION WAS NOT PROVIDED';
-export const discordHookToken =
-  DISCORD_HOOK_TOKEN ||
-  fileConfig.discordHookToken ||
-  'REQUIRED CONFIGURATION WAS NOT PROVIDED';
+const requireConfigMessage = 'REQUIRED CONFIGURATION WAS NOT PROVIDED';
 
-module.exports = {
-  azureBotToken,
-  botEnabled,
-  chatCommands,
-  discordHookEnabled,
-  discordHookId,
-  discordHookToken,
-  port,
-  specialEffectsChatCommands,
-  ttvChannels,
-  ttvClientId,
-  ttvClientToken,
-  ttvClientUsername
-};
+export const port: number = PORT || fileConfig.port || 1337;
+
+export const azureBotEnabled: boolean =
+  Boolean(AZURE_BOT_ENABLED === 'true') ||
+  Boolean(fileConfig.azureBotEnabled === 'true') ||
+  false;
+
+export const ttvClientId: string =
+  TTV_CLIENT_ID || fileConfig.ttvClientId || requireConfigMessage;
+
+export const ttvClientToken: string =
+  TTV_CLIENT_TOKEN || fileConfig.ttvClientToken || requireConfigMessage;
+
+export const ttvClientUsername: string =
+  TTV_CLIENT_USERNAME || fileConfig.ttvClientUsername || 'clarkio';
+
+export const ttvChannels: string[] = TTV_CHANNELS ||
+  fileConfig.ttvChannels || ['clarkio'];
+
+export const chatCommands: string[] = CHAT_COMMANDS ||
+  fileConfig.chatCommands || [requireConfigMessage];
+
+export const specialEffectsChatCommands = SPECIAL_EFFECTS_CHAT_COMMANDS ||
+  fileConfig.specialEffectsChatCommands || [requireConfigMessage];
+
+export const azureBotToken: string =
+  AZURE_BOT_TOKEN || fileConfig.azureBotToken || requireConfigMessage;
+
+export const discordHookEnabled: boolean =
+  Boolean(DISCORD_HOOK_ENABLED === 'true') ||
+  Boolean(fileConfig.discordHookEnabled === 'true') ||
+  false;
+
+export const discordHookId: string =
+  DISCORD_HOOK_ID || fileConfig.discordHookId || requireConfigMessage;
+
+export const discordHookToken: string =
+  DISCORD_HOOK_TOKEN || fileConfig.discordHookToken || requireConfigMessage;

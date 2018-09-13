@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc && npm run copy-assets && node --inspect ./dist/index.js",
+    "start-brk": "tsc && npm run copy-assets && node --inspect-brk ./dist/index.js",
     "test": "snyk test",
+    "build": "tsc && npm run copy-assets",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect",
     "copy-assets": "copyfiles -au 1 ./src/assets/* ./src/views/* ./src/scripts/* dist/"
@@ -18,7 +20,6 @@
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "hoek": "^5.0.3",
-    "node-fetch": "^2.1.1",
     "nodemon": "^1.18.4",
     "pug": "^2.0.3",
     "snyk": "^1.70.2",
@@ -45,5 +46,8 @@
     "tslint": "^5.11.0",
     "tslint-config-airbnb-base": "^0.2.0",
     "typescript": "^3.0.3"
-  }
+  },
+  "eslintIgnore": [
+    "/dist"
+  ]
 }

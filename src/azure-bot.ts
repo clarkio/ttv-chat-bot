@@ -1,18 +1,16 @@
-import { azureBotToken, botEnabled } from './config';
+import { azureBotEnabled, azureBotToken } from './config';
 import { log } from './log';
-
-import fetch from 'node-fetch';
 
 /**
  * A Plugin of sorts to deal with the AzureBot if the user has decided to configure it
  */
 export class AzureBot {
   private azureBotToken = azureBotToken;
-  private azureBotEnabled = botEnabled;
+  private azureBotEnabled = azureBotEnabled;
   private azureBot = {};
 
-  private conversationId: any;
-  private conversationToken: any;
+  private conversationId: string | undefined;
+  private conversationToken: string | undefined;
   private expiration: number | undefined;
 
   constructor() {
@@ -68,8 +66,8 @@ export class AzureBot {
         Authorization: `Bearer ${this.conversationToken}`,
         'content-type': 'application/json'
       },
-      method: 'POST'
-      // mode: 'cors'
+      method: 'POST',
+      mode: 'cors'
     })
       .then((response: any) => response)
       .catch((error: string) => {
