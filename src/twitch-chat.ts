@@ -70,13 +70,8 @@ export class TwitchChat {
   /**
    * When a user joins the channel
    */
-  private ttvJoin = (channel: any, username: any, self: any) => {
-    // TODO: refactor this to be it's own function since it's not relative to this function
-    const date = new Date();
-    const rawMinutes = date.getMinutes();
-    const rawHours = date.getHours();
-    const hours = (rawHours < 10 ? '0' : '') + rawHours.toLocaleString();
-    const minutes = (rawMinutes < 10 ? '0' : '') + rawMinutes.toLocaleString();
+  private ttvJoin = (channel: string, username: string, self: boolean) => {
+    const { hours, minutes } = this.getTime();
     const channels = ttvChannels.toString().split(',');
 
     log('info', `[${hours}:${minutes}] ${username} has JOINED the channel`);
@@ -99,12 +94,9 @@ export class TwitchChat {
   /**
    * When a user leaves the channel
    */
-  private ttvPart = (channel: any, username: any) => {
-    const date = new Date();
-    log(
-      'info',
-      `[${date.getHours()}:${date.getMinutes()}] ${username} has LEFT the channel`
-    );
+  private ttvPart = (channel: string, username: string) => {
+    const { hours, minutes } = this.getTime();
+    log('info', `[${hours}:${minutes}] ${username} has LEFT the channel`);
   };
 
   /**
@@ -157,6 +149,15 @@ export class TwitchChat {
       }
     );
 
+  private getTime() {
+    const date = new Date();
+    const rawMinutes = date.getMinutes();
+    const rawHours = date.getHours();
+    const hours = (rawHours < 10 ? '0' : '') + rawHours.toLocaleString();
+    const minutes = (rawMinutes < 10 ? '0' : '') + rawMinutes.toLocaleString();
+    return { hours, minutes };
+  }
+
   /**
    * This weeds through the trolls and deciphers if the message is something that we want to do
    * something about
@@ -190,8 +191,8 @@ export class TwitchChat {
   /**
    * Check if the message is for special effects!
    */
-  private isSpecialEffectCommand = (message: any) =>
-    this.specialEffectCommands.some((command: any) =>
+  private isSpecialEffectCommand = (message: string) =>
+    this.specialEffectCommands.some((command: string) =>
       message.includes(command)
     );
 

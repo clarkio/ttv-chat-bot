@@ -13,6 +13,7 @@
   "author": "Brian Clark",
   "license": "MIT",
   "dependencies": {
+    "@types/dotenv": "^4.0.3",
     "discord.js": "^11.3.2",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",

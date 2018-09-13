@@ -9,7 +9,7 @@ import { discordHookEnabled } from './config';
 export const log = (level: string, message: string) => {
   const captains: any = console;
   if (discordHookEnabled === 'true' || discordHookEnabled === true) {
-    app.discordHook.send(message);
+    app.discordHook.send(message).catch(captains.error);
   }
   captains[level](message);
 };

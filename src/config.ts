@@ -1,7 +1,8 @@
+import * as dotenv from 'dotenv';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { log } from './log';
-require('dotenv').config();
+dotenv.config();
 
 let fileConfig;
 
