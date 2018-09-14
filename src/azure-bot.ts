@@ -1,15 +1,13 @@
 import fetch from 'isomorphic-fetch';
 
-import { azureBotEnabled, azureBotToken } from './config';
+import * as config from './config';
 import { log } from './log';
 
 /**
  * A Plugin of sorts to deal with the AzureBot if the user has decided to configure it
  */
 export class AzureBot {
-  private azureBotToken = azureBotToken;
-  private azureBotEnabled = azureBotEnabled;
-  private azureBot = {};
+  private azureBotToken = config.azureBotToken;
 
   private conversationId: string | undefined;
   private conversationToken: string | undefined;
@@ -62,7 +60,7 @@ export class AzureBot {
     const url = `https://directline.botframework.com/api/conversations/${
       this.conversationId
     }/messages`;
-    return fetch(url, {
+    const fetchOptions: RequestInit = {
       body: JSON.stringify(fullMessage),
       headers: {
         Authorization: `Bearer ${this.conversationToken}`,
@@ -70,10 +68,10 @@ export class AzureBot {
       },
       method: 'POST',
       mode: 'cors'
-    })
-      .then((response: any) => {
-        return response;
-      })
+    };
+
+    return fetch(url, fetchOptions)
+      .then((response: any) => response)
       .catch((error: any) => {
         log('error', error.message);
         return error;
@@ -88,24 +86,29 @@ export class AzureBot {
     // seems to be a timing issue where discord hook is undefined
     // log('info', `Starting a new bot conversation at: ${new Date()}`);
     this.startBotConversation()
-      .then((result: any) => {
-        if (result.error) {
-          log('error', result.error);
-          return result.error;
-        }
-        log('info', 'Bot conversation started');
-        // eslint-disable-next-line prefer-destructuring
-        this.conversationId = result.conversationId;
-        this.conversationToken = result.token;
-        const expiresIn = parseInt(result.expires_in, 10);
-        // Renew conversation 30 seconds before token expiration
-        this.expiration = expiresIn - 30;
-        return this.createTimeout(this.expiration);
-      })
+      .then((result: any) => this.handleConversationStart(result))
       .catch((error: any) => {
         log('error', error);
         return error;
       });
+  };
+
+  private handleConversationStart = (result: any) => {
+    if (result.error) {
+      log('error', result.error);
+      return result.error;
+    }
+    log('info', 'Bot conversation started');
+
+    // eslint-disable-next-line prefer-destructuring
+    this.conversationId = result.conversationId;
+    this.conversationToken = result.token;
+
+    const expiresIn = parseInt(result.expires_in, 10);
+    // Renew conversation 30 seconds before token expiration
+    this.expiration = expiresIn - 30;
+
+    return this.createTimeoutToRenewConversation(this.expiration);
   };
 
   /**
@@ -115,12 +118,14 @@ export class AzureBot {
     // const url = 'https://directline.botframework.com/api/conversations';
     const url =
       'https://directline.botframework.com/v3/directline/conversations';
-    return fetch(url, {
+    const fetchOptions: RequestInit = {
       headers: {
         Authorization: `Bearer ${this.azureBotToken}`
       },
       method: 'POST'
-    })
+    };
+
+    return fetch(url, fetchOptions)
       .then((response: any) => {
         return response.json();
       })
@@ -138,7 +143,7 @@ export class AzureBot {
    *
    * @param expirationTime - The time you want to timeout for
    */
-  private createTimeout = (expirationTime: number) => {
+  private createTimeoutToRenewConversation = (expirationTime: number) => {
     const timeInMilliseconds = expirationTime * 1000;
     setTimeout(this.createNewBotConversation, timeInMilliseconds);
   };
