@@ -98,7 +98,8 @@ export class AzureBot {
         this.conversationId = result.conversationId;
         this.conversationToken = result.token;
         const expiresIn = parseInt(result.expires_in, 10);
-        this.expiration = new Date().getSeconds() + expiresIn - 30;
+        // Renew conversation 30 seconds before token expiration
+        this.expiration = expiresIn - 30;
         return this.createTimeout(this.expiration);
       })
       .catch((error: any) => {
