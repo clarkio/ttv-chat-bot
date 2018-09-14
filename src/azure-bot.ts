@@ -1,3 +1,5 @@
+import fetch from 'isomorphic-fetch';
+
 import { azureBotEnabled, azureBotToken } from './config';
 import { log } from './log';
 
@@ -40,8 +42,8 @@ export class AzureBot {
           );
           return result;
         })
-        .catch((error: string) => {
-          log('error', error);
+        .catch((error: any) => {
+          log('error', error.message);
           return error;
         });
     }
@@ -64,14 +66,16 @@ export class AzureBot {
       body: JSON.stringify(fullMessage),
       headers: {
         Authorization: `Bearer ${this.conversationToken}`,
-        'content-type': 'application/json'
+        'Content-Type': 'application/json'
       },
       method: 'POST',
       mode: 'cors'
     })
-      .then((response: any) => response)
-      .catch((error: string) => {
-        log('error', error);
+      .then((response: any) => {
+        return response;
+      })
+      .catch((error: any) => {
+        log('error', error.message);
         return error;
       });
   };
@@ -80,7 +84,7 @@ export class AzureBot {
    * Opens up communication with the Azure bot if configured
    */
   public createNewBotConversation = () => {
-    log('info', `Starting a new bot conversation at: ${new Date()}`);
+    // log('info', `Starting a new bot conversation at: ${new Date()}`);
     this.startBotConversation()
       .then((result: any) => {
         if (result.error) {
@@ -114,7 +118,9 @@ export class AzureBot {
       },
       method: 'POST'
     })
-      .then((response: any) => response.json())
+      .then((response: any) => {
+        return response.json();
+      })
       .catch((error: string) => {
         log(
           'info',
