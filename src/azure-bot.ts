@@ -84,6 +84,8 @@ export class AzureBot {
    * Opens up communication with the Azure bot if configured
    */
   public createNewBotConversation = () => {
+    // For some reason we can't use the log when discord hook is enabled
+    // seems to be a timing issue where discord hook is undefined
     // log('info', `Starting a new bot conversation at: ${new Date()}`);
     this.startBotConversation()
       .then((result: any) => {
