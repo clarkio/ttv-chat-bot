@@ -7,8 +7,25 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "NPM Break",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run-script", "start-brk"],
+      "sourceMaps": true,
+      "port": 9229
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "NPM Start",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start"],
+      "port": 9229
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}\\src\\index.js"
+      "program": "${workspaceFolder}\\dist\\index.js"
     }
   ]
 }
