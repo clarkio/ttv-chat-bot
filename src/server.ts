@@ -27,10 +27,10 @@ export class AppServer {
 
   constructor() {
     this.app = express();
+    this.configApp();
     this.startDiscordHook();
     this.startOverlay();
     this.defineRoutes();
-    this.configApp();
     this.startAzureBot();
     this.listen();
   }

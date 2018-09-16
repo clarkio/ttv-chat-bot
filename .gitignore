@@ -3,6 +3,9 @@
 /src/**/*.js.map
 /dist/*
 
+# custom css files
+src/assets/custom-styles.css
+
 # Logs
 logs
 *.log
@@ -61,4 +64,3 @@ typings/
 
 # dotenv environment variables file
 .env
-
