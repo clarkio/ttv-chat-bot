@@ -15,6 +15,7 @@
   "author": "Brian Clark",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "discord.js": "^11.3.2",
     "dotenv": "^5.0.1",
     "es6-promise": "^4.2.5",
