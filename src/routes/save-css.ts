@@ -1,13 +1,10 @@
 import express from 'express';
-import * as files from '../files';
+import { write as writeCssFile } from '../cssFileWriter';
 
 export const saveCssRoute = (req: express.Request, res: express.Response) => {
-  const captains = console;
-  captains.log(req.body);
   const { colorName, hueRotateDeg } = req.body;
   const data = formatForCSS(colorName, hueRotateDeg);
-  files
-    .write(data)
+  writeCssFile(data)
     .then((result: any) => {
       res.send({ message: 'Saved' });
     })
