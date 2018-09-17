@@ -4,8 +4,8 @@
   "description": "Twitch TV chat reader to control internet connected lights",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && npm run copy-assets && node --inspect ./dist/index.js",
-    "start-brk": "npm run compile && npm run copy-assets && node --inspect-brk ./dist/index.js",
+    "start": "npm run compile && npm run copy-assets && node --inspect dist/server/index.js",
+    "start-brk": "npm run compile && npm run copy-assets && node --inspect-brk dist/server/index.js",
     "test": "snyk test",
     "build": "tsc && npm run copy-assets",
     "snyk-protect": "snyk protect",
@@ -40,6 +40,7 @@
     "@types/dotenv": "^4.0.3",
     "@types/express": "^4.16.0",
     "@types/isomorphic-fetch": "0.0.34",
+    "@types/jquery": "^3.3.6",
     "@types/node": "^10.9.4",
     "@types/node-fetch": "^2.1.2",
     "@types/request-promise-native": "^1.0.15",

@@ -15,7 +15,7 @@
     "sourceMap": true                         /* Generates corresponding '.map' file. */,
     // "outFile": "./",                       /* Concatenate and emit output to single file. */
     "outDir": "../../dist/client"             /* Redirect output structure to the directory. */,
-    // "rootDir": "",                         /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    "rootDir": "../client",                   /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
     // "composite": true,                     /* Enable project compilation */
     // "removeComments": true,                /* Do not emit comments to output. */
     // "noEmit": true,                        /* Do not emit outputs. */
@@ -28,7 +28,7 @@
     // "noImplicitAny": true,                 /* Raise error on expressions and declarations with an implied 'any' type. */
     // "strictNullChecks": true,              /* Enable strict null checks. */
     // "strictFunctionTypes": true,           /* Enable strict checking of function types. */
-    // "strictPropertyInitialization": true,  /* Enable strict checking of property initialization in classes. */
+    // "strictPropertyInitialization": false, /* Enable strict checking of property initialization in classes. */
     // "noImplicitThis": true,                /* Raise error on 'this' expressions with an implied 'any' type. */
     // "alwaysStrict": true,                  /* Parse in strict mode and emit "use strict" for each source file. */
 
@@ -58,8 +58,5 @@
     /* Experimental Options */
     // "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
     // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
-  },
-  "include": [
-    "../client"
-  ]
+  }
 }
