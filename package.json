@@ -5,12 +5,15 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc && npm run copy-assets && node --inspect ./dist/index.js",
-    "start-brk": "tsc && npm run copy-assets && node --inspect-brk ./dist/index.js",
+    "start-brk": "npm run compile && npm run copy-assets && node --inspect-brk ./dist/index.js",
     "test": "snyk test",
     "build": "tsc && npm run copy-assets",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect",
-    "copy-assets": "copyfiles -au 1 ./src/assets/* ./src/views/* ./src/scripts/* dist/"
+    "compile": "npm run compile-client && npm run compile-server",
+    "compile-client": "tsc -p ./src/client",
+    "compile-server": "tsc -p ./src/server",
+    "copy-assets": "copyfiles -au 1 ./src/assets/* ./src/views/* dist/"
   },
   "author": "Brian Clark",
   "license": "MIT",

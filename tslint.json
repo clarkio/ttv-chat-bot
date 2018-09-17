@@ -1,6 +1,10 @@
 {
   "defaultSeverity": "error",
-  "extends": ["tslint:recommended", "tslint-config-airbnb-base"],
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-airbnb-base",
+    "tslint-config-prettier"
+  ],
   "jsRules": {},
   "rules": {
     "no-use-before-define": "off",
