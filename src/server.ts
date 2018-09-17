@@ -1,3 +1,4 @@
+import bodyParser from 'body-parser';
 import { WebhookClient } from 'discord.js';
 import express = require('express');
 import { Server } from 'http';
@@ -9,6 +10,7 @@ import { DiscordBot } from './discord-bot';
 import { log } from './log';
 import { Overlay } from './overlay';
 import { changeLightColor, sendLightEffect } from './routes/lights';
+import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
 
 /**
@@ -25,10 +27,10 @@ export class AppServer {
 
   constructor() {
     this.app = express();
+    this.configApp();
     this.startDiscordHook();
     this.startOverlay();
     this.defineRoutes();
-    this.configApp();
     this.startAzureBot();
     this.listen();
   }
@@ -70,6 +72,7 @@ export class AppServer {
    * Config Express
    */
   private configApp(): void {
+    this.app.use(bodyParser.json());
     this.app.set('view engine', 'pug');
     this.app.set('views', `${__dirname}/views`);
     this.app.use(express.static(__dirname));
@@ -81,6 +84,8 @@ export class AppServer {
   private defineRoutes(): void {
     const router: express.Router = express.Router();
     router.get('/scenes', scenesRoute);
+
+    router.post('/save', saveCssRoute);
 
     router.get('/overlay-colors', (req, res) => {
       res.render('overlay-colors');
