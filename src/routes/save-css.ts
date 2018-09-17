@@ -1,5 +1,5 @@
+import { write as writeCssFile } from 'css-file-writer';
 import express from 'express';
-import { write as writeCssFile } from '../cssFileWriter';
 
 export const saveCssRoute = (req: express.Request, res: express.Response) => {
   const { colorName, hueRotateDeg } = req.body;
