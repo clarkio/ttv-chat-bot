@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import { WebhookClient } from 'discord.js';
 import express = require('express');
 import { Server } from 'http';
+import { resolve as resolvePath } from 'path';
 import io from 'socket.io';
 
 import { AzureBot } from './azure-bot';
@@ -12,6 +13,7 @@ import { Overlay } from './overlay';
 import { changeLightColor, sendLightEffect } from './routes/lights';
 import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
+import { resolve } from 'dns';
 
 /**
  * The base Express Application. This is where most of the other parts of the application
@@ -74,8 +76,8 @@ export class AppServer {
   private configApp(): void {
     this.app.use(bodyParser.json());
     this.app.set('view engine', 'pug');
-    this.app.set('views', `${__dirname}/views`);
-    this.app.use(express.static(__dirname));
+    this.app.set('views', resolvePath(`${__dirname}`, '../views'));
+    this.app.use(express.static(resolvePath(`${__dirname}`, '../')));
   }
 
   /**

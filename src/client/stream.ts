@@ -1,8 +1,9 @@
 const captains = console;
 const STORE_OVERLAY_COLOR_NAME = 'streamOverlayColor';
 const beeDooAudio = new Audio('/assets/beedoo_minions.mp3');
+// @ts-ignore
 const socket = io();
-socket.on('color-effect', effect => {
+socket.on('color-effect', (effect: string) => {
   const effectName = effect.toLocaleLowerCase();
   if (effectName === 'cop mode') {
     triggerCopModeEffect();
@@ -26,8 +27,8 @@ function triggerCopModeEffect() {
   startOverlayEffect('cop-red', 'cop-blue');
 }
 
-function startOverlayEffect(startColor, endColor) {
-  const originalColor = localStorage.getItem(STORE_OVERLAY_COLOR_NAME);
+function startOverlayEffect(startColor: string, endColor: string) {
+  const originalColor = String(localStorage.getItem(STORE_OVERLAY_COLOR_NAME));
   let counter = 0;
   let effectColor = startColor;
   const overlayEffectInterval = setInterval(() => {
@@ -54,19 +55,19 @@ function startCopModeAudio() {
   }, 10000);
 }
 
-socket.on('color-change', color => {
+socket.on('color-change', (color: string) => {
   captains.log(`Changing color to ${color}`);
   setOverlayColor(color);
 });
 
-function setOverlayColor(color) {
+function setOverlayColor(color: string) {
   localStorage.setItem(STORE_OVERLAY_COLOR_NAME, color);
   $('#container').removeClass();
   $('#container').addClass(color);
 }
 
 function getCurrentBulbColor() {
-  $.get('/bulb/color', result => {
+  $.get('/bulb/color', (result: any) => {
     captains.log(result);
     const bulbColor = result.color;
     setOverlayColor(bulbColor);
