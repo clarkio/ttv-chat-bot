@@ -4,9 +4,9 @@
   "description": "Twitch TV chat reader to control internet connected lights",
   "main": "index.js",
   "scripts": {
-    "start": "npm run compile && npm run copy-assets && node dist/server/index.js",
-    "debug": "npm run compile && npm run copy-assets && node --inspect dist/server/index.js",
-    "debug-brk": "npm run compile && npm run copy-assets && node --inspect-brk dist/server/index.js",
+    "start": "npm run compile-copy-assets && node dist/server/index.js",
+    "debug": "npm run compile-copy-assets && node --inspect dist/server/index.js",
+    "debug-brk": "npm run compile-copy-assets && node --inspect-brk dist/server/index.js",
     "test": "snyk test",
     "build": "tsc && npm run copy-assets",
     "snyk-protect": "snyk protect",
@@ -14,6 +14,7 @@
     "compile": "npm run compile-client && npm run compile-server",
     "compile-client": "tsc -p ./src/client",
     "compile-server": "tsc -p ./src/server",
+    "compile-copy-assets": "npm run compile && npm run copy-assets",
     "copy-assets": "copyfiles -au 1 ./src/assets/* ./src/views/* dist/"
   },
   "author": "Brian Clark",
