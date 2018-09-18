@@ -24,7 +24,6 @@ export class TwitchChat {
   private isChatClientEnabled: boolean = true;
   constructor() {
     this.ttvChatClient = new tmi.client(this.setTwitchChatOptions());
-    this.connect();
     this.ttvChatClient.on('join', this.ttvJoin);
     this.ttvChatClient.on('part', this.ttvPart);
     this.ttvChatClient.on('chat', this.ttvChat);
@@ -182,7 +181,7 @@ export class TwitchChat {
       this.isStreamElements(userName) &&
       this.isSpecialEffectCommand(message)
     ) {
-      this.startSpecialEffects(message, userName);
+      return this.startSpecialEffects(message, userName);
     }
 
     return Promise.resolve('there was nothing to do');

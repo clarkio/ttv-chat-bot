@@ -7,7 +7,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "NPM Break",
+      "name": "Server Break",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run-script", "debug-brk"],
       "sourceMaps": true,
@@ -16,18 +16,31 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "NPM Start",
+      "name": "Server Debug",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["debug"],
+      "runtimeArgs": ["run-script", "debug"],
       "port": 9229
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Server Start",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["start"],
       "port": 9229
+    },
+    {
+      "name": "Client Debug",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:1339/",
+      "webRoot": "${workspaceFolder}/dist/client"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Server/Client Debug",
+      "configurations": ["Server Debug", "Client Debug"]
     }
   ]
 }
