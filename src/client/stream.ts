@@ -23,7 +23,7 @@ function startSubscribeEffectOverlay() {
 }
 
 function triggerCopModeEffect() {
-  // startCopModeAudio();
+  startCopModeAudio();
   startOverlayEffect('cop-red', 'cop-blue');
 }
 
