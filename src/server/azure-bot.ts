@@ -25,7 +25,9 @@ export class AzureBot {
    */
   public triggerEffect = (message: string, userName: string) => {
     let effect: string;
-    if (!message.includes('follow')) {
+    if (message.includes('cop mode')) {
+      effect = 'cop mode';
+    } else if (!message.includes('follow')) {
       effect = 'trigger new subscriber';
     } else {
       effect = 'trigger new follower';
