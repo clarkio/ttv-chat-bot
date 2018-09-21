@@ -1,7 +1,9 @@
 import { appServer } from './index';
+import EffectsManager from './effects-manager';
 
 export class Overlay {
   public static readonly PORT: number = 1337;
+  // TODO: determine better way to define these such as env vars
   public supportedOverlayColors: string[] = [
     'blue',
     'red',
@@ -16,9 +18,10 @@ export class Overlay {
     'white'
   ];
   public currentBulbColor: string = 'blue';
+  private effectsManager: EffectsManager;
 
   constructor() {
-    //
+    this.effectsManager = new EffectsManager();
   }
 
   /**
@@ -32,20 +35,13 @@ export class Overlay {
    * @param message - The message sent in chat
    */
   public triggerSpecialEffect = (message: string): void => {
-    let effect: string;
-    if (message.includes('cop mode')) {
-      effect = 'cop mode';
-    } else if (
-      message.includes('subscribe') ||
-      message.includes('cheer') ||
-      message.includes('tip')
-    ) {
-      effect = 'subscribe';
-    } else {
-      effect = 'follow';
+    const specialEffect = this.effectsManager.determineSpecialEffect(message);
+    if (specialEffect) {
+      appServer.io.emit(
+        'color-effect',
+        this.effectsManager.effects.specialEffects[specialEffect]
+      );
     }
-    // communicate with the client to cause effect
-    appServer.io.emit('color-effect', effect);
   };
 
   /**

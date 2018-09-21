@@ -1,4 +1,4 @@
-import { write as writeCssFile } from '../css-file-writer';
+import { writeCssFile } from '../file-manager';
 import express from 'express';
 
 export const saveCssRoute = (req: express.Request, res: express.Response) => {
