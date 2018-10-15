@@ -1,0 +1,8 @@
+{
+  "specialEffects": {
+    "cop mode": ["cop-red", "cop-blue", "purple"],
+    "new follower": ["purple", "white"],
+    "new subscriber": ["purple", "green"]
+  },
+  "supportedColors": []
+}

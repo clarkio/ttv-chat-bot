@@ -10,7 +10,10 @@ try {
   const buffer = readFileSync(resolve(__dirname, '../config.json'));
   fileConfig = JSON.parse(buffer.toString());
 } catch (e) {
-  log('info', 'There was an error retrieving configuration from a file');
+  log(
+    'log',
+    'Unable to retrieve configuration from a file. Falling back to environment variables'
+  );
   fileConfig = {};
 }
 
