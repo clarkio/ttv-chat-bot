@@ -58,8 +58,11 @@ Please make sure you've completed all steps in the "Getting Started" and "Run th
 ## Twitch Viewers that have helped contribute to the project (in no particular order):
 
 - sockelo
-- frenck
-- tallpants
+- [frenck](https://github.com/frenck)
+- [tallpants](https://github.com/tallpants)
 - wwsean08
 - l2ival
 - ikoakmaindehoas
+- codephobia
+- styler
+- [TheMartesLive](https://github.com/TheMartes)

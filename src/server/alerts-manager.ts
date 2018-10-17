@@ -41,18 +41,18 @@ export class AlertsManager {
   };
 
   private onDisconnect = () => {
-    console.log('Disconnected from websocket');
+    log('info', 'Disconnected from Streamelements websocket');
     // TODO: Handle Reconnect
   };
 
   private onAuthenticated = (data: any) => {
     const { channelId } = data;
 
-    console.log(`Successfully connected to channel ${channelId}`);
+    log('info', `Successfully authenticated for channel ${channelId}`);
   };
 
   private onEvent = (event: any) => {
-    log('info', event.type);
+    log('info', `Received alert: ${event.type}`);
     const alert = this.effectsManager.determineAlertEffect(event.type);
     if (alert) {
       this.startAlertEffect(alert, event.data.username);
