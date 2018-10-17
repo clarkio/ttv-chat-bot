@@ -37,10 +37,13 @@ export class Overlay {
   public triggerSpecialEffect = (message: string): void => {
     const specialEffect = this.effectsManager.determineSpecialEffect(message);
     if (specialEffect) {
-      appServer.io.emit(
-        'color-effect',
-        this.effectsManager.effects.specialEffects[specialEffect]
-      );
+      const specialEffectColors = this.effectsManager.specialEffects[
+        specialEffect
+      ];
+      const colors =
+        specialEffectColors || this.effectsManager.alertEffects[specialEffect];
+
+      appServer.io.emit('color-effect', colors);
     }
   };
 

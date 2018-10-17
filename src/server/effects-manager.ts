@@ -1,23 +1,35 @@
 import { readEffects } from './file-manager';
 
 export default class EffectsManager {
-  effects: any | undefined;
+  allEffects: any | undefined;
+  specialEffects: any | undefined;
+  alertEffects: any | undefined;
 
   constructor() {
     this.loadEffects();
   }
 
-  public determineSpecialEffect = (message: string): string | undefined => {
-    return Object.keys(this.effects.specialEffects).find(
+  public determineSpecialEffect = (chatMessage: string): string | undefined => {
+    const specialEffect = Object.keys(this.specialEffects).find(
       (specialEffect: string) => {
-        return message.includes(specialEffect);
+        return chatMessage.includes(specialEffect);
       }
     );
+
+    return specialEffect || this.determineAlertEffect(chatMessage);
+  };
+
+  public determineAlertEffect = (event: string): string | undefined => {
+    return Object.keys(this.alertEffects).find((alertEffect: string) => {
+      return event === alertEffect;
+    });
   };
 
   private loadEffects = () => {
     readEffects().then((result: any) => {
-      this.effects = JSON.parse(result);
+      this.allEffects = JSON.parse(result);
+      this.specialEffects = this.allEffects.specialEffects;
+      this.alertEffects = this.allEffects.alertEffects;
     });
   };
 }
