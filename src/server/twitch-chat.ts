@@ -5,12 +5,12 @@ import tmi from 'twitch-js';
 
 import {
   chatCommands,
-  specialEffectsChatCommands,
   ttvChannels,
   ttvClientId,
   ttvClientToken,
   ttvClientUsername
 } from './config';
+import EffectsManager from 'effects-manager';
 
 export class TwitchChat {
   public ttvChatClient: any;
@@ -18,11 +18,9 @@ export class TwitchChat {
   private clientUsername: string = ttvClientUsername.toString();
   private moderators: string[] = [this.clientUsername];
   private lightControlCommands: string[] = chatCommands.toString().split(',');
-  private specialEffectCommands = specialEffectsChatCommands
-    .toString()
-    .split(',');
   private isChatClientEnabled: boolean = true;
-  constructor() {
+
+  constructor(private effectsManager: EffectsManager) {
     this.ttvChatClient = new tmi.client(this.setTwitchChatOptions());
     this.ttvChatClient.on('join', this.ttvJoin);
     this.ttvChatClient.on('part', this.ttvPart);
@@ -169,12 +167,12 @@ export class TwitchChat {
       // viewer attempting to control the overlay/lights
       const commandMessage = message.slice(this.lightCommandUsed.length).trim();
       log('info', `Received a command from ${userName}: ${commandMessage}`);
-
-      if (this.isSpecialEffectCommand(commandMessage)) {
-        return this.startSpecialEffects(commandMessage, userName);
+      const specialEffect = this.isSpecialEffectCommand(commandMessage);
+      if (specialEffect) {
+        return this.startSpecialEffects(specialEffect, userName);
+      } else {
+        return this.startColorChange(commandMessage, userName);
       }
-      return this.startColorChange(commandMessage, userName);
-      // it is an intended, but not a supported command
     }
 
     if (
@@ -191,20 +189,18 @@ export class TwitchChat {
    * Check if the message is for special effects!
    */
   private isSpecialEffectCommand = (message: string) =>
-    this.specialEffectCommands.some((command: string) =>
-      message.includes(command)
-    );
+    this.effectsManager.determineSpecialEffect(message);
 
   /**
    * Do something cool when there is a special effect triggered
    *
-   * @param message message sent
+   * @param specialEffect message sent
    * @param userName user who sent
    */
-  private startSpecialEffects(message: string, userName: string) {
-    appServer.overlay.triggerSpecialEffect(message);
+  private startSpecialEffects(specialEffect: string, userName: string) {
+    appServer.overlay.triggerSpecialEffect(specialEffect);
     if (appServer.azureBot) {
-      return appServer.azureBot.triggerEffect(message, userName);
+      return appServer.azureBot.triggerEffect(specialEffect, userName);
     }
   }
 

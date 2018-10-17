@@ -20,35 +20,24 @@ export class AzureBot {
   /**
    * This will trigger specific effects based on the message
    *
-   * @param message - The message sent in chat
+   * @param effectType - The message sent in chat
    * @param userName - The user who sent the message
    */
-  public triggerEffect = (message: string, userName: string) => {
-    let effect: string;
-    if (message.includes('cop mode')) {
-      effect = 'cop mode';
-    } else if (!message.includes('follow')) {
-      effect = 'trigger new subscriber';
-    } else {
-      effect = 'trigger new follower';
-    }
+  public triggerEffect = (effectType: string, userName: string) => {
+    const effect = `trigger ${effectType}`;
 
-    if (effect) {
-      return this.sendCommand(effect, userName)
-        .then((result: any) => {
-          log(
-            'info',
-            `Successfully triggered ${effect} command from ${userName}`
-          );
-          return result;
-        })
-        .catch((error: any) => {
-          log('error', error.message);
-          return error;
-        });
-    }
-    log('info', `Unsupported effect was received in the message: ${message}`);
-    return Promise.resolve('TODO = put something useful here');
+    return this.sendCommand(effect, userName)
+      .then((result: any) => {
+        log(
+          'info',
+          `Successfully triggered '${effect}' command from ${userName}`
+        );
+        return result;
+      })
+      .catch((error: any) => {
+        log('error', error.message);
+        return error;
+      });
   };
 
   /**
