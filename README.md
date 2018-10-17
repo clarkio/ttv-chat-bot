@@ -19,6 +19,8 @@ Twitch TV chat reader to change the color of overlays loaded from streamelements
 
    Example: mainScene=https://streamelements.com/overlay/abc/123
 
+10. Get Streamelements JWT from your account and update `STREAMELEMENTS_JWT` in your `.env` file.
+
 ## Run the Application
 
 Please make sure you've completed all steps in the "Getting Started" section before attempting to run the app.
