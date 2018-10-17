@@ -54,3 +54,12 @@ Please make sure you've completed all steps in the "Getting Started" and "Run th
 2. Enter the following chat message "!bulb go green" and you should see your overlay change color in your other tab/window which loaded [http://localhost:1337/scenes?sceneName=mainScene](http://localhost:1337/scenes?sceneName=mainScene)
 
    > WARNING: the implementation is currently based off of an overlay being blue by default and will alter the hue from that. If your overlay default color is different it will not exactly change to the color you may be intending. We are working on making this better to support different default overlay colors.
+
+## Twitch Viewers that have helped contribute to the project (in no particular order):
+
+- sockelo
+- frenck
+- tallpants
+- wwsean08
+- l2ival
+- ikoakmaindehoas
