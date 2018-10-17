@@ -29,7 +29,8 @@ const {
   AZURE_BOT_TOKEN,
   DISCORD_HOOK_ENABLED,
   DISCORD_HOOK_ID,
-  DISCORD_HOOK_TOKEN
+  DISCORD_HOOK_TOKEN,
+  STREAM_ELEMENTS_JWT
 } = process.env;
 
 const requireConfigMessage = 'REQUIRED CONFIGURATION WAS NOT PROVIDED';
@@ -72,3 +73,6 @@ export const discordHookId: string =
 
 export const discordHookToken: string =
   DISCORD_HOOK_TOKEN || fileConfig.discordHookToken || requireConfigMessage;
+
+export const streamElementsJwt: string =
+  STREAM_ELEMENTS_JWT || fileConfig.streamElementsJwt || requireConfigMessage;
