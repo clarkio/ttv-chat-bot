@@ -45,13 +45,13 @@ export class AlertsManager {
     // TODO: Handle Reconnect
   };
 
-  private onAuthenticated(data: any) {
+  private onAuthenticated = (data: any) => {
     const { channelId } = data;
 
     console.log(`Successfully connected to channel ${channelId}`);
-  }
+  };
 
-  private onEvent(event: any) {
+  private onEvent = (event: any) => {
     log('info', event.type);
     const alert = this.effectsManager.determineAlertEffect(event.type);
     if (alert) {
@@ -59,7 +59,7 @@ export class AlertsManager {
     } else {
       log('info', this.constants.unhandledAlertTypeLog + event.type);
     }
-  }
+  };
 
   /**
    * Do something cool when there is an alert effect triggered
@@ -67,10 +67,10 @@ export class AlertsManager {
    * @param alertType alert type sent
    * @param userName user triggered the alert
    */
-  private startAlertEffect(alertType: string, userName: string) {
+  private startAlertEffect = (alertType: string, userName: string) => {
     appServer.overlay.triggerSpecialEffect(alertType);
     if (appServer.azureBot) {
       return appServer.azureBot.triggerEffect(alertType, userName);
     }
-  }
+  };
 }
