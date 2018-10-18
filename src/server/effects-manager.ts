@@ -9,20 +9,44 @@ export default class EffectsManager {
     this.loadEffects();
   }
 
-  public determineSpecialEffect = (chatMessage: string): string | undefined => {
-    const specialEffect = Object.keys(this.specialEffects).find(
+  /**
+   * Check if the chat message received is a defined special effect
+   *
+   * @param chatMessage the raw message parsed from chat
+   * @returns object {effectName: ['color1', 'color2', ...]}
+   */
+  public determineSpecialEffect = (chatMessage: string): any | undefined => {
+    const specialEffectKey = Object.keys(this.specialEffects).find(
       (specialEffect: string) => {
         return chatMessage.includes(specialEffect);
       }
     );
 
-    return specialEffect || this.determineAlertEffect(chatMessage);
+    return specialEffectKey
+      ? {
+          [specialEffectKey]: this.specialEffects[specialEffectKey]
+        }
+      : this.determineAlertEffect(chatMessage);
   };
 
-  public determineAlertEffect = (event: string): string | undefined => {
-    return Object.keys(this.alertEffects).find((alertEffect: string) => {
-      return event === alertEffect;
-    });
+  /**
+   * Check if the event or message received is a defined alert effect
+   *
+   * @param event the event triggered for an alert (follow, subscribe, etc.) or manual trigger from chat message
+   * @returns object {effectName: ['color1', 'color2', ...]}
+   */
+  public determineAlertEffect = (event: string): any | undefined => {
+    const alertEffectKey = Object.keys(this.alertEffects).find(
+      (alertEffect: string) => {
+        return event === alertEffect;
+      }
+    );
+
+    return (
+      alertEffectKey && {
+        [alertEffectKey]: this.alertEffects[alertEffectKey]
+      }
+    );
   };
 
   private loadEffects = () => {
