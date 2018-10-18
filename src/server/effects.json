@@ -1,0 +1,46 @@
+{
+  "specialEffects": {
+    "cop mode": {
+      "type": "pulse",
+      "colors": ["cop-red", "cop-blue"]
+    },
+    "party mode": {
+      "type": "pulse",
+      "colors": ["pink", "blue"]
+    }
+  },
+  "alertEffects": {
+    "follow": {
+      "type": "pulse",
+      "colors": ["purple", "white"]
+    },
+    "host": {
+      "type": "pulse",
+      "colors": ["purple", "white"]
+    },
+    "subscriber": {
+      "type": "pulse",
+      "colors": ["purple", "green"]
+    },
+    "tip": {
+      "type": "pulse",
+      "colors": ["purple", "green"]
+    },
+    "cheer": {
+      "type": "pulse",
+      "colors": ["purple", "green"]
+    }
+  },
+  "specialEffectsOld": {
+    "cop mode": ["cop-red", "cop-blue"],
+    "party mode": ["pink", "blue"]
+  },
+  "alertEffectsOld": {
+    "follow": ["purple", "white"],
+    "host": ["purple", "white"],
+    "subscriber": ["purple", "green"],
+    "tip": ["purple", "green"],
+    "cheer": ["purple", "green"]
+  },
+  "supportedColors": []
+}

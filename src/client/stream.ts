@@ -3,34 +3,19 @@ const STORE_OVERLAY_COLOR_NAME = 'streamOverlayColor';
 const beeDooAudio = new Audio('/assets/beedoo_minions.mp3');
 // @ts-ignore
 const socket = io();
-socket.on('color-effect', (effect: string) => {
-  const effectName = effect.toLocaleLowerCase();
-  if (effectName === 'cop mode') {
-    triggerCopModeEffect();
-  } else if (effectName === 'subscribe') {
-    startSubscribeEffectOverlay();
-  } else if (effectName === 'follow') {
-    startFollowEffectOverlay();
-  }
+socket.on('color-effect', (effectColors: Array<string>) => {
+  startOverlayEffect(effectColors);
 });
-
-function startFollowEffectOverlay() {
-  startOverlayEffect('purple', 'white');
-}
-
-function startSubscribeEffectOverlay() {
-  startOverlayEffect('purple', 'green');
-}
 
 function triggerCopModeEffect() {
   startCopModeAudio();
-  startOverlayEffect('cop-red', 'cop-blue');
 }
 
-function startOverlayEffect(startColor: string, endColor: string) {
+function startOverlayEffect(colors: Array<string>) {
   const originalColor = String(localStorage.getItem(STORE_OVERLAY_COLOR_NAME));
   let counter = 0;
-  let effectColor = startColor;
+  let colorIndex = 0;
+  let effectColor = colors[colorIndex];
   const overlayEffectInterval = setInterval(() => {
     counter += 1;
     if (counter === 20) {
@@ -38,7 +23,8 @@ function startOverlayEffect(startColor: string, endColor: string) {
       clearInterval(overlayEffectInterval);
     } else {
       setOverlayColor(effectColor);
-      effectColor = effectColor === startColor ? endColor : startColor;
+      colorIndex = colorIndex === colors.length - 1 ? 0 : ++colorIndex;
+      effectColor = colors[colorIndex];
     }
   }, 500);
 }

@@ -10,7 +10,10 @@ try {
   const buffer = readFileSync(resolve(__dirname, '../config.json'));
   fileConfig = JSON.parse(buffer.toString());
 } catch (e) {
-  log('info', 'There was an error retrieving configuration from a file');
+  log(
+    'log',
+    'Unable to retrieve configuration from a file. Falling back to environment variables'
+  );
   fileConfig = {};
 }
 
@@ -26,7 +29,9 @@ const {
   AZURE_BOT_TOKEN,
   DISCORD_HOOK_ENABLED,
   DISCORD_HOOK_ID,
-  DISCORD_HOOK_TOKEN
+  DISCORD_HOOK_TOKEN,
+  STREAMELEMENTS_JWT,
+  STREAMELEMENTS_WEBSOCKET_URL
 } = process.env;
 
 const requireConfigMessage = 'REQUIRED CONFIGURATION WAS NOT PROVIDED';
@@ -69,3 +74,11 @@ export const discordHookId: string =
 
 export const discordHookToken: string =
   DISCORD_HOOK_TOKEN || fileConfig.discordHookToken || requireConfigMessage;
+
+export const streamElementsJwt: string =
+  STREAMELEMENTS_JWT || fileConfig.streamElementsJwt || requireConfigMessage;
+
+export const streamElementsWebsocketsUrl: string =
+  STREAMELEMENTS_WEBSOCKET_URL ||
+  fileConfig.streamElementsWebsocketsUrl ||
+  'https://realtime.streamelements.com';
