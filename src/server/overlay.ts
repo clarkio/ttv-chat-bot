@@ -32,17 +32,10 @@ export class Overlay {
   /**
    * Based on a specific events, trigger a special effect
    *
-   * @param message - The message sent in chat
+   * @param colors - An array of strings with the color names to use in the overlay effect. These must match the CSS classes you have in either /assets/styles.css or /assets/custom-styles.css
    */
-  public triggerSpecialEffect = (message: string): void => {
-    const specialEffect = this.effectsManager.determineSpecialEffect(message);
-    if (specialEffect) {
-      const specialEffectColors = this.effectsManager.specialEffects[
-        specialEffect
-      ];
-      const colors =
-        specialEffectColors || this.effectsManager.alertEffects[specialEffect];
-
+  public triggerSpecialEffect = (colors: string[]): void => {
+    if (colors) {
       appServer.io.emit('color-effect', colors);
     }
   };
