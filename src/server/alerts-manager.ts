@@ -64,13 +64,13 @@ export class AlertsManager {
   /**
    * Do something cool when there is an alert effect triggered
    *
-   * @param alertType alert type sent
+   * @param alertEffect alert type sent
    * @param userName user triggered the alert
    */
-  private startAlertEffect = (alertType: string, userName: string) => {
-    appServer.overlay.triggerSpecialEffect(alertType);
+  private startAlertEffect = (alertEffect: any, userName: string) => {
+    appServer.overlay.triggerSpecialEffect(alertEffect.colors);
     if (appServer.azureBot) {
-      return appServer.azureBot.triggerEffect(alertType, userName);
+      return appServer.azureBot.triggerEffect(alertEffect, userName);
     }
   };
 }

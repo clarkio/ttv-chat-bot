@@ -20,17 +20,19 @@ export class AzureBot {
   /**
    * This will trigger specific effects based on the message
    *
-   * @param effectType - The message sent in chat
+   * @param effect - The effect object containing the type and colors of the effect
    * @param userName - The user who sent the message
    */
-  public triggerEffect = (effectType: string, userName: string) => {
-    const effect = `trigger ${effectType}`;
+  public triggerEffect = (effect: any, userName: string) => {
+    const effectCommand = `trigger ${effect.type} ${[
+      ...effect.colors
+    ]}`.replace(',', ' ');
 
-    return this.sendCommand(effect, userName)
+    return this.sendCommand(effectCommand, userName)
       .then((result: any) => {
         log(
           'info',
-          `Successfully triggered '${effect}' command from ${userName}`
+          `Successfully triggered '${effectCommand}' command from ${userName}`
         );
         return result;
       })
