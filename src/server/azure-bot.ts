@@ -2,6 +2,7 @@ import fetch from 'isomorphic-fetch';
 
 import * as config from './config';
 import { log } from './log';
+import * as constants from './constants';
 
 /**
  * A Plugin of sorts to deal with the AzureBot if the user has decided to configure it
@@ -24,9 +25,8 @@ export class AzureBot {
    * @param userName - The user who sent the message
    */
   public triggerEffect = (effect: any, userName: string) => {
-    const effectCommand = `trigger ${effect.type} ${[
-      ...effect.colors
-    ]}`.replace(',', ' ');
+ 
+    const effectCommand = constants.effectCommand(effect);
 
     return this.sendCommand(effectCommand, userName)
       .then((result: any) => {
@@ -50,9 +50,7 @@ export class AzureBot {
    */
   public sendCommand = (commandMessage: string, user: string) => {
     const fullMessage = { text: commandMessage, from: user };
-    const url = `https://directline.botframework.com/api/conversations/${
-      this.conversationId
-    }/messages`;
+    const url = constants.convApiUrl(this.conversationId);
     const fetchOptions: RequestInit = {
       body: JSON.stringify(fullMessage),
       headers: {
@@ -108,9 +106,6 @@ export class AzureBot {
    * Contacts the bot url to authenticate the communication
    */
   private startBotConversation = () => {
-    // const url = 'https://directline.botframework.com/api/conversations';
-    const url =
-      'https://directline.botframework.com/v3/directline/conversations';
     const fetchOptions: RequestInit = {
       headers: {
         Authorization: `Bearer ${this.azureBotToken}`
@@ -118,7 +113,7 @@ export class AzureBot {
       method: 'POST'
     };
 
-    return fetch(url, fetchOptions)
+    return fetch(constants.v3ConvApiUrl, fetchOptions)
       .then((response: any) => {
         return response.json();
       })
