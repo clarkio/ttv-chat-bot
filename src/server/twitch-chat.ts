@@ -1,5 +1,6 @@
 import { appServer } from './index';
 import { log } from './log';
+import * as config from './config';
 
 import tmi from 'twitch-js';
 
@@ -70,7 +71,6 @@ export class TwitchChat {
   private ttvJoin = (channel: string, username: string, self: boolean) => {
     const { hours, minutes } = this.getTime();
     const channels = ttvChannels.toString().split(',');
-    this.ttvChatClient.say('clarkio', 'We out here testing...');
 
     log('info', `[${hours}:${minutes}] ${username} has JOINED the channel`);
 
@@ -205,7 +205,10 @@ export class TwitchChat {
       return appServer.azureBot
         .triggerEffect(specialEffect, userName)
         .then(result => {
-          setTimeout(this.checkForBotResponse, 4000);
+          setTimeout(
+            this.checkForBotResponse,
+            config.azureBotResponseCheckDelay
+          );
           return result;
         });
     }
@@ -225,7 +228,10 @@ export class TwitchChat {
         .sendCommand(commandMessage, userName)
         .then((result: any) => {
           log('info', `Successfully sent the command from ${userName}`);
-          setTimeout(this.checkForBotResponse, 4000);
+          setTimeout(
+            this.checkForBotResponse,
+            config.azureBotResponseCheckDelay
+          );
           return result;
         })
         .catch((error: any) => {
