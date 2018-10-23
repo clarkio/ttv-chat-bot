@@ -169,11 +169,12 @@ export class TwitchChat {
       const commandMessage = message.slice(this.lightCommandUsed.length).trim();
       log('info', `Received a command from ${userName}: ${commandMessage}`);
       const specialEffect = this.isSpecialEffectCommand(commandMessage);
+
       if (specialEffect) {
         return this.startSpecialEffects(specialEffect, userName);
-      } else {
-        return this.startColorChange(commandMessage, userName);
       }
+
+      return this.startColorChange(commandMessage, userName);
     }
 
     if (
