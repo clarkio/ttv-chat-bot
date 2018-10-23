@@ -6,13 +6,13 @@ import * as config from './config';
 import EffectsManager from './effects-manager';
 
 export class AlertsManager {
-  connectionType: string = 'websocket';
   public socket!: SocketIOClient.Socket;
+  private connectionType: string = 'websocket';
   private constants = {
-    websocketsConnectLog:
-      'Successfully connected to the *Streamelements* websocket',
+    authenticateMethod: 'jwt',
     unhandledAlertTypeLog: 'An alert was triggered that is not supported: ',
-    authenticateMethod: 'jwt'
+    websocketsConnectLog:
+      'Successfully connected to the *Streamelements* websocket'
   };
 
   constructor(

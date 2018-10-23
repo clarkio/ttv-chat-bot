@@ -12,6 +12,7 @@ export class AzureBot {
   private conversationId: string | undefined;
   private conversationToken: string | undefined;
   private expiration: number | undefined;
+  private watermark: string | undefined;
 
   constructor() {
     //
@@ -86,10 +87,44 @@ export class AzureBot {
       });
   };
 
+  public getConversationMessages = () => {
+    // The watermark let's us only retrieve new messages
+    // since the last time we checked on the conversation
+    const watermarkQuery = this.watermark ? `?watermark=${this.watermark}` : '';
+    const url = `https://directline.botframework.com/api/conversations/${
+      this.conversationId
+    }/messages${watermarkQuery}`;
+    const fetchOptions: RequestInit = {
+      headers: {
+        Authorization: `Bearer ${this.conversationToken}`,
+        'Content-Type': 'application/json'
+      },
+      method: 'GET'
+    };
+
+    return fetch(url, fetchOptions)
+      .then((response: any) => {
+        // Since we need to get the watermark before returning
+        // the conversation messages we'll return a new Promise
+        return new Promise((resolve, reject) => {
+          response
+            .json()
+            .then((conversation: any) => {
+              if (conversation.watermark) {
+                this.watermark = conversation.watermark;
+              }
+              resolve(conversation);
+            })
+            .catch(this.handleError);
+        });
+      })
+      .catch(this.handleError);
+  };
+
   private handleConversationStart = (result: any) => {
-    if (result.error) {
-      log('error', result.error);
-      return result.error;
+    if (result.Error) {
+      log('Error', result.Error);
+      return result.Error;
     }
     log('info', 'Bot conversation started');
 
@@ -108,9 +143,9 @@ export class AzureBot {
    * Contacts the bot url to authenticate the communication
    */
   private startBotConversation = () => {
-    // const url = 'https://directline.botframework.com/api/conversations';
-    const url =
-      'https://directline.botframework.com/v3/directline/conversations';
+    const url = 'https://directline.botframework.com/api/conversations';
+    // const url =
+    //   'https://directline.botframework.com/v3/directline/conversations';
     const fetchOptions: RequestInit = {
       headers: {
         Authorization: `Bearer ${this.azureBotToken}`
@@ -139,6 +174,11 @@ export class AzureBot {
   private createTimeoutToRenewConversation = (expirationTime: number) => {
     const timeInMilliseconds = expirationTime * 1000;
     setTimeout(this.createNewBotConversation, timeInMilliseconds);
+  };
+
+  private handleError = (error: any) => {
+    log('error', error.message);
+    return error;
   };
 
   /**

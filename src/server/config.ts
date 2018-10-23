@@ -27,6 +27,7 @@ const {
   CHAT_COMMANDS,
   SPECIAL_EFFECTS_CHAT_COMMANDS,
   AZURE_BOT_TOKEN,
+  AZURE_BOT_RESPONSE_CHECK_DELAY,
   DISCORD_HOOK_ENABLED,
   DISCORD_HOOK_ID,
   DISCORD_HOOK_TOKEN,
@@ -82,3 +83,8 @@ export const streamElementsWebsocketsUrl: string =
   STREAMELEMENTS_WEBSOCKET_URL ||
   fileConfig.streamElementsWebsocketsUrl ||
   'https://realtime.streamelements.com';
+
+export const azureBotResponseCheckDelay: number =
+  AZURE_BOT_RESPONSE_CHECK_DELAY ||
+  fileConfig.azureBotResponseCheckDelay ||
+  4000;

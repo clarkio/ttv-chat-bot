@@ -1,5 +1,6 @@
 import { appServer } from './index';
 import { log } from './log';
+import * as config from './config';
 
 import tmi from 'twitch-js';
 
@@ -146,14 +147,14 @@ export class TwitchChat {
       }
     );
 
-  private getTime() {
+  private getTime = () => {
     const date = new Date();
     const rawMinutes = date.getMinutes();
     const rawHours = date.getHours();
     const hours = (rawHours < 10 ? '0' : '') + rawHours.toLocaleString();
     const minutes = (rawMinutes < 10 ? '0' : '') + rawMinutes.toLocaleString();
     return { hours, minutes };
-  }
+  };
 
   /**
    * This weeds through the trolls and deciphers if the message is something that we want to do
@@ -162,17 +163,18 @@ export class TwitchChat {
    * @param message the message sent by a user
    * @param userName the user who sent the message
    */
-  private parseChat(message: string, userName: string) {
+  private parseChat = (message: string, userName: string) => {
     if (this.isLightControlCommand(message)) {
       // viewer attempting to control the overlay/lights
       const commandMessage = message.slice(this.lightCommandUsed.length).trim();
       log('info', `Received a command from ${userName}: ${commandMessage}`);
       const specialEffect = this.isSpecialEffectCommand(commandMessage);
+
       if (specialEffect) {
         return this.startSpecialEffects(specialEffect, userName);
-      } else {
-        return this.startColorChange(commandMessage, userName);
       }
+
+      return this.startColorChange(commandMessage, userName);
     }
 
     if (
@@ -183,7 +185,7 @@ export class TwitchChat {
     }
 
     return Promise.resolve('there was nothing to do');
-  }
+  };
 
   /**
    * Check if the message is for special effects!
@@ -197,20 +199,28 @@ export class TwitchChat {
    * @param specialEffect message sent
    * @param userName user who sent
    */
-  private startSpecialEffects(specialEffect: any, userName: string) {
+  private startSpecialEffects = (specialEffect: any, userName: string) => {
     appServer.overlay.triggerSpecialEffect(specialEffect.colors);
     if (appServer.azureBot) {
-      return appServer.azureBot.triggerEffect(specialEffect, userName);
+      return appServer.azureBot
+        .triggerEffect(specialEffect, userName)
+        .then(result => {
+          setTimeout(
+            this.checkForBotResponse,
+            config.azureBotResponseCheckDelay
+          );
+          return result;
+        });
     }
-  }
+  };
 
   /**
    * Change the color in multiple places if needed
    *
-   * @param commandMessage message sent
-   * @param userName who sent
+   * @param commandMessage message to send to the bot
+   * @param userName who sent the message
    */
-  private startColorChange(commandMessage: string, userName: string) {
+  private startColorChange = (commandMessage: string, userName: string) => {
     appServer.overlay.updateOverlay(commandMessage);
 
     if (appServer.azureBot) {
@@ -218,6 +228,10 @@ export class TwitchChat {
         .sendCommand(commandMessage, userName)
         .then((result: any) => {
           log('info', `Successfully sent the command from ${userName}`);
+          setTimeout(
+            this.checkForBotResponse,
+            config.azureBotResponseCheckDelay
+          );
           return result;
         })
         .catch((error: any) => {
@@ -225,7 +239,19 @@ export class TwitchChat {
           return error;
         });
     }
-  }
+  };
+
+  private checkForBotResponse = () => {
+    appServer.azureBot
+      .getConversationMessages()
+      .then(result => {
+        const messages = result.messages;
+        const lastMessage = messages[messages.length - 1].text;
+        log('info', `Bot response: ${lastMessage}`);
+        this.ttvChatClient.say('clarkio', lastMessage);
+      })
+      .catch(error => log('error', error));
+  };
   /**
    * USER OUR BOT TO SEE OTHER BOTS
    */
