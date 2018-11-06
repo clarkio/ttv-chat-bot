@@ -200,7 +200,7 @@ export class TwitchChat {
    * @param userName user who sent
    */
   private startSpecialEffects = (specialEffect: any, userName: string) => {
-    appServer.overlay.triggerSpecialEffect(specialEffect.colors);
+    appServer.overlay.triggerSpecialEffect(specialEffect);
     if (appServer.azureBot) {
       return appServer.azureBot
         .triggerEffect(specialEffect, userName)

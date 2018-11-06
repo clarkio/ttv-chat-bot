@@ -143,9 +143,7 @@ export class AzureBot {
    * Contacts the bot url to authenticate the communication
    */
   private startBotConversation = () => {
-    const url = 'https://directline.botframework.com/api/conversations';
-    // const url =
-    //   'https://directline.botframework.com/v3/directline/conversations';
+    const url = config.azureBotUrl;
     const fetchOptions: RequestInit = {
       headers: {
         Authorization: `Bearer ${this.azureBotToken}`

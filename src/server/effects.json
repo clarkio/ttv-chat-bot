@@ -7,6 +7,10 @@
     "party mode": {
       "type": "pulse",
       "colors": ["pink", "blue"]
+    },
+    "cycle": {
+      "type": "cycle",
+      "colors": []
     }
   },
   "alertEffects": {

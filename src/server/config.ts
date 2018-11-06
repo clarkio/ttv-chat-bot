@@ -20,6 +20,7 @@ try {
 const {
   PORT,
   AZURE_BOT_ENABLED,
+  AZURE_BOT_URL,
   TTV_CLIENT_ID,
   TTV_CLIENT_TOKEN,
   TTV_CLIENT_USERNAME,
@@ -43,6 +44,11 @@ export const azureBotEnabled: boolean =
   Boolean(AZURE_BOT_ENABLED === 'true') ||
   Boolean(fileConfig.azureBotEnabled === 'true') ||
   false;
+
+export const azureBotUrl: string =
+  AZURE_BOT_URL ||
+  fileConfig.azureBotUrl ||
+  'https://directline.botframework.com/api/conversations';
 
 export const ttvClientId: string =
   TTV_CLIENT_ID || fileConfig.ttvClientId || requireConfigMessage;
