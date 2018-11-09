@@ -55,9 +55,12 @@ socket.on('color-cycle', (isEnabled: boolean) => {
         isCycleEffectRunning = false;
         captains.info('Cycle effect has stopped running');
       } else {
-        $('#container').css('filter', `hue-rotate(${degreeRotation}deg)`);
+        $('#container').css(
+          '-webkit-filter',
+          `hue-rotate(${degreeRotation}deg)`
+        );
         degreeRotation += 60;
-        if (degreeRotation > 360) degreeRotation = 0;
+        if (degreeRotation >= 360) degreeRotation = 0;
       }
     }, 7000);
   }

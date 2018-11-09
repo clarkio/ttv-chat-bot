@@ -37,8 +37,7 @@ export class Overlay {
    */
   public triggerSpecialEffect = (specialEffect: any): void => {
     if (specialEffect.type === 'cycle') {
-      appServer.io.emit('color-cycle', this.cycleEffectEnabled);
-      this.cycleEffectEnabled = this.cycleEffectEnabled ? false : true;
+      appServer.io.emit('color-cycle', specialEffect.state === 'on');
     } else if (specialEffect.colors) {
       this.cycleEffectEnabled = false;
       appServer.io.emit('color-effect', specialEffect.colors);

@@ -15,6 +15,10 @@ iframe {
   overflow: hidden;
 }
 
+#container {
+  transition: 3s -webkit-filter linear;
+}
+
 .minion-div {
   z-index: 14;
   border: none;
