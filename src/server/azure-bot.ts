@@ -25,9 +25,9 @@ export class AzureBot {
    * @param userName - The user who sent the message
    */
   public triggerEffect = (effect: any, userName: string) => {
-    const effectCommand = `trigger ${effect.type} ${[
-      ...effect.colors
-    ]}`.replace(',', ' ');
+    const effectCommand = `${effect.type} ${[...effect.colors]} ${effect.state}`
+      .replace(',', ' ')
+      .trim();
 
     return this.sendCommand(effectCommand, userName)
       .then((result: any) => {

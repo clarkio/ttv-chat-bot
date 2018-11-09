@@ -25,6 +25,12 @@ export default class EffectsManager {
       }
     );
 
+    if (specialEffectKey === 'cycle') {
+      this.specialEffects[specialEffectKey].state = chatMessage.includes('off')
+        ? 'off'
+        : 'on';
+    }
+
     return specialEffectKey
       ? this.specialEffects[specialEffectKey]
       : this.determineAlertEffect(chatMessage);
