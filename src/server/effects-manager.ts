@@ -1,9 +1,9 @@
 import { readEffects } from './file-manager';
 
 export default class EffectsManager {
-  allEffects: any | undefined;
-  specialEffects: any | undefined;
-  alertEffects: any | undefined;
+  public allEffects: any | undefined;
+  public specialEffects: any | undefined;
+  public alertEffects: any | undefined;
 
   constructor() {
     this.loadEffects();
