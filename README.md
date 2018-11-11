@@ -66,3 +66,4 @@ Please make sure you've completed all steps in the "Getting Started" and "Run th
 - codephobia
 - styler
 - [TheMartesLive](https://github.com/TheMartes)
+- [eeevans](https://github.com/eeevans)
