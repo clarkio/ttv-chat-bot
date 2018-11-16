@@ -4,7 +4,7 @@ Twitch TV chat reader to change the color of overlays loaded from streamelements
 
 ## Getting Started
 
-1. `git clone [git@github.com:clarkio/ttv-chat-light.git](git@github.com:clarkio/ttv-chat-light.git)`
+1. `git clone git@github.com:clarkio/ttv-chat-light.git`
 2. cd `ttv-chat-light`
 3. npm install
 4. Login on [https://twitch.tv](https://twitch.tv)
