@@ -3,7 +3,7 @@ const STORE_OVERLAY_COLOR_NAME = 'streamOverlayColor';
 const beeDooAudio = new Audio('/assets/beedoo_minions.mp3');
 // @ts-ignore
 const socket = io();
-socket.on('color-effect', (effectColors: Array<string>) => {
+socket.on('color-effect', (effectColors: string[]) => {
   startOverlayEffect(effectColors);
 });
 
@@ -11,11 +11,14 @@ function triggerCopModeEffect() {
   startCopModeAudio();
 }
 
-function startOverlayEffect(colors: Array<string>) {
+function startOverlayEffect(colors: string[]) {
   const originalColor = String(localStorage.getItem(STORE_OVERLAY_COLOR_NAME));
   let counter = 0;
   let colorIndex = 0;
   let effectColor = colors[colorIndex];
+  if (colors[0].includes('cop')) {
+    startCopModeAudio();
+  }
   const overlayEffectInterval = setInterval(() => {
     counter += 1;
     if (counter === 20) {

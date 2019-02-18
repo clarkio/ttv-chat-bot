@@ -11,7 +11,7 @@ import {
   ttvClientToken,
   ttvClientUsername
 } from './config';
-import EffectsManager from 'effects-manager';
+import EffectsManager from './effects-manager';
 
 export class TwitchChat {
   public ttvChatClient: any;
