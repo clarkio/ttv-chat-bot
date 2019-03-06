@@ -115,46 +115,9 @@ export class AppServer {
       res.json({ color: currentColor });
     });
 
-    router.get('/test', (req, res) => {
+    router.get('/leroy', (req, res) => {
       // '../assets/sounds/leroy.swf.mp3'
-
-      // const fmp3 = require('fat-mp3');
-      // const filePlayer = new fmp3('dist/assets/sounds/leroy.swf.mp3');
-      // filePlayer.play();
-      // const stream = fs
-      //   .createReadStream('dist/assets/sounds/leroy.swf.mp3')
-      //   .pipe(new lame.Decoder())
-      //   .on('format', (format: any) => {
-      //     stream.pipe(new Speaker(format));
-      //     res.send('Played it!');
-      //   });
-      // const Player = require('player');
-      // new Player('dist/assets/sounds/leroy.swf.mp3').play(
-      //   (err: any, player2: any) => {
-      //     res.send('Played it!');
-      //   }
-      // );
-      // player1.play('dist/assets/sounds/leroy.swf.mp3', (result: any) => {
-      //   res.send({ message: 'Started Playing' });
-      // });
-      loader('dist/assets/sounds/leroy.swf.mp3').then((audioBuffer: any) => {
-        play(
-          audioBuffer,
-          {
-            autoplay: true,
-            detune: 0,
-            end: audioBuffer.duration,
-            loop: false,
-            rate: 1,
-            start: 0,
-            volume: 1
-          },
-          (result: any) => {
-            console.log(result);
-            res.send('Played the sound!');
-          }
-        );
-      });
+      loader('dist/assets/sounds/leroy.swf.mp3').then(play);
     });
 
     this.app.use('/', router);
