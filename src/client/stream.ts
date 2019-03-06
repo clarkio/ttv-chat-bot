@@ -1,6 +1,6 @@
 const captains = console;
 const STORE_OVERLAY_COLOR_NAME = 'streamOverlayColor';
-const beeDooAudio = new Audio('/assets/beedoo_minions.mp3');
+const beeDooAudio = new Audio('/assets/sounds/beedoo.mp3');
 // @ts-ignore
 const socket = io();
 socket.on('color-effect', (effectColors: string[]) => {

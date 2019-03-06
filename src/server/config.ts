@@ -24,6 +24,7 @@ const {
   TTV_CLIENT_TOKEN,
   TTV_CLIENT_USERNAME,
   TTV_CHANNELS,
+  CHAT_COMMAND_PREFIX,
   CHAT_COMMANDS,
   SPECIAL_EFFECTS_CHAT_COMMANDS,
   AZURE_BOT_TOKEN,
@@ -58,6 +59,9 @@ export const ttvChannels: string[] = TTV_CHANNELS ||
 
 export const chatCommands: string[] = CHAT_COMMANDS ||
   fileConfig.chatCommands || [requireConfigMessage];
+
+export const chatCommandPrefix: string =
+  CHAT_COMMAND_PREFIX || fileConfig.chatCommandPrefix || '!';
 
 export const specialEffectsChatCommands = SPECIAL_EFFECTS_CHAT_COMMANDS ||
   fileConfig.specialEffectsChatCommands || [requireConfigMessage];

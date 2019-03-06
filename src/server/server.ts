@@ -4,10 +4,6 @@ import express = require('express');
 import { Server } from 'http';
 import { resolve as resolvePath } from 'path';
 import io from 'socket.io';
-import fs from 'fs';
-import lame from 'lame';
-// tslint:disable-next-line:variable-name
-import Speaker from 'speaker';
 
 import { AzureBot } from './azure-bot';
 import * as config from './config';
@@ -19,7 +15,6 @@ import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
 
 // tslint:disable no-var-requires
-const player = require('play-sound')();
 const play = require('audio-play');
 const loader = require('audio-loader');
 
