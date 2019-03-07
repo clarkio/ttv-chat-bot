@@ -9,7 +9,7 @@ import { AzureBot } from './azure-bot';
 import * as config from './config';
 import { DiscordBot } from './discord-bot';
 import { log } from './log';
-import { Overlay } from './overlay';
+import Overlay from './overlay';
 import { changeLightColor, sendLightEffect } from './routes/lights';
 import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
@@ -24,14 +24,13 @@ const loader = require('audio-loader');
  * will live. This allows for easy enabling and disabling of features within the application
  */
 export class AppServer {
-  public overlay!: Overlay;
   public azureBot!: AzureBot;
   public app: express.Application;
   public io!: SocketIO.Server;
   public discordHook!: WebhookClient;
   private http!: Server;
 
-  constructor() {
+  constructor(public overlay: Overlay) {
     this.app = express();
     this.configApp();
     this.startDiscordHook();
@@ -51,7 +50,6 @@ export class AppServer {
    */
   private startOverlay = () => {
     this.http = new Server(this.app);
-    this.overlay = new Overlay();
     this.io = io(this.http);
   };
 

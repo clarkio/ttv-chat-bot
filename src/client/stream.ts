@@ -16,12 +16,9 @@ function startOverlayEffect(colors: string[]) {
   let counter = 0;
   let colorIndex = 0;
   let effectColor = colors[colorIndex];
-  if (colors[0].includes('cop')) {
-    startCopModeAudio();
-  }
   const overlayEffectInterval = setInterval(() => {
     counter += 1;
-    if (counter === 20) {
+    if (counter === 10) {
       setOverlayColor(originalColor);
       clearInterval(overlayEffectInterval);
     } else {

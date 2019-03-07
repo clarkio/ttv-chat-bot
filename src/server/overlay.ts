@@ -1,7 +1,7 @@
 import { appServer } from './index';
-import EffectsManager from './effects-manager';
+import SoundFx from './sound-fx';
 
-export class Overlay {
+export default class Overlay {
   public static readonly PORT: number = 1337;
   // TODO: determine better way to define these such as env vars
   public supportedOverlayColors: string[] = [
@@ -18,11 +18,8 @@ export class Overlay {
     'white'
   ];
   public currentBulbColor: string = 'blue';
-  private effectsManager: EffectsManager;
 
-  constructor() {
-    this.effectsManager = new EffectsManager();
-  }
+  constructor(private soundFx: SoundFx) {}
 
   /**
    * @returns The current Bulb Color
@@ -37,6 +34,9 @@ export class Overlay {
   public triggerSpecialEffect = (colors: string[]): void => {
     if (colors) {
       appServer.io.emit('color-effect', colors);
+      if (colors[0].includes('cop')) {
+        this.soundFx.playSoundEffect('beedoo');
+      }
     }
   };
 
