@@ -4,11 +4,15 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "TypeScript Build",
       "type": "typescript",
       "tsconfig": "tsconfig.json",
-      "problemMatcher": [
-        "$tsc"
-      ]
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "Compile & Copy",
+      "type": "npm",
+      "script": "compile-copy-assets"
     }
   ]
 }

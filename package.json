@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run compile-copy-assets && node dist/server/index.js",
-    "debug": "npm run compile-copy-assets && node --inspect dist/server/index.js",
-    "debug-brk": "npm run compile-copy-assets && node --inspect-brk dist/server/index.js",
+    "debug": "node --inspect dist/server/index.js",
+    "debug-compile": "npm run compile-copy-assets && node --inspect dist/server/index.js",
+    "debug-brk": "node --inspect-brk dist/server/index.js",
+    "debug-compile-brk": "npm run compile-copy-assets && node --inspect-brk dist/server/index.js",
     "test": "snyk test",
     "build": "tsc && npm run copy-assets",
     "snyk-protect": "snyk protect",
