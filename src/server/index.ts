@@ -1,10 +1,14 @@
 import { AppServer } from './server';
 import { TwitchChat } from './twitch-chat';
 import { AlertsManager } from './alerts-manager';
+import Overlay from './overlay';
 import EffectsManager from './effects-manager';
+import SoundFx from './sound-fx';
 import * as config from './config';
 
-const appServer: AppServer = new AppServer();
+const soundFx = new SoundFx();
+const overlay = new Overlay(soundFx);
+const appServer: AppServer = new AppServer(overlay);
 
 const effectsManager = new EffectsManager();
 const alertManager: AlertsManager = new AlertsManager(
@@ -13,7 +17,7 @@ const alertManager: AlertsManager = new AlertsManager(
 );
 alertManager.listenToEvents();
 
-const twitchChat: TwitchChat = new TwitchChat(effectsManager);
+const twitchChat: TwitchChat = new TwitchChat(effectsManager, soundFx);
 twitchChat.connect();
 
 export { appServer };

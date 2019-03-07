@@ -11,7 +11,8 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run-script", "debug-brk"],
       "sourceMaps": true,
-      "port": 9229
+      "port": 9229,
+      "preLaunchTask": "Compile & Copy"
     },
     {
       "type": "node",

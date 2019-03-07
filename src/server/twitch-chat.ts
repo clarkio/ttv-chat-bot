@@ -11,7 +11,8 @@ import {
   ttvClientToken,
   ttvClientUsername
 } from './config';
-import EffectsManager from 'effects-manager';
+import EffectsManager from './effects-manager';
+import SoundFx from './sound-fx';
 
 export class TwitchChat {
   public ttvChatClient: any;
@@ -21,7 +22,10 @@ export class TwitchChat {
   private lightControlCommands: string[] = chatCommands.toString().split(',');
   private isChatClientEnabled: boolean = true;
 
-  constructor(private effectsManager: EffectsManager) {
+  constructor(
+    private effectsManager: EffectsManager,
+    private soundFx: SoundFx
+  ) {
     this.ttvChatClient = new tmi.client(this.setTwitchChatOptions());
     this.ttvChatClient.on('join', this.ttvJoin);
     this.ttvChatClient.on('part', this.ttvPart);
@@ -184,8 +188,22 @@ export class TwitchChat {
       return this.startSpecialEffects(message, userName);
     }
 
+    if (this.isOtherCommand(message)) {
+      return this.soundFx.playSoundEffect(
+        message.replace(config.chatCommandPrefix, '')
+      );
+    }
+
     return Promise.resolve('there was nothing to do');
   };
+
+  /**
+   * Checks if the chat message received is intended for other commands by validating the command prefix character is present (such as '!')
+   * @param message chat message to check
+   */
+  private isOtherCommand(message: string): any {
+    return message.startsWith(config.chatCommandPrefix);
+  }
 
   /**
    * Check if the message is for special effects!
