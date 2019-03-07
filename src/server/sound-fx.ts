@@ -2,8 +2,7 @@ import { getSoundEffects } from './file-manager';
 import { resolve as resolvePath } from 'path';
 
 // tslint:disable: no-var-requires
-const play = require('audio-play');
-const loader = require('audio-loader');
+const player = require('play-sound')({});
 
 export default class SoundFx {
   private SOUND_FX_DIRECTORY = resolvePath(`${__dirname}`, '../assets/sounds');
@@ -34,7 +33,7 @@ export default class SoundFx {
 
   private async playAudioFile(file: string) {
     try {
-      await loader(file).then(play);
+      await player.play(file);
       return true;
     } catch (error) {
       console.error(error);
