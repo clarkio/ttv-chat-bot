@@ -29,7 +29,7 @@ function startOverlayEffect(colors: string[]) {
       colorIndex = colorIndex === colors.length - 1 ? 0 : ++colorIndex;
       effectColor = colors[colorIndex];
     }
-  }, 500);
+  }, 1000);
 }
 
 function startCopModeAudio() {

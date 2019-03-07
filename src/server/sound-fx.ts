@@ -33,8 +33,10 @@ export default class SoundFx {
 
   private async playAudioFile(file: string) {
     try {
-      await player.play(file);
-      return true;
+      await player.play(file, (error: any) => {
+        if (error) throw error;
+        return true;
+      });
     } catch (error) {
       console.error(error);
       return false;
