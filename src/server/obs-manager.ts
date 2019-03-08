@@ -19,6 +19,24 @@ export default class ObsManager {
     this.obs.on('error', this.handleError);
   }
 
+  public async getCurrentScene(): Promise<string> {
+    return this.obs.send('GetCurrentScene');
+  }
+
+  public async updateScene(
+    sceneName: string,
+    sourceName: string
+  ): Promise<any> {
+    return this.obs.send('SetSceneItemProperties', {
+      item: sourceName,
+      'scene-name': sceneName
+    });
+  }
+
+  public determineSceneEffectFromSound(soundEffect: string): any {
+    throw new Error('Method not implemented.');
+  }
+
   private handleError(error: any): any {
     console.error(error);
   }

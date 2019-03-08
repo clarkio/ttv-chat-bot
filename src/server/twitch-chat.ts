@@ -189,6 +189,7 @@ export class TwitchChat {
     }
 
     if (this.isOtherCommand(message)) {
+      return this.effectsManager.checkForCommand(message);
       return this.soundFx.playSoundEffect(
         message.replace(config.chatCommandPrefix, '')
       );

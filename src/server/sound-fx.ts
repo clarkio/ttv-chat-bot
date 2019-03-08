@@ -1,5 +1,6 @@
-import { getSoundEffects } from './file-manager';
+import { getSoundEffectsFiles } from './file-manager';
 import { resolve as resolvePath } from 'path';
+import ObsManager from './obs-manager';
 
 // tslint:disable: no-var-requires
 const player = require('play-sound')({});
@@ -8,44 +9,50 @@ export default class SoundFx {
   private SOUND_FX_DIRECTORY = resolvePath(`${__dirname}`, '../assets/sounds');
   private availableSoundEffects: string[] = new Array<string>();
 
-  constructor() {
-    getSoundEffects()
+  constructor(private obsManager: ObsManager) {
+    getSoundEffectsFiles()
       .then(files => {
         this.availableSoundEffects = files;
       })
       .catch(error => {
-        console.log('Unable to read sound effects files');
+        console.log(
+          'There was an error attempting to read sound effects files'
+        );
         console.error(error);
       });
   }
 
-  public async playSoundEffect(message: string) {
+  /**
+   * A method to play an audio file based on the name. The name is prefixed with the calculated path to the "assets/sounds" folder built with this project. If you notice errors when attempting to play a sound make sure you have the audio file in this folder.
+   * Note: this method is expected to be used after prior checking for the existence of the specified 'soundFileName'. If proper checks have not been done this will result in an error being thrown/returned.
+   * @param soundFileName the name of the audio file with extension (Example: fart.mp3)
+   */
+  public async playSoundEffect(soundFileName: string): Promise<any> {
     try {
-      const soundEffect = this.determineSoundEffect(message);
       return await this.playAudioFile(
-        `${this.SOUND_FX_DIRECTORY}/${soundEffect}`
+        `${this.SOUND_FX_DIRECTORY}/${soundFileName}`
       );
     } catch (error) {
-      console.error(error);
-      return false;
+      return error;
     }
   }
 
-  private async playAudioFile(file: string) {
-    try {
-      await player.play(file, (error: any) => {
-        if (error) throw error;
-        return true;
-      });
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
+  public async isSoundEffect(message: string): Promise<boolean> {
+    return this.availableSoundEffects.some((soundFile: string) =>
+      soundFile.includes(message)
+    );
   }
 
-  private determineSoundEffect(message: string): string {
+  public async determineSoundEffect(message: string): Promise<string> {
     return this.availableSoundEffects.filter((soundEffect: string) =>
       soundEffect.includes(message)
     )[0];
+  }
+
+  private async playAudioFile(file: string): Promise<boolean> {
+    return player.play(file, (error: any) => {
+      if (error) throw error;
+      return true;
+    });
   }
 }

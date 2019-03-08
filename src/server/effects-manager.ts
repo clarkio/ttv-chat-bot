@@ -1,9 +1,10 @@
-import { readEffects } from './file-manager';
+import { readEffects, getSoundEffectsFiles } from './file-manager';
 
 export default class EffectsManager {
-  allEffects: any | undefined;
-  specialEffects: any | undefined;
-  alertEffects: any | undefined;
+  private allEffects: any | undefined;
+  private specialEffects: any | undefined;
+  private alertEffects: any | undefined;
+  private sceneEffects: any | undefined;
 
   constructor() {
     this.loadEffects();
@@ -30,6 +31,10 @@ export default class EffectsManager {
       : this.determineAlertEffect(chatMessage);
   };
 
+  public async checkForCommand(message: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+
   /**
    * Check if the event or message received is a defined alert effect
    *
@@ -54,6 +59,7 @@ export default class EffectsManager {
       this.allEffects = JSON.parse(result);
       this.specialEffects = this.allEffects.specialEffects;
       this.alertEffects = this.allEffects.alertEffects;
+      this.sceneEffects = this.alertEffects.sceneEffects;
     });
   };
 }
