@@ -36,6 +36,7 @@ export default class EffectsManager {
   // TODO: check to see if the chat message is a supported command
   // TODO: abstract command check type work into a command manager class
   public async checkForCommand(message: string): Promise<any> {
+    // TODO: check if sound effect has corresponding scene effects (and maybe others in the future). Example: !pbjtime plays sound and shows dancing banana source in scene
     if (await this.soundFx.isSoundEffect(message)) {
       const soundEffect = await this.soundFx.determineSoundEffect(message);
       return this.soundFx.playSoundEffect(soundEffect);
