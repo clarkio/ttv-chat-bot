@@ -1,15 +1,49 @@
 import { readEffects } from './file-manager';
 import SoundFx from './sound-fx';
 import ObsManager from './obs-manager';
+import Overlay from './overlay';
+import * as config from './config';
+import { AzureBot } from './azure-bot';
 
 export default class EffectsManager {
+  public azureBot!: AzureBot;
   private allEffects: any | undefined;
   private specialEffects: any | undefined;
   private alertEffects: any | undefined;
   private sceneEffects: any | undefined;
+  private soundFx: SoundFx;
+  private obsManager: ObsManager;
+  private overlay: Overlay;
 
-  constructor(private soundFx: SoundFx, private obsManager: ObsManager) {
+  constructor() {
+    this.soundFx = new SoundFx();
+    this.obsManager = new ObsManager();
+    this.overlay = new Overlay(this.soundFx);
     this.loadEffects();
+    this.startAzureBot();
+  }
+
+  /**
+   * Updates the overlay used for the current scene that is active in OBS and on stream
+   * @param commandMessage the text command received from chat that should be used to update the overlay for effects
+   */
+  public updateOverlay(commandMessage: string) {
+    this.overlay.updateOverlay(commandMessage);
+  }
+
+  /**
+   * Users the Overlay manager to change colors based on the triggered effect
+   * @param colors an array of strings describing the written names of colors to use for the triggered effect
+   */
+  public triggerSpecialEffect(colors: string[]) {
+    return this.overlay.triggerSpecialEffect(colors);
+  }
+
+  /**
+   * Gets the current color being used in the overlay for the active scene
+   */
+  public getCurrentOverlayColor(): string {
+    return this.overlay.getCurrentColor();
   }
 
   /**
@@ -72,5 +106,15 @@ export default class EffectsManager {
       this.alertEffects = this.allEffects.alertEffects;
       this.sceneEffects = this.alertEffects.sceneEffects;
     });
+  };
+
+  /**
+   * Create the AzureBot
+   */
+  private startAzureBot = () => {
+    if (config.azureBotEnabled) {
+      this.azureBot = new AzureBot();
+      this.azureBot.createNewBotConversation();
+    }
   };
 }

@@ -13,6 +13,7 @@ import Overlay from './overlay';
 import { changeLightColor, sendLightEffect } from './routes/lights';
 import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
+import EffectsManager from './effects-manager';
 
 // tslint:disable no-var-requires
 const play = require('audio-play');
@@ -30,7 +31,7 @@ export class AppServer {
   public discordHook!: WebhookClient;
   private http!: Server;
 
-  constructor(public overlay: Overlay) {
+  constructor(public effectsManager: EffectsManager) {
     this.app = express();
     this.configApp();
     this.startDiscordHook();
@@ -99,18 +100,7 @@ export class AppServer {
     router.get('/lights/effects/:effect', sendLightEffect);
 
     router.get('/bulb/color', (req, res) => {
-      let currentColor: string;
-      if (this.overlay) {
-        currentColor = this.overlay.getCurrentColor();
-      } else {
-        currentColor = 'blue';
-      }
-      res.json({ color: currentColor });
-    });
-
-    router.get('/leroy', (req, res) => {
-      // '../assets/sounds/leroy.swf.mp3'
-      loader('dist/assets/sounds/leroy.swf.mp3').then(play);
+      res.json({ color: this.effectsManager.getCurrentOverlayColor() });
     });
 
     this.app.use('/', router);

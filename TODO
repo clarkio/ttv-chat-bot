@@ -2,3 +2,7 @@
 Todo:
   ☐ Draw/write out the flow of effects @created(19-03-08 00:30)
      - This is to better manage the different types of effects and what actions to take since things are getting a bit unwieldy (light, overlay, sound, etc.)
+  - Effects Manager is to be the main brain of the project
+      - It receives triggers from Alerts Manager and Chat Manager
+      - It will determine if the alert or chat trigger maps to a supported command and therefore has some associated effect to apply
+      - Once an effect is found to be applied the effects manager will handle starting all the various effects that go with it (such as sound, light, scene, overlay)

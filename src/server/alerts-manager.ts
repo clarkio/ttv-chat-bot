@@ -68,7 +68,7 @@ export class AlertsManager {
    * @param userName user triggered the alert
    */
   private startAlertEffect = (alertEffect: any, userName: string) => {
-    appServer.overlay.triggerSpecialEffect(alertEffect.colors);
+    this.effectsManager.triggerSpecialEffect(alertEffect.colors);
     if (appServer.azureBot) {
       return appServer.azureBot.triggerEffect(alertEffect, userName);
     }
