@@ -7,6 +7,8 @@ const player = require('play-sound')({});
 export default class SoundFx {
   private SOUND_FX_DIRECTORY = resolvePath(`${__dirname}`, '../assets/sounds');
   private availableSoundEffects: string[] = new Array<string>();
+  private stopSoundCommand = '!stop';
+  private currentlyPlayingAudio: any[] = new Array<any>();
 
   constructor() {
     getSoundEffectsFiles()
@@ -19,6 +21,15 @@ export default class SoundFx {
         );
         console.error(error);
       });
+  }
+
+  /**
+   * Stops the currently play sounds/audio files
+   */
+  public stopSounds() {
+    this.currentlyPlayingAudio.forEach(audio => {
+      audio.kill();
+    });
   }
 
   /**
@@ -42,6 +53,10 @@ export default class SoundFx {
     );
   }
 
+  public isStopSoundCommand(message: string): boolean {
+    return this.stopSoundCommand.includes(message);
+  }
+
   public async determineSoundEffect(message: string): Promise<string> {
     return this.availableSoundEffects.filter((soundEffect: string) =>
       soundEffect.includes(message)
@@ -49,9 +64,10 @@ export default class SoundFx {
   }
 
   private async playAudioFile(file: string): Promise<boolean> {
-    return player.play(file, (error: any) => {
+    const audio = await player.play(file, (error: any) => {
       if (error) throw error;
-      return true;
     });
+    this.currentlyPlayingAudio.push(audio);
+    return true;
   }
 }

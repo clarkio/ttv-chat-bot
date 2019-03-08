@@ -41,6 +41,9 @@ export default class EffectsManager {
       const soundEffect = await this.soundFx.determineSoundEffect(message);
       return this.soundFx.playSoundEffect(soundEffect);
     }
+    if (this.soundFx.isStopSoundCommand(message)) {
+      this.soundFx.stopSounds();
+    }
   }
 
   /**
