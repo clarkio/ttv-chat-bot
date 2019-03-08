@@ -1,4 +1,6 @@
-import { readEffects, getSoundEffectsFiles } from './file-manager';
+import { readEffects } from './file-manager';
+import SoundFx from './sound-fx';
+import ObsManager from './obs-manager';
 
 export default class EffectsManager {
   private allEffects: any | undefined;
@@ -6,7 +8,7 @@ export default class EffectsManager {
   private alertEffects: any | undefined;
   private sceneEffects: any | undefined;
 
-  constructor() {
+  constructor(private soundFx: SoundFx, private obsManager: ObsManager) {
     this.loadEffects();
   }
 
@@ -31,8 +33,13 @@ export default class EffectsManager {
       : this.determineAlertEffect(chatMessage);
   };
 
+  // TODO: check to see if the chat message is a supported command
+  // TODO: abstract command check type work into a command manager class
   public async checkForCommand(message: string): Promise<any> {
-    throw new Error('Method not implemented.');
+    if (await this.soundFx.isSoundEffect(message)) {
+      const soundEffect = await this.soundFx.determineSoundEffect(message);
+      return this.soundFx.playSoundEffect(soundEffect);
+    }
   }
 
   /**

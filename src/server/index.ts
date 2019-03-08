@@ -12,7 +12,7 @@ const overlay = new Overlay(soundFx);
 const appServer: AppServer = new AppServer(overlay);
 const obsManager = new ObsManager();
 
-const effectsManager = new EffectsManager();
+const effectsManager = new EffectsManager(soundFx, obsManager);
 const alertManager: AlertsManager = new AlertsManager(
   config.streamElementsJwt,
   effectsManager

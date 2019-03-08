@@ -1,6 +1,5 @@
 import { getSoundEffectsFiles } from './file-manager';
 import { resolve as resolvePath } from 'path';
-import ObsManager from './obs-manager';
 
 // tslint:disable: no-var-requires
 const player = require('play-sound')({});
@@ -9,7 +8,7 @@ export default class SoundFx {
   private SOUND_FX_DIRECTORY = resolvePath(`${__dirname}`, '../assets/sounds');
   private availableSoundEffects: string[] = new Array<string>();
 
-  constructor(private obsManager: ObsManager) {
+  constructor() {
     getSoundEffectsFiles()
       .then(files => {
         this.availableSoundEffects = files;
