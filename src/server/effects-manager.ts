@@ -23,6 +23,12 @@ export default class EffectsManager {
     this.startAzureBot();
   }
 
+  public triggerAzureBotEffect(alertEffect: any, userName: string) {
+    if (this.azureBot) {
+      return this.azureBot.triggerEffect(alertEffect, userName);
+    }
+  }
+
   /**
    * Updates the overlay used for the current scene that is active in OBS and on stream
    * @param commandMessage the text command received from chat that should be used to update the overlay for effects

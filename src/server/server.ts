@@ -5,19 +5,13 @@ import { Server } from 'http';
 import { resolve as resolvePath } from 'path';
 import io from 'socket.io';
 
-import { AzureBot } from './azure-bot';
 import * as config from './config';
 import { DiscordBot } from './discord-bot';
 import { log } from './log';
-import Overlay from './overlay';
 import { changeLightColor, sendLightEffect } from './routes/lights';
 import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
 import EffectsManager from './effects-manager';
-
-// tslint:disable no-var-requires
-const play = require('audio-play');
-const loader = require('audio-loader');
 
 // TODO: rename to just app? since index.ts is handling full server process?
 /**
@@ -25,7 +19,6 @@ const loader = require('audio-loader');
  * will live. This allows for easy enabling and disabling of features within the application
  */
 export class AppServer {
-  public azureBot!: AzureBot;
   public app: express.Application;
   public io!: SocketIO.Server;
   public discordHook!: WebhookClient;
@@ -37,7 +30,6 @@ export class AppServer {
     this.startDiscordHook();
     this.startOverlay();
     this.defineRoutes();
-    this.startAzureBot();
     this.listen();
   }
 
@@ -47,7 +39,7 @@ export class AppServer {
   public getApp = (): express.Application => this.app;
 
   /**
-   * Create the Overylay
+   * Create a socket.io server to use for overlay effects
    */
   private startOverlay = () => {
     this.http = new Server(this.app);
@@ -55,17 +47,7 @@ export class AppServer {
   };
 
   /**
-   * Create the AzureBot
-   */
-  private startAzureBot = () => {
-    if (config.azureBotEnabled) {
-      this.azureBot = new AzureBot();
-      this.azureBot.createNewBotConversation();
-    }
-  };
-
-  /**
-   * Start the Discord Hook
+   * Start the Discord Hook used for logging purposes right now
    */
   private startDiscordHook = () => {
     if (config.discordHookEnabled) {
@@ -74,7 +56,7 @@ export class AppServer {
   };
 
   /**
-   * Config Express
+   * Configure Express to parse json, setup pug as our html view engine for generating html pages and host the resources
    */
   private configApp(): void {
     this.app.use(bodyParser.json());
@@ -107,7 +89,7 @@ export class AppServer {
   }
 
   /**
-   * Start the server
+   * Start the Node.js server
    */
   private listen = (): void => {
     const runningMessage = `Overlay server is running on port http://localhost:${
