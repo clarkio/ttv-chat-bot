@@ -14,6 +14,7 @@ export default class EffectsManager {
   private soundFx: SoundFx;
   private obsManager: ObsManager;
   private overlay: Overlay;
+  private currentSceneEffect: any;
 
   constructor() {
     this.soundFx = new SoundFx();
@@ -79,6 +80,13 @@ export default class EffectsManager {
     // TODO: check if sound effect has corresponding scene effects (and maybe others in the future). Example: !pbjtime plays sound and shows dancing banana source in scene
     if (await this.soundFx.isSoundEffect(message)) {
       const soundEffect = await this.soundFx.determineSoundEffect(message);
+      const sceneEffect = await this.obsManager.determineSceneEffectFromSound(
+        soundEffect
+      );
+      if (sceneEffect) {
+        this.currentSceneEffect = sceneEffect;
+        this.obsManager.updateScene(sceneEffect);
+      }
       return this.soundFx.playSoundEffect(soundEffect);
     }
     if (this.soundFx.isStopSoundCommand(message)) {

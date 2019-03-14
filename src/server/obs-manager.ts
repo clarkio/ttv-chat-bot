@@ -15,7 +15,8 @@ export default class ObsManager {
       })
       .then(() => {
         this.getSceneList();
-      });
+      })
+      .catch(this.handleError);
     this.obs.on('error', this.handleError);
   }
 
@@ -23,18 +24,24 @@ export default class ObsManager {
     return this.obs.send('GetCurrentScene');
   }
 
-  public async updateScene(
-    sceneName: string,
-    sourceName: string
-  ): Promise<any> {
+  public async updateScene(sceneEffect: {
+    sceneName: string;
+    sourceName: string;
+    visible: boolean;
+  }): Promise<any> {
     return this.obs.send('SetSceneItemProperties', {
-      item: sourceName,
-      'scene-name': sceneName
+      item: sceneEffect.sourceName,
+      'scene-name': sceneEffect.sceneName,
+      visible: sceneEffect.visible
     });
   }
 
   public determineSceneEffectFromSound(soundEffect: string): any {
-    throw new Error('Method not implemented.');
+    return {
+      sceneName: 'Stream End',
+      sourceName: 'pbj-banana',
+      visible: true
+    };
   }
 
   private handleError(error: any): any {
