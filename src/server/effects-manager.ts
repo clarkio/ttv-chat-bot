@@ -81,16 +81,19 @@ export default class EffectsManager {
     if (await this.soundFx.isSoundEffect(message)) {
       const soundEffect = await this.soundFx.determineSoundEffect(message);
       const sceneEffect = await this.obsManager.determineSceneEffectFromSound(
-        soundEffect
+        soundEffect.fileName
       );
       if (sceneEffect) {
         this.currentSceneEffect = sceneEffect;
         this.obsManager.updateScene(sceneEffect);
+        // TODO: determine a way to automatically stop any scene effects that correspond to this sound effect when the sound effect is done
       }
-      return this.soundFx.playSoundEffect(soundEffect);
+      return this.soundFx.playSoundEffect(soundEffect.filePath);
     }
     if (this.soundFx.isStopSoundCommand(message)) {
       this.soundFx.stopSounds();
+      this.obsManager.stopSceneEffects();
+      // TODO: determine a way to stop any scene effects that correspond to this sound effect
     }
   }
 
