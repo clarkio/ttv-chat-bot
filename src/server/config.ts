@@ -32,6 +32,8 @@ const {
   DISCORD_HOOK_ENABLED,
   DISCORD_HOOK_ID,
   DISCORD_HOOK_TOKEN,
+  OBS_SOCKETS_KEY,
+  OBS_SOCKETS_SERVER,
   STREAMELEMENTS_JWT,
   STREAMELEMENTS_WEBSOCKET_URL
 } = process.env;
@@ -79,6 +81,12 @@ export const discordHookId: string =
 
 export const discordHookToken: string =
   DISCORD_HOOK_TOKEN || fileConfig.discordHookToken || requireConfigMessage;
+
+export const obsSocketsKey: string =
+  OBS_SOCKETS_KEY || fileConfig.obsSocketsKey || requireConfigMessage;
+
+export const obsSocketsServer: string =
+  OBS_SOCKETS_SERVER || fileConfig.obsSocketsServer || 'localhost:4444';
 
 export const streamElementsJwt: string =
   STREAMELEMENTS_JWT || fileConfig.streamElementsJwt || requireConfigMessage;

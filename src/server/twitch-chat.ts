@@ -1,4 +1,3 @@
-import { appServer } from './index';
 import { log } from './log';
 import * as config from './config';
 
@@ -12,7 +11,6 @@ import {
   ttvClientUsername
 } from './config';
 import EffectsManager from './effects-manager';
-import SoundFx from './sound-fx';
 
 export class TwitchChat {
   public ttvChatClient: any;
@@ -22,10 +20,7 @@ export class TwitchChat {
   private lightControlCommands: string[] = chatCommands.toString().split(',');
   private isChatClientEnabled: boolean = true;
 
-  constructor(
-    private effectsManager: EffectsManager,
-    private soundFx: SoundFx
-  ) {
+  constructor(private effectsManager: EffectsManager) {
     this.ttvChatClient = new tmi.client(this.setTwitchChatOptions());
     this.ttvChatClient.on('join', this.ttvJoin);
     this.ttvChatClient.on('part', this.ttvPart);
@@ -189,7 +184,7 @@ export class TwitchChat {
     }
 
     if (this.isOtherCommand(message)) {
-      return this.soundFx.playSoundEffect(
+      return this.effectsManager.checkForCommand(
         message.replace(config.chatCommandPrefix, '')
       );
     }
@@ -218,9 +213,10 @@ export class TwitchChat {
    * @param userName user who sent
    */
   private startSpecialEffects = (specialEffect: any, userName: string) => {
-    appServer.overlay.triggerSpecialEffect(specialEffect.colors);
-    if (appServer.azureBot) {
-      return appServer.azureBot
+    // TODO update so that effects manager handles azure bot related workload
+    this.effectsManager.triggerSpecialEffect(specialEffect.colors);
+    if (this.effectsManager.azureBot) {
+      return this.effectsManager.azureBot
         .triggerEffect(specialEffect, userName)
         .then(result => {
           setTimeout(
@@ -239,10 +235,11 @@ export class TwitchChat {
    * @param userName who sent the message
    */
   private startColorChange = (commandMessage: string, userName: string) => {
-    appServer.overlay.updateOverlay(commandMessage);
+    this.effectsManager.updateOverlay(commandMessage);
 
-    if (appServer.azureBot) {
-      return appServer.azureBot
+    // TODO update so that effects manager handles azure bot related workload
+    if (this.effectsManager.azureBot) {
+      return this.effectsManager.azureBot
         .sendCommand(commandMessage, userName)
         .then((result: any) => {
           log('info', `Successfully sent the command from ${userName}`);
@@ -260,7 +257,8 @@ export class TwitchChat {
   };
 
   private checkForBotResponse = () => {
-    appServer.azureBot
+    // TODO update so that effects manager handles azure bot related workload
+    this.effectsManager.azureBot
       .getConversationMessages()
       .then(result => {
         const messages = result.messages;

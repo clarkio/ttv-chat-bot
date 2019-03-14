@@ -20,7 +20,8 @@
       "name": "Server Debug",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run-script", "debug"],
-      "port": 9229
+      "port": 9229,
+      "preLaunchTask": "Compile & Copy"
     },
     {
       "type": "node",

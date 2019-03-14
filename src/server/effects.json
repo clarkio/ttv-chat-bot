@@ -42,5 +42,21 @@
     "tip": ["purple", "green"],
     "cheer": ["purple", "green"]
   },
-  "supportedColors": []
+  "supportedColors": [],
+  "sceneEffects": {
+    "pbjtime": {
+      "scenes": ["StartingSoon"],
+      "sources": [
+        {
+          "sourceName": "peanut-butter-banana",
+          "startAction": { "visible": true },
+          "endAction": { "visible": false }
+        }
+      ],
+      "sound": {
+        "file": "pbjtime.mp3",
+        "volume": ".5"
+      }
+    }
+  }
 }

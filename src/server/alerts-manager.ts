@@ -24,6 +24,9 @@ export class AlertsManager {
     });
   }
 
+  /**
+   * Set up handlers for listening to socket.io events that occur
+   */
   public listenToEvents() {
     this.socket.on('connect', this.onConnect);
     this.socket.on('disconnect', this.onDisconnect);
@@ -31,6 +34,9 @@ export class AlertsManager {
     this.socket.on('event', this.onEvent);
   }
 
+  /**
+   * A handler that is used when a connection has successfully completed for the socket.io server and then initiates the authentication flow
+   */
   private onConnect = () => {
     log('info', this.constants.websocketsConnectLog);
 
@@ -45,12 +51,18 @@ export class AlertsManager {
     // TODO: Handle Reconnect
   };
 
+  /**
+   * A handler function to receive the result of successfully authenticating with the socket.io server and storing the channelId for that server
+   */
   private onAuthenticated = (data: any) => {
     const { channelId } = data;
 
     log('info', `Successfully authenticated for channel ${channelId}`);
   };
 
+  /**
+   * A handler function to receive events that occur on the socket.io channel and take action upon those events. In this case we'll be trying to determine if there was an alert
+   */
   private onEvent = (event: any) => {
     log('info', `Received alert: ${event.type}`);
     const alert = this.effectsManager.determineAlertEffect(event.type);
@@ -62,15 +74,13 @@ export class AlertsManager {
   };
 
   /**
-   * Do something cool when there is an alert effect triggered
+   * After determining that an alert happened trigger any corresponding effects for that alert
    *
    * @param alertEffect alert type sent
    * @param userName user triggered the alert
    */
   private startAlertEffect = (alertEffect: any, userName: string) => {
-    appServer.overlay.triggerSpecialEffect(alertEffect.colors);
-    if (appServer.azureBot) {
-      return appServer.azureBot.triggerEffect(alertEffect, userName);
-    }
+    this.effectsManager.triggerSpecialEffect(alertEffect.colors);
+    this.effectsManager.triggerAzureBotEffect(alertEffect, userName);
   };
 }
