@@ -79,19 +79,26 @@ export default class EffectsManager {
       const soundEffect = await this.soundFxManager.determineSoundEffect(
         message
       );
-      const sceneEffect = await this.obsManager.determineSceneEffectFromSound(
-        soundEffect.fileName
-      );
-      if (sceneEffect) {
-        this.obsManager.updateScene(sceneEffect);
-        // TODO: determine a way to automatically stop any scene effects that correspond to this sound effect when the sound effect is done
+      if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
+        const sceneEffect = await this.obsManager.determineSceneEffectByName(
+          soundEffect.setting.sceneEffectName
+        );
+
+        if (sceneEffect) {
+          this.obsManager.activateSceneEffect(sceneEffect);
+          // TODO: determine a way to automatically stop any scene effects that correspond to this sound effect when the sound effect is done
+        }
       }
-      return this.soundFxManager.playSoundEffect(soundEffect.filePath);
+      // TODO: use corresponding soundEffect setting if available (to do things like control volume at which the sound is played)
+      return this.soundFxManager.playSoundEffect(soundEffect.fileFullPath);
+    }
+    if (await this.obsManager.isSceneEffect(message)) {
+      const sceneEffect = await this.obsManager.determineSceneEffect(message);
+      this.obsManager.applySceneEffect(sceneEffect);
     }
     if (this.soundFxManager.isStopSoundCommand(message)) {
       this.soundFxManager.stopSounds();
-      this.obsManager.stopSceneEffects();
-      // TODO: determine a way to stop any scene effects that correspond to this sound effect
+      this.obsManager.deactivateAllSceneEffects();
     }
   }
 
@@ -147,7 +154,7 @@ export default class EffectsManager {
     | null
     | undefined {
     return () => {
-      // All effects will be read from the file system at this point
+      // All effects will have been read from the file system at this point
       this.obsManager = new ObsManager(this.sceneEffects);
       this.soundFxManager = new SoundFxManager(this.soundEffects);
       this.overlayManager = new OverlayManager(this.soundFxManager);

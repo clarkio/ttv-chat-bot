@@ -6,11 +6,27 @@ const player = require('play-sound')({});
 // TODO: Switch this ^^^ to use node-mp3-player to which allows volumne control
 const mp3Duration = require('mp3-duration');
 
+/**
+ * A class to capture properties for each mp3 file available within the sounds directory in this project
+ */
 export class SoundFxFile {
   constructor(
     public fileName: string,
-    public filePath: string,
-    public duration: number
+    public fileFullPath: string,
+    public duration: number,
+    public setting?: SoundFxSetting
+  ) {}
+}
+
+/**
+ * A class to capture any sound effect settings found in the configuration file "effects.json". This configuration file defines effect properties (such as volume) and/or corresponding effects outside of sounds that are associated with it (such as scene effects in OBS)
+ */
+export class SoundFxSetting {
+  constructor(
+    public name: string,
+    public fileName: string,
+    public sceneEffectName: string | undefined,
+    public volume: number | 1
   ) {}
 }
 
@@ -20,7 +36,7 @@ export default class SoundFxManager {
   private stopSoundCommand = '!stop';
   private currentlyPlayingAudio: any[] = new Array<any>();
 
-  constructor(private soundEffectsSettings: any | undefined) {
+  constructor(private soundEffectSettings: any | undefined) {
     getSoundEffectsFiles()
       .then(this.mapFiles)
       .catch(error => {
@@ -38,6 +54,7 @@ export default class SoundFxManager {
     this.currentlyPlayingAudio.forEach(audio => {
       audio.kill();
     });
+    this.currentlyPlayingAudio = new Array<any>();
   }
 
   /**
@@ -78,15 +95,23 @@ export default class SoundFxManager {
   }
 
   private mapFiles = (files: string[]) => {
-    const soundFxDirectory = this.SOUND_FX_DIRECTORY;
-    files.forEach((file: string) => {
-      const filePath = `${this.SOUND_FX_DIRECTORY}/${file}`;
-      mp3Duration(filePath, (error: any, duration: any) => {
+    // Array.forEach is blocking aka synchronous
+    files.forEach((fileName: string) => {
+      const fileFullPath = `${this.SOUND_FX_DIRECTORY}/${fileName}`;
+      mp3Duration(fileFullPath, (error: any, duration: any) => {
         if (error) {
           console.error(error);
         }
-
-        const soundFxFile = new SoundFxFile(file, filePath, duration);
+        const soundEffectSetting = this.soundEffectSettings.find(
+          (setting: SoundFxSetting) =>
+            setting.name === fileName.replace('.mp3', '')
+        );
+        const soundFxFile = new SoundFxFile(
+          fileName,
+          fileFullPath,
+          duration,
+          soundEffectSetting
+        );
         this.availableSoundEffects.push(soundFxFile);
       });
     });

@@ -34,29 +34,30 @@
   "supportedColors": [],
   "soundEffects": [
     {
-      "pbjtime": {
-        "sceneEffect": "pbjtime",
-        "volume": 1
-      }
+      "name": "pbjtime",
+      "fileName": "pbjtime",
+      "sceneEffectName": "pbjtime-banana-dance",
+      "volume": 1
     }
   ],
-  "sceneEffects": {
-    "pbjtime": {
-      "scenes": ["StartingSoon"],
-      "effectType": "SourceChange",
+  "sceneEffects": [
+    {
+      "name": "pbjtime-banana-dance",
+      "scenes": ["Starting Soon", "Stream End"],
+      "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "sourceName": "peanut-butter-banana",
-          "startAction": {
+          "name": "pbj-banana",
+          "activeState": {
             "visible": true
           },
-          "endAction": {
+          "inactiveState": {
             "visible": false
           }
         }
       ]
     }
-  },
+  ],
   "specialEffectsOld": {
     "cop mode": ["cop-red", "cop-blue"],
     "party mode": ["pink", "blue"]
