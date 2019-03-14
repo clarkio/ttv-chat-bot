@@ -31,17 +31,6 @@
       "colors": ["purple", "green"]
     }
   },
-  "specialEffectsOld": {
-    "cop mode": ["cop-red", "cop-blue"],
-    "party mode": ["pink", "blue"]
-  },
-  "alertEffectsOld": {
-    "follow": ["purple", "white"],
-    "host": ["purple", "white"],
-    "subscriber": ["purple", "green"],
-    "tip": ["purple", "green"],
-    "cheer": ["purple", "green"]
-  },
   "supportedColors": [],
   "soundEffects": [
     {
@@ -58,10 +47,25 @@
       "sources": [
         {
           "sourceName": "peanut-butter-banana",
-          "startAction": { "visible": true },
-          "endAction": { "visible": false }
+          "startAction": {
+            "visible": true
+          },
+          "endAction": {
+            "visible": false
+          }
         }
       ]
     }
+  },
+  "specialEffectsOld": {
+    "cop mode": ["cop-red", "cop-blue"],
+    "party mode": ["pink", "blue"]
+  },
+  "alertEffectsOld": {
+    "follow": ["purple", "white"],
+    "host": ["purple", "white"],
+    "subscriber": ["purple", "green"],
+    "tip": ["purple", "green"],
+    "cheer": ["purple", "green"]
   }
 }

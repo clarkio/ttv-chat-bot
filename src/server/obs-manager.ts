@@ -2,6 +2,10 @@ import * as config from './config';
 
 import ObsWebSocket from 'obs-websocket-js';
 
+enum EffectType {
+  SourceChange = 'SourceChange'
+}
+
 export class SceneEffect {
   constructor() {
     //
@@ -13,7 +17,7 @@ export default class ObsManager {
   private obs: ObsWebSocket;
   private activeSceneEffects: any[] = new Array<any>();
 
-  constructor() {
+  constructor(private sceneEffects: any | undefined) {
     this.obs = new ObsWebSocket();
     this.obs
       .connect({

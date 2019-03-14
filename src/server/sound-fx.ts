@@ -14,13 +14,13 @@ export class SoundFxFile {
   ) {}
 }
 
-export default class SoundFx {
+export default class SoundFxManager {
   private SOUND_FX_DIRECTORY = resolvePath(`${__dirname}`, '../assets/sounds');
   private availableSoundEffects: SoundFxFile[] = new Array<SoundFxFile>();
   private stopSoundCommand = '!stop';
   private currentlyPlayingAudio: any[] = new Array<any>();
 
-  constructor() {
+  constructor(private soundEffectsSettings: any | undefined) {
     getSoundEffectsFiles()
       .then(this.mapFiles)
       .catch(error => {
