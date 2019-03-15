@@ -1,7 +1,7 @@
 import { appServer } from './index';
-import SoundFx from './sound-fx';
+import SoundFxManager from './sound-fx';
 
-export default class Overlay {
+export default class OverlayManager {
   public static readonly PORT: number = 1337;
   // TODO: determine better way to define these such as env vars
   public supportedOverlayColors: string[] = [
@@ -19,7 +19,7 @@ export default class Overlay {
   ];
   public currentBulbColor: string = 'blue';
 
-  constructor(private soundFx: SoundFx) {}
+  constructor(private soundFx: SoundFxManager) {}
 
   /**
    * @returns The current Bulb Color

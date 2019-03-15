@@ -23,7 +23,7 @@ export function writeCssFile(data: any) {
     });
   }
 }
-export function readEffects() {
+export function readEffects(): Promise<string> {
   return new Promise((resolve, reject) => {
     readFile(EFFECTS_FILE_NAME, 'utf8', (err: any, data: any) =>
       handleFileActionCallback(err, data, resolve, reject)

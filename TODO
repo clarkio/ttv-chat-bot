@@ -1,5 +1,9 @@
 
 Todo:
+  ☐ Determine a way to automatically stop any scene effects that correspond to this sound effect when the sound effect is done
+  Problem: Audio file is long and the effect is overplayed
+      Solution: stop audio on command
+  Problem: When a soundfx is triggered and there is a corresponding scene effect it needs to stop when the soundfx is stopped
   ☐ Draw/write out the flow of effects @created(19-03-08 00:30)
      - This is to better manage the different types of effects and what actions to take since things are getting a bit unwieldy (light, overlay, sound, etc.)
   - Effects Manager is to be the main brain of the project

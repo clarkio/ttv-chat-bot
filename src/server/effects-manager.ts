@@ -1,7 +1,7 @@
 import { readEffects } from './file-manager';
-import SoundFx from './sound-fx';
+import SoundFxManager from './sound-fx';
 import ObsManager from './obs-manager';
-import Overlay from './overlay';
+import OverlayManager from './overlay';
 import * as config from './config';
 import { AzureBot } from './azure-bot';
 
@@ -11,15 +11,13 @@ export default class EffectsManager {
   private specialEffects: any | undefined;
   private alertEffects: any | undefined;
   private sceneEffects: any | undefined;
-  private soundFx: SoundFx;
-  private obsManager: ObsManager;
-  private overlay: Overlay;
+  private soundEffects: any | undefined;
+  private soundFxManager!: SoundFxManager;
+  private obsManager!: ObsManager;
+  private overlayManager!: OverlayManager;
 
   constructor() {
-    this.soundFx = new SoundFx();
-    this.obsManager = new ObsManager();
-    this.overlay = new Overlay(this.soundFx);
-    this.loadEffects();
+    this.loadEffects().then(this.initEffectControllers());
     this.startAzureBot();
   }
 
@@ -34,7 +32,7 @@ export default class EffectsManager {
    * @param commandMessage the text command received from chat that should be used to update the overlay for effects
    */
   public updateOverlay(commandMessage: string) {
-    this.overlay.updateOverlay(commandMessage);
+    this.overlayManager.updateOverlay(commandMessage);
   }
 
   /**
@@ -42,14 +40,14 @@ export default class EffectsManager {
    * @param colors an array of strings describing the written names of colors to use for the triggered effect
    */
   public triggerSpecialEffect(colors: string[]) {
-    return this.overlay.triggerSpecialEffect(colors);
+    return this.overlayManager.triggerSpecialEffect(colors);
   }
 
   /**
    * Gets the current color being used in the overlay for the active scene
    */
   public getCurrentOverlayColor(): string {
-    return this.overlay.getCurrentColor();
+    return this.overlayManager.getCurrentColor();
   }
 
   /**
@@ -77,12 +75,30 @@ export default class EffectsManager {
   // TODO: abstract command check type work into a command manager class
   public async checkForCommand(message: string): Promise<any> {
     // TODO: check if sound effect has corresponding scene effects (and maybe others in the future). Example: !pbjtime plays sound and shows dancing banana source in scene
-    if (await this.soundFx.isSoundEffect(message)) {
-      const soundEffect = await this.soundFx.determineSoundEffect(message);
-      return this.soundFx.playSoundEffect(soundEffect);
+    if (await this.soundFxManager.isSoundEffect(message)) {
+      const soundEffect = await this.soundFxManager.determineSoundEffect(
+        message
+      );
+      if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
+        const sceneEffect = await this.obsManager.determineSceneEffectByName(
+          soundEffect.setting.sceneEffectName
+        );
+
+        if (sceneEffect) {
+          this.obsManager.activateSceneEffect(sceneEffect);
+          // TODO: determine a way to automatically stop any scene effects that correspond to this sound effect when the sound effect is done
+        }
+      }
+      // TODO: use corresponding soundEffect setting if available (to do things like control volume at which the sound is played)
+      return this.soundFxManager.playSoundEffect(soundEffect.fileFullPath);
     }
-    if (this.soundFx.isStopSoundCommand(message)) {
-      this.soundFx.stopSounds();
+    if (await this.obsManager.isSceneEffect(message)) {
+      const sceneEffect = await this.obsManager.determineSceneEffect(message);
+      this.obsManager.applySceneEffect(sceneEffect);
+    }
+    if (this.soundFxManager.isStopSoundCommand(message)) {
+      this.soundFxManager.stopSounds();
+      this.obsManager.deactivateAllSceneEffects();
     }
   }
 
@@ -105,13 +121,19 @@ export default class EffectsManager {
     return alertEffectKey && this.alertEffects[alertEffectKey];
   };
 
-  private loadEffects = () => {
-    readEffects().then((result: any) => {
+  private loadEffects = async (): Promise<any> => {
+    try {
+      const result = await readEffects();
       this.allEffects = JSON.parse(result);
       this.specialEffects = this.allEffects.specialEffects;
       this.alertEffects = this.allEffects.alertEffects;
-      this.sceneEffects = this.alertEffects.sceneEffects;
-    });
+      this.sceneEffects = this.allEffects.sceneEffects;
+      this.soundEffects = this.allEffects.soundEffects;
+      return;
+    } catch (error) {
+      console.error(error);
+      return;
+    }
   };
 
   /**
@@ -123,4 +145,19 @@ export default class EffectsManager {
       this.azureBot.createNewBotConversation();
     }
   };
+
+  /**
+   * Initialize classes that assist in controlling effects
+   */
+  private initEffectControllers():
+    | ((value: any) => void | PromiseLike<void>)
+    | null
+    | undefined {
+    return () => {
+      // All effects will have been read from the file system at this point
+      this.obsManager = new ObsManager(this.sceneEffects);
+      this.soundFxManager = new SoundFxManager(this.soundEffects);
+      this.overlayManager = new OverlayManager(this.soundFxManager);
+    };
+  }
 }

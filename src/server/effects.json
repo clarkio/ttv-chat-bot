@@ -31,6 +31,33 @@
       "colors": ["purple", "green"]
     }
   },
+  "supportedColors": [],
+  "soundEffects": [
+    {
+      "name": "pbjtime",
+      "fileName": "pbjtime",
+      "sceneEffectName": "pbjtime-banana-dance",
+      "volume": 1
+    }
+  ],
+  "sceneEffects": [
+    {
+      "name": "pbjtime-banana-dance",
+      "scenes": ["Starting Soon", "Stream End"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "pbj-banana",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    }
+  ],
   "specialEffectsOld": {
     "cop mode": ["cop-red", "cop-blue"],
     "party mode": ["pink", "blue"]
@@ -41,22 +68,5 @@
     "subscriber": ["purple", "green"],
     "tip": ["purple", "green"],
     "cheer": ["purple", "green"]
-  },
-  "supportedColors": [],
-  "sceneEffects": {
-    "pbjtime": {
-      "scenes": ["StartingSoon"],
-      "sources": [
-        {
-          "sourceName": "peanut-butter-banana",
-          "startAction": { "visible": true },
-          "endAction": { "visible": false }
-        }
-      ],
-      "sound": {
-        "file": "pbjtime.mp3",
-        "volume": ".5"
-      }
-    }
   }
 }
