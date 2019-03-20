@@ -1,5 +1,6 @@
 import { getSoundEffectsFiles } from './file-manager';
 import { resolve as resolvePath } from 'path';
+import AudioPlayer from './audio-player';
 
 // tslint:disable: no-var-requires
 const player = require('play-sound')({});
@@ -35,6 +36,7 @@ export default class SoundFxManager {
   private availableSoundEffects: SoundFxFile[] = new Array<SoundFxFile>();
   private stopSoundCommand = '!stop';
   private currentlyPlayingAudio: any[] = new Array<any>();
+  private audioPlayer = new AudioPlayer();
 
   constructor(private soundEffectSettings: any | undefined) {
     getSoundEffectsFiles()
@@ -51,9 +53,9 @@ export default class SoundFxManager {
    * Stops the currently play sounds/audio files
    */
   public stopSounds() {
-    this.currentlyPlayingAudio.forEach(audio => {
-      audio.kill();
-    });
+    // this.currentlyPlayingAudio.forEach(audio => {
+    //   audio.kill();
+    // });
     this.currentlyPlayingAudio = new Array<any>();
   }
 
@@ -87,10 +89,11 @@ export default class SoundFxManager {
   }
 
   private async playAudioFile(file: string): Promise<boolean> {
-    const audio = await player.play(file, (error: any) => {
-      if (error) throw error;
-    });
-    this.currentlyPlayingAudio.push(audio);
+    this.audioPlayer.play(file);
+    // const audio = await player.play(file, (error: any) => {
+    //   if (error) throw error;
+    // });
+    // this.currentlyPlayingAudio.push(audio);
     return true;
   }
 

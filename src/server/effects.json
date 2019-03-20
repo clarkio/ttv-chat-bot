@@ -38,12 +38,17 @@
       "fileName": "pbjtime",
       "sceneEffectName": "pbjtime-banana-dance",
       "volume": 1
+    },
+    {
+      "name": "leroy",
+      "fileName": "leroy",
+      "volume": 0.5
     }
   ],
   "sceneEffects": [
     {
       "name": "pbjtime-banana-dance",
-      "scenes": ["Starting Soon", "Stream End"],
+      "scenes": ["Starting Soon", "Stream End", "Main Scene Green Screen"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
