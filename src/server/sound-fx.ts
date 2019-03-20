@@ -31,7 +31,7 @@ export class SoundFxSetting {
 }
 
 export default class SoundFxManager {
-  private SOUND_FX_DIRECTORY = resolvePath(`${__dirname}`, '../assets/sounds');
+  public SOUND_FX_DIRECTORY = resolvePath(`${__dirname}`, '../assets/sounds');
   private availableSoundEffects: SoundFxFile[] = new Array<SoundFxFile>();
   private stopSoundCommand = '!stop';
   private currentlyPlayingAudio: any[] = new Array<any>();
@@ -58,9 +58,9 @@ export default class SoundFxManager {
   }
 
   /**
-   * A method to play an audio file based on the name. The name is prefixed with the calculated path to the "assets/sounds" folder built with this project. If you notice errors when attempting to play a sound make sure you have the audio file in this folder.
+   * A method to play an audio file based on the name. If you notice errors when attempting to play a sound make sure you have the audio file in this folder.
    * Note: this method is expected to be used after prior checking for the existence of the specified 'soundFileName'. If proper checks have not been done this will result in an error being thrown/returned.
-   * @param soundFilePath the full path to the audio file with the extension (Example: fart.mp3)
+   * @param soundFilePath the full path to the audio file with the extension (Example: c:/path/to/fart.mp3)
    */
   public async playSoundEffect(soundFilePath: string): Promise<any> {
     try {

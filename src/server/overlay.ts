@@ -35,7 +35,9 @@ export default class OverlayManager {
     if (colors) {
       appServer.io.emit('color-effect', colors);
       if (colors[0].includes('cop')) {
-        this.soundFx.playSoundEffect('beedoo.mp3');
+        this.soundFx.playSoundEffect(
+          `${this.soundFx.SOUND_FX_DIRECTORY}/beedoo.mp3`
+        );
       }
     }
   };
