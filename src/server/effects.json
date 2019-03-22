@@ -43,7 +43,7 @@
   "sceneEffects": [
     {
       "name": "pbjtime-banana-dance",
-      "scenes": ["Starting Soon", "Stream End"],
+      "scenes": ["*", "Starting Soon", "Stream End", "Main Scene Green Screen"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -57,6 +57,17 @@
         }
       ]
     }
+  ],
+  "permittedScenesForCommand": [
+    "Main Scene Green Screen",
+    "Full Cam Overlay",
+    "BRB"
+  ],
+  "sceneAliases": [
+    {"main": "Main Scene Green Screen"},
+    {"cam": "Full Cam Overlay"},
+    {"brb": "BRB"},
+    {"game": ""}
   ],
   "specialEffectsOld": {
     "cop mode": ["cop-red", "cop-blue"],
