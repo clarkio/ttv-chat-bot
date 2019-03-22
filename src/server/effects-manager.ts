@@ -13,6 +13,7 @@ export default class EffectsManager {
   private sceneEffects: any | undefined;
   private soundEffects: any | undefined;
   private permittedScenesForCommand: any | undefined;
+  private sceneAliases: any | undefined;
   private soundFxManager!: SoundFxManager;
   private obsManager!: ObsManager;
   private overlayManager!: OverlayManager;
@@ -136,6 +137,7 @@ export default class EffectsManager {
       this.sceneEffects = this.allEffects.sceneEffects;
       this.soundEffects = this.allEffects.soundEffects;
       this.permittedScenesForCommand = this.allEffects.permittedScenesForCommand;
+      this.sceneAliases = this.allEffects.sceneAliases;
       return;
     } catch (error) {
       console.error(error);
@@ -162,7 +164,7 @@ export default class EffectsManager {
     | undefined {
     return () => {
       // All effects will have been read from the file system at this point
-      this.obsManager = new ObsManager(this.sceneEffects, this.permittedScenesForCommand);
+      this.obsManager = new ObsManager(this.sceneEffects, this.permittedScenesForCommand, this.sceneAliases);
       this.soundFxManager = new SoundFxManager(this.soundEffects);
       this.overlayManager = new OverlayManager(this.soundFxManager);
     };

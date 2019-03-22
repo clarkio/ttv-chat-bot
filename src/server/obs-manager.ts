@@ -44,7 +44,7 @@ export default class ObsManager {
   private activeSceneEffects: SceneEffect[] = new Array<SceneEffect>();
   private sceneCommand: string = 'scene';
 
-  constructor(private sceneEffectSettings: any | undefined, private permittedScenesForCommand: any | undefined) {
+  constructor(private sceneEffectSettings: any | undefined, private permittedScenesForCommand: any | undefined, private sceneAliases: any | undefined) {
     this.initSceneEffects();
     this.obs = new ObsWebSocket();
     this.obs
@@ -69,7 +69,7 @@ export default class ObsManager {
     // !scene <scene name>
     message = message.replace(`${this.sceneCommand}`, '').toLowerCase().trim();
 
-    const sceneToActivate =  this.sceneList.find((scene: any) => scene.name.toLowerCase().includes(message) && this.isScenePermitted(scene.name));
+    const sceneToActivate = this.determineSceneFromMessage(message);
     if(sceneToActivate) {
       // tell OBS via websockets to activate the scene
       this.obs.send(
@@ -244,5 +244,12 @@ export default class ObsManager {
           source.inactiveState
         )
     );
+  }
+
+  private determineSceneFromMessage(message: string): any | undefined {
+    message = message.toLowerCase();
+    const sceneAlias = this.sceneAliases.find((alias: any) => alias[message]);
+    message = sceneAlias ? sceneAlias[message].toLowerCase() : message;
+    return this.sceneList.find((scene: any) => scene.name.toLowerCase().includes(message) && this.isScenePermitted(scene.name));
   }
 }
