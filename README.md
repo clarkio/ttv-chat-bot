@@ -2,6 +2,8 @@
 
 Twitch TV chat reader to change the color of overlays loaded from streamelements and/or colors of internet connected lights via Azure Bot Service and Language Understanding AI (LUIS)
 
+> Join Clarkio live on Wednesdays at 10 AM ET and Fridays at 12:30 PM ET for the coding streams. https://twitch.tv/clarkio
+
 ## Getting Started
 
 1. `git clone git@github.com:clarkio/ttv-chat-light.git`
@@ -67,3 +69,5 @@ Please make sure you've completed all steps in the "Getting Started" and "Run th
 - styler
 - [TheMartesLive](https://github.com/TheMartes)
 - [eeevans](https://github.com/eeevans)
+- TheMichaelJolley
+- @jaredpsimpson
