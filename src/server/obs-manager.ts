@@ -152,17 +152,19 @@ export default class ObsManager {
     sceneEffect.scenes.forEach((scene: string | undefined) => {
       scene = isForAllScenes ? currentScene : scene;
       sceneEffect.sources.forEach((source: SceneEffectSource) => {
-        this.obs.send(
-          sceneEffect.effectType,
-          Object.assign(
-            {},
-            {
-              item: source.name,
-              'scene-name': scene
-            },
-            source.activeState
+        this.obs
+          .send(
+            sceneEffect.effectType,
+            Object.assign(
+              {},
+              {
+                item: source.name,
+                'scene-name': scene
+              },
+              source.activeState
+            )
           )
-        );
+          .catch(console.error);
       });
     });
   }
@@ -194,7 +196,7 @@ export default class ObsManager {
               source.inactiveState
             )
           )
-          .catch((error: any) => console.error(error));
+          .catch(console.error);
       });
     });
   }
@@ -220,7 +222,7 @@ export default class ObsManager {
                 source.inactiveState
               )
             )
-            .catch((error: any) => console.error(error));
+            .catch(console.error);
         });
       });
     });
