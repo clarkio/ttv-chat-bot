@@ -44,7 +44,11 @@ export default class ObsManager {
   private activeSceneEffects: SceneEffect[] = new Array<SceneEffect>();
   private sceneCommand: string = 'scene';
 
-  constructor(private sceneEffectSettings: any | undefined, private permittedScenesForCommand: any | undefined, private sceneAliases: any | undefined) {
+  constructor(
+    private sceneEffectSettings: any | undefined,
+    private permittedScenesForCommand: any | undefined,
+    private sceneAliases: any | undefined
+  ) {
     this.initSceneEffects();
     this.obs = new ObsWebSocket();
     this.obs
@@ -57,7 +61,7 @@ export default class ObsManager {
         this.getSceneList();
       })
       .catch(this.handleError);
-      
+
     this.obs.on('error', this.handleError);
   }
 
@@ -67,22 +71,27 @@ export default class ObsManager {
    */
   public executeSceneCommand(message: string) {
     // !scene <scene name>
-    message = message.replace(`${this.sceneCommand}`, '').toLowerCase().trim();
+    message = message
+      .replace(`${this.sceneCommand}`, '')
+      .toLowerCase()
+      .trim();
 
     const sceneToActivate = this.determineSceneFromMessage(message);
-    if(sceneToActivate) {
+    if (sceneToActivate) {
       // tell OBS via websockets to activate the scene
-      this.obs.send(
-        'SetCurrentScene',
-          {
-            'scene-name': sceneToActivate.name
-          }
-        ).catch(console.error);
+      this.obs
+        .send('SetCurrentScene', {
+          'scene-name': sceneToActivate.name
+        })
+        .catch(console.error);
     }
   }
 
   public isScenePermitted(sceneName: string): boolean {
-    return this.permittedScenesForCommand.some((permittedScene: string) => permittedScene.toLowerCase() === sceneName.toLowerCase());
+    return this.permittedScenesForCommand.some(
+      (permittedScene: string) =>
+        permittedScene.toLowerCase() === sceneName.toLowerCase()
+    );
   }
 
   /**
@@ -121,7 +130,6 @@ export default class ObsManager {
    */
   public async applySceneEffect(sceneEffect: SceneEffect) {
     this.activateSceneEffect(sceneEffect);
-    this.activeSceneEffects.push(sceneEffect);
   }
 
   /**
@@ -133,7 +141,16 @@ export default class ObsManager {
 
   public async activateSceneEffect(sceneEffect: SceneEffect): Promise<any> {
     this.activeSceneEffects.push(sceneEffect);
-    sceneEffect.scenes.forEach((scene: string) => {
+
+    const isForAllScenes = sceneEffect.scenes.some(
+      (scene: string) => scene === '*'
+    );
+    const currentScene = isForAllScenes
+      ? await this.getCurrentScene()
+      : undefined;
+
+    sceneEffect.scenes.forEach((scene: string | undefined) => {
+      scene = isForAllScenes ? currentScene : scene;
       sceneEffect.sources.forEach((source: SceneEffectSource) => {
         this.obs.send(
           sceneEffect.effectType,
@@ -153,10 +170,16 @@ export default class ObsManager {
   public async deactivateSceneEffect(sceneEffect: SceneEffect): Promise<any> {
     const index = this.activeSceneEffects.indexOf(sceneEffect);
     this.activeSceneEffects.splice(index, 1);
-    // this.activeSceneEffects = this.activeSceneEffects.filter(
-    //   (effect: SceneEffect) => effect.name !== sceneEffect.name
-    // );
-    sceneEffect.scenes.forEach((scene: string) => {
+
+    const isForAllScenes = sceneEffect.scenes.some(
+      (scene: string) => scene === '*'
+    );
+    const currentScene = isForAllScenes
+      ? await this.getCurrentScene()
+      : undefined;
+
+    sceneEffect.scenes.forEach((scene: string | undefined) => {
+      scene = isForAllScenes ? currentScene : scene;
       sceneEffect.sources.forEach((source: SceneEffectSource) => {
         // Note: using Object.assign to merge the JSON objects together and allow for flexibility in applying the effect simply from the object found in the effects.json file
         this.obs
@@ -177,8 +200,12 @@ export default class ObsManager {
   }
 
   public async deactivateAllSceneEffects(): Promise<any> {
+    const currentScene = await this.getCurrentScene();
     this.activeSceneEffects.forEach((sceneEffect: SceneEffect) => {
       sceneEffect.scenes.forEach((scene: string) => {
+        if (scene === '*') {
+          scene = currentScene;
+        }
         sceneEffect.sources.forEach((source: SceneEffectSource) => {
           // Note: using Object.assign to merge the JSON objects together and allow for flexibility in applying the effect simply from the object found in the effects.json file
           this.obs
@@ -250,6 +277,10 @@ export default class ObsManager {
     message = message.toLowerCase();
     const sceneAlias = this.sceneAliases.find((alias: any) => alias[message]);
     message = sceneAlias ? sceneAlias[message].toLowerCase() : message;
-    return this.sceneList.find((scene: any) => scene.name.toLowerCase().includes(message) && this.isScenePermitted(scene.name));
+    return this.sceneList.find(
+      (scene: any) =>
+        scene.name.toLowerCase().includes(message) &&
+        this.isScenePermitted(scene.name)
+    );
   }
 }
