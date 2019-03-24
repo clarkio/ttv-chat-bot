@@ -1,7 +1,8 @@
+import { Client, ChatUserstate }  from 'tmi.js';
+
 import { log } from './log';
 import * as config from './config';
-
-import tmi from 'twitch-js';
+import EffectsManager from './effects-manager';
 
 import {
   chatCommands,
@@ -10,10 +11,9 @@ import {
   ttvClientToken,
   ttvClientUsername
 } from './config';
-import EffectsManager from './effects-manager';
 
 export class TwitchChat {
-  public ttvChatClient: any;
+  public ttvChatClient: Client;
   private lightCommandUsed: string = '';
   private clientUsername: string = ttvClientUsername.toString();
   private moderators: string[] = [this.clientUsername];
@@ -21,7 +21,7 @@ export class TwitchChat {
   private isChatClientEnabled: boolean = true;
 
   constructor(private effectsManager: EffectsManager) {
-    this.ttvChatClient = new tmi.client(this.setTwitchChatOptions());
+    this.ttvChatClient = Client(this.setTwitchChatOptions());
     this.ttvChatClient.on('join', this.ttvJoin);
     this.ttvChatClient.on('part', this.ttvPart);
     this.ttvChatClient.on('chat', this.ttvChat);
@@ -99,8 +99,8 @@ export class TwitchChat {
   /**
    * When a user sends a message in chat
    */
-  private ttvChat = (channel: string, user: any, message: string) => {
-    const userName = user['display-name'] || user.username;
+  private ttvChat = (channel: string, user: ChatUserstate, message: string) => {
+    const userName = user['display-name'] || user.username!;
     const lowerCaseMessage = message.toLowerCase();
 
     if (
