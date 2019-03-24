@@ -184,9 +184,7 @@ export class TwitchChat {
     }
 
     if (this.isOtherCommand(message)) {
-      return this.effectsManager.checkForCommand(
-        message.replace(config.chatCommandPrefix, '')
-      );
+      return this.effectsManager.checkForCommand(message);
     }
 
     return Promise.resolve('there was nothing to do');
@@ -213,7 +211,6 @@ export class TwitchChat {
    * @param userName user who sent
    */
   private startSpecialEffects = (specialEffect: any, userName: string) => {
-    // TODO update so that effects manager handles azure bot related workload
     this.effectsManager.triggerSpecialEffect(specialEffect.colors);
     if (this.effectsManager.azureBot) {
       return this.effectsManager.azureBot

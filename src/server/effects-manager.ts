@@ -12,6 +12,8 @@ export default class EffectsManager {
   private alertEffects: any | undefined;
   private sceneEffects: any | undefined;
   private soundEffects: any | undefined;
+  private permittedScenesForCommand: any | undefined;
+  private sceneAliases: any | undefined;
   private soundFxManager!: SoundFxManager;
   private obsManager!: ObsManager;
   private overlayManager!: OverlayManager;
@@ -74,7 +76,8 @@ export default class EffectsManager {
   // TODO: check to see if the chat message is a supported command
   // TODO: abstract command check type work into a command manager class
   public async checkForCommand(message: string): Promise<any> {
-    // TODO: check if sound effect has corresponding scene effects (and maybe others in the future). Example: !pbjtime plays sound and shows dancing banana source in scene
+    // Remove the command prefix from the message (example: '!')
+    message = message.replace(config.chatCommandPrefix, '');
     if (await this.soundFxManager.isSoundEffect(message)) {
       const soundEffect = await this.soundFxManager.determineSoundEffect(
         message
@@ -95,6 +98,10 @@ export default class EffectsManager {
     if (await this.obsManager.isSceneEffect(message)) {
       const sceneEffect = await this.obsManager.determineSceneEffect(message);
       this.obsManager.applySceneEffect(sceneEffect);
+    }
+
+    if(await this.obsManager.isSceneCommand(message)) {
+      this.obsManager.executeSceneCommand(message);
     }
     if (this.soundFxManager.isStopSoundCommand(message)) {
       this.soundFxManager.stopSounds();
@@ -129,6 +136,8 @@ export default class EffectsManager {
       this.alertEffects = this.allEffects.alertEffects;
       this.sceneEffects = this.allEffects.sceneEffects;
       this.soundEffects = this.allEffects.soundEffects;
+      this.permittedScenesForCommand = this.allEffects.permittedScenesForCommand;
+      this.sceneAliases = this.allEffects.sceneAliases;
       return;
     } catch (error) {
       console.error(error);
@@ -155,7 +164,7 @@ export default class EffectsManager {
     | undefined {
     return () => {
       // All effects will have been read from the file system at this point
-      this.obsManager = new ObsManager(this.sceneEffects);
+      this.obsManager = new ObsManager(this.sceneEffects, this.permittedScenesForCommand, this.sceneAliases);
       this.soundFxManager = new SoundFxManager(this.soundEffects);
       this.overlayManager = new OverlayManager(this.soundFxManager);
     };

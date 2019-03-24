@@ -1,5 +1,6 @@
 
 Todo:
+  ☐ Add code to limit permissions for !scene commands @created(19-03-22 20:27)
   ☐ Determine a way to automatically stop any scene effects that correspond to this sound effect when the sound effect is done
   Problem: Audio file is long and the effect is overplayed
       Solution: stop audio on command
