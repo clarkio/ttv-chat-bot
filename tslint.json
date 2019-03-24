@@ -15,5 +15,10 @@
     "semicolon": [true, "always", "ignore-bound-class-methods"],
     "arrow-parens": [true, "ban-single-arg-parens"]
   },
-  "rulesDirectory": []
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": [
+      "node_modules"
+    ]
+  }
 }
