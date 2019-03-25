@@ -11,8 +11,10 @@ import {
   ttvClientToken,
   ttvClientUsername
 } from './config';
+import PermissionManager from './permission-manager';
 
 export class TwitchChat {
+  public permissionManager: PermissionManager | undefined;
   public ttvChatClient: Client;
   private lightCommandUsed: string = '';
   private clientUsername: string = ttvClientUsername.toString();
@@ -79,8 +81,10 @@ export class TwitchChat {
       setTimeout(this.pingTtv, 30000);
       this.ttvChatClient
         .mods(channels[0])
-        .then((modsFromTwitch: any) => {
+        .then((modsFromTwitch: string[]) => {
           this.moderators = this.moderators.concat(modsFromTwitch);
+          // TODO load any permission settings from configuration file and pass in constructor too.
+          this.permissionManager = new PermissionManager(this.moderators);
         })
         .catch((error: any) =>
           log('error', `There was an error getting moderators: ${error}`)
@@ -102,6 +106,7 @@ export class TwitchChat {
   private ttvChat = (channel: string, user: ChatUserstate, message: string) => {
     const userName = user['display-name'] || user.username!;
     const lowerCaseMessage = message.toLowerCase();
+    log('info', user['user-type'] || 'no user type');
 
     if (
       this.moderators.indexOf(userName.toLowerCase()) > -1 &&
