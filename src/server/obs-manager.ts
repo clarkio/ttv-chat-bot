@@ -1,4 +1,5 @@
 import * as config from './config';
+import { log, dir } from './log';
 
 import ObsWebSocket from 'obs-websocket-js';
 
@@ -57,7 +58,7 @@ export default class ObsManager {
         password: config.obsSocketsKey
       })
       .then(() => {
-        console.log('Connected successfully to websockets server in OBS');
+        log('log', 'Connected successfully to websockets server in OBS');
         this.getSceneList();
       })
       .catch(this.handleError);
@@ -83,7 +84,7 @@ export default class ObsManager {
         .send('SetCurrentScene', {
           'scene-name': sceneToActivate.name
         })
-        .catch(console.error);
+        .catch((error: any) => log('error', error));
     }
   }
 
@@ -164,7 +165,7 @@ export default class ObsManager {
               source.activeState
             )
           )
-          .catch(console.error);
+          .catch((error: any) => log('error', error));
       });
     });
   }
@@ -196,7 +197,7 @@ export default class ObsManager {
               source.inactiveState
             )
           )
-          .catch(console.error);
+          .catch((error: any) => log('error', error));
       });
     });
   }
@@ -222,7 +223,7 @@ export default class ObsManager {
                 source.inactiveState
               )
             )
-            .catch(console.error);
+            .catch((error: any) => log('error', error));
         });
       });
     });
@@ -236,12 +237,12 @@ export default class ObsManager {
   }
 
   private handleError(error: any): any {
-    console.error(error);
+    log('error', error);
   }
 
   private getSceneList() {
     this.obs.send('GetSceneList').then((data: any) => {
-      console.dir('Scenes Found:', data.scenes);
+      dir('Scenes Found:', data.scenes);
       this.sceneList = data.scenes;
     });
   }

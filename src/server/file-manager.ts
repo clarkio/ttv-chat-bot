@@ -15,13 +15,13 @@ export function writeCssFile(data: any) {
         handleFileActionCallback(err, data, resolve, reject)
       );
     });
-  } else {
-    return new Promise((resolve, reject) => {
-      writeFile(CSS_FILE_NAME, data, (err: any) =>
-        handleFileActionCallback(err, data, resolve, reject)
-      );
-    });
   }
+
+  return new Promise((resolve, reject) => {
+    writeFile(CSS_FILE_NAME, data, (err: any) =>
+      handleFileActionCallback(err, data, resolve, reject)
+    );
+  });
 }
 export function readEffects(): Promise<string> {
   return new Promise((resolve, reject) => {

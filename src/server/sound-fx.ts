@@ -1,4 +1,5 @@
 import { getSoundEffectsFiles } from './file-manager';
+import { log } from './log';
 import { resolve as resolvePath } from 'path';
 
 // tslint:disable: no-var-requires
@@ -40,10 +41,8 @@ export default class SoundFxManager {
     getSoundEffectsFiles()
       .then(this.mapFiles)
       .catch(error => {
-        console.log(
-          'There was an error attempting to read sound effects files'
-        );
-        console.error(error);
+        log('log', 'There was an error attempting to read sound effects files');
+        log('error', error);
       });
   }
 
@@ -100,7 +99,7 @@ export default class SoundFxManager {
       const fileFullPath = `${this.SOUND_FX_DIRECTORY}/${fileName}`;
       mp3Duration(fileFullPath, (error: any, duration: any) => {
         if (error) {
-          console.error(error);
+          log('error',error);
         }
         const soundEffectSetting = this.soundEffectSettings.find(
           (setting: SoundFxSetting) =>

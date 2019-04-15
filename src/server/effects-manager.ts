@@ -4,6 +4,7 @@ import ObsManager from './obs-manager';
 import OverlayManager from './overlay';
 import * as config from './config';
 import { AzureBot } from './azure-bot';
+import { log } from './log';
 
 export default class EffectsManager {
   public azureBot!: AzureBot;
@@ -100,7 +101,7 @@ export default class EffectsManager {
       this.obsManager.applySceneEffect(sceneEffect);
     }
 
-    if(await this.obsManager.isSceneCommand(message)) {
+    if (await this.obsManager.isSceneCommand(message)) {
       this.obsManager.executeSceneCommand(message);
     }
     if (this.soundFxManager.isStopSoundCommand(message)) {
@@ -140,7 +141,7 @@ export default class EffectsManager {
       this.sceneAliases = this.allEffects.sceneAliases;
       return;
     } catch (error) {
-      console.error(error);
+      log('error', error);
       return;
     }
   };
@@ -164,7 +165,11 @@ export default class EffectsManager {
     | undefined {
     return () => {
       // All effects will have been read from the file system at this point
-      this.obsManager = new ObsManager(this.sceneEffects, this.permittedScenesForCommand, this.sceneAliases);
+      this.obsManager = new ObsManager(
+        this.sceneEffects,
+        this.permittedScenesForCommand,
+        this.sceneAliases
+      );
       this.soundFxManager = new SoundFxManager(this.soundEffects);
       this.overlayManager = new OverlayManager(this.soundFxManager);
     };
