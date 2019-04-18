@@ -89,7 +89,10 @@ export default class EffectsManager {
         );
 
         if (sceneEffect) {
-          this.obsManager.activateSceneEffect(sceneEffect);
+          this.obsManager.activateSceneEffect(
+            sceneEffect,
+            soundEffect.duration
+          );
           // TODO: determine a way to automatically stop any scene effects that correspond to this sound effect when the sound effect is done
         }
       }
