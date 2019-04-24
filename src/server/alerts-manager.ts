@@ -4,6 +4,7 @@ import { appServer } from './index';
 import { log } from './log';
 import * as config from './config';
 import EffectsManager from './effects-manager';
+import { TwitchChat } from './twitch-chat';
 
 export class AlertsManager {
   public socket!: SocketIOClient.Socket;
@@ -17,7 +18,8 @@ export class AlertsManager {
 
   constructor(
     private accessToken: string,
-    private effectsManager: EffectsManager
+    private effectsManager: EffectsManager,
+    private twitchChat: TwitchChat
   ) {
     this.socket = io(config.streamElementsWebsocketsUrl, {
       transports: [this.connectionType]
@@ -70,6 +72,9 @@ export class AlertsManager {
       this.startAlertEffect(alert, event.data.username);
     } else {
       log('info', this.constants.unhandledAlertTypeLog + event.type);
+    }
+    if (event.type.toLocaleLowerCase() === 'follow') {
+      this.twitchChat.sendChatMessage(`!followthx ${event.data.username}`);
     }
   };
 

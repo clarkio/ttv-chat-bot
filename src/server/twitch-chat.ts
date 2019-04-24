@@ -1,4 +1,4 @@
-import { Client, ChatUserstate }  from 'tmi.js';
+import { Client, ChatUserstate } from 'tmi.js';
 
 import { log } from './log';
 import * as config from './config';
@@ -41,6 +41,11 @@ export class TwitchChat {
   public pingTtv = () => {
     this.ttvChatClient.ping();
   };
+
+  public sendChatMessage(message: string) {
+    // Default to first channel in connected channels
+    this.ttvChatClient.say(config.ttvChannels[0], message);
+  }
 
   /**
    * Set the options for the twitch bot
