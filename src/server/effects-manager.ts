@@ -18,10 +18,22 @@ export default class EffectsManager {
   private soundFxManager!: SoundFxManager;
   private obsManager!: ObsManager;
   private overlayManager!: OverlayManager;
+  private joinSoundEffects: any[] | undefined;
 
   constructor() {
     this.loadEffects().then(this.initEffectControllers());
     this.startAzureBot();
+  }
+
+  public activateJoinEffectIfFound(username: string) {
+    const userEffect = this.joinSoundEffects!.find(
+      joinEffect => joinEffect[username]
+    );
+
+    if (userEffect) {
+      const userSoundEffect = userEffect[username];
+      this.activateSoundEffect(userSoundEffect);
+    }
   }
 
   public triggerAzureBotEffect(alertEffect: any, userName: string) {
@@ -80,24 +92,7 @@ export default class EffectsManager {
     // Remove the command prefix from the message (example: '!')
     message = message.replace(config.chatCommandPrefix, '');
     if (await this.soundFxManager.isSoundEffect(message)) {
-      const soundEffect = await this.soundFxManager.determineSoundEffect(
-        message
-      );
-      if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
-        const sceneEffect = await this.obsManager.determineSceneEffectByName(
-          soundEffect.setting.sceneEffectName
-        );
-
-        if (sceneEffect) {
-          this.obsManager.activateSceneEffect(
-            sceneEffect,
-            soundEffect.duration
-          );
-          // TODO: determine a way to automatically stop any scene effects that correspond to this sound effect when the sound effect is done
-        }
-      }
-      // TODO: use corresponding soundEffect setting if available (to do things like control volume at which the sound is played)
-      return this.soundFxManager.playSoundEffect(soundEffect.fileFullPath);
+      return await this.activateSoundEffect(message);
     }
     if (await this.obsManager.isSceneEffect(message)) {
       const sceneEffect = await this.obsManager.determineSceneEffect(message);
@@ -142,6 +137,7 @@ export default class EffectsManager {
       this.soundEffects = this.allEffects.soundEffects;
       this.permittedScenesForCommand = this.allEffects.permittedScenesForCommand;
       this.sceneAliases = this.allEffects.sceneAliases;
+      this.joinSoundEffects = this.allEffects.joinEffects;
       return;
     } catch (error) {
       log('error', error);
@@ -158,6 +154,21 @@ export default class EffectsManager {
       this.azureBot.createNewBotConversation();
     }
   };
+
+  private async activateSoundEffect(message: string) {
+    const soundEffect = await this.soundFxManager.determineSoundEffect(message);
+    if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
+      const sceneEffect = await this.obsManager.determineSceneEffectByName(
+        soundEffect.setting.sceneEffectName
+      );
+      if (sceneEffect) {
+        this.obsManager.activateSceneEffect(sceneEffect, soundEffect.duration);
+        // TODO: determine a way to automatically stop any scene effects that correspond to this sound effect when the sound effect is done
+      }
+    }
+    // TODO: use corresponding soundEffect setting if available (to do things like control volume at which the sound is played)
+    return this.soundFxManager.playSoundEffect(soundEffect.fileFullPath);
+  }
 
   /**
    * Initialize classes that assist in controlling effects

@@ -69,6 +69,10 @@
     { "brb": "BRB" },
     { "game": "" }
   ],
+  "joinSoundEffects": [
+    { "themichaeljolley": "whocares" },
+    { "roberttables": "hecc" }
+  ],
   "specialEffectsOld": {
     "cop mode": ["cop-red", "cop-blue"],
     "party mode": ["pink", "blue"]

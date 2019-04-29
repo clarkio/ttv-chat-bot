@@ -90,6 +90,10 @@ export class TwitchChat {
         .catch((error: any) =>
           log('error', `There was an error getting moderators: ${error}`)
         );
+    } else {
+      this.effectsManager.activateJoinEffectIfFound(
+        username.toLocaleLowerCase()
+      );
     }
   };
 
