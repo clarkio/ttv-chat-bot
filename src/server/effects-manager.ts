@@ -26,9 +26,9 @@ export default class EffectsManager {
   }
 
   public activateJoinEffectIfFound(username: string) {
-    const userEffect = this.joinSoundEffects!.find(
-      joinEffect => joinEffect[username]
-    );
+    const userEffect =
+      this.joinSoundEffects &&
+      this.joinSoundEffects.find(joinEffect => joinEffect[username]);
 
     if (userEffect) {
       const userSoundEffect = userEffect[username];
@@ -137,7 +137,7 @@ export default class EffectsManager {
       this.soundEffects = this.allEffects.soundEffects;
       this.permittedScenesForCommand = this.allEffects.permittedScenesForCommand;
       this.sceneAliases = this.allEffects.sceneAliases;
-      this.joinSoundEffects = this.allEffects.joinEffects;
+      this.joinSoundEffects = this.allEffects.joinSoundEffects;
       return;
     } catch (error) {
       log('error', error);
