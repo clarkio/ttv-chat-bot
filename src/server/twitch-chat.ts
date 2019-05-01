@@ -204,7 +204,10 @@ export class TwitchChat {
    * @param message chat message to check
    */
   private isOtherCommand(message: string): any {
-    return message.startsWith(config.chatCommandPrefix);
+    return (
+      message.startsWith(config.chatCommandPrefix) ||
+      message.includes('robert68hecc')
+    );
   }
 
   /**

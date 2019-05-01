@@ -86,11 +86,11 @@ export default class EffectsManager {
       : this.determineAlertEffect(chatMessage);
   };
 
-  // TODO: check to see if the chat message is a supported command
   // TODO: abstract command check type work into a command manager class
   public async checkForCommand(message: string): Promise<any> {
     // Remove the command prefix from the message (example: '!')
     message = message.replace(config.chatCommandPrefix, '');
+    message = message === 'robert68hecc' ? 'hecc' : message;
     if (await this.soundFxManager.isSoundEffect(message)) {
       return await this.activateSoundEffect(message);
     }
