@@ -6,6 +6,7 @@ const CSS_FILE_NAME = resolvePath(
   '../assets/custom-styles.css'
 );
 const EFFECTS_FILE_NAME = resolvePath(`${__dirname}`, './effects.json');
+const COMMANDS_FILE_NAME = resolvePath(`${__dirname}`, './commands.json');
 const SOUND_FX_DIRECTORY = resolvePath(`${__dirname}`, '../assets/sounds');
 
 export function writeCssFile(data: any) {
@@ -23,9 +24,18 @@ export function writeCssFile(data: any) {
     );
   });
 }
+
 export function readEffects(): Promise<string> {
   return new Promise((resolve, reject) => {
     readFile(EFFECTS_FILE_NAME, 'utf8', (err: any, data: any) =>
+      handleFileActionCallback(err, data, resolve, reject)
+    );
+  });
+}
+
+export function readCommands(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    readFile(COMMANDS_FILE_NAME, 'utf8', (err: any, data: any) =>
       handleFileActionCallback(err, data, resolve, reject)
     );
   });

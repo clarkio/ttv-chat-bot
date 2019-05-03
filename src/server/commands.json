@@ -1,0 +1,6 @@
+{
+  "light": ["!bulb", "clarki2bulb"],
+  "sound": ["!sfx", "robert68hecc"],
+  "scene": ["!scene"],
+  "voice": ["!voice"]
+}

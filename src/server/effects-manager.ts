@@ -8,6 +8,7 @@ import { log } from './log';
 
 export default class EffectsManager {
   public azureBot!: AzureBot;
+  public soundFx!: SoundFxManager;
   private allEffects: any | undefined;
   private specialEffects: any | undefined;
   private alertEffects: any | undefined;
@@ -15,7 +16,6 @@ export default class EffectsManager {
   private soundEffects: any | undefined;
   private permittedScenesForCommand: any | undefined;
   private sceneAliases: any | undefined;
-  private soundFxManager!: SoundFxManager;
   private obsManager!: ObsManager;
   private overlayManager!: OverlayManager;
   private joinSoundEffects: any[] | undefined;
@@ -91,7 +91,7 @@ export default class EffectsManager {
     // Remove the command prefix from the message (example: '!')
     message = message.replace(config.chatCommandPrefix, '');
     message = message === 'robert68hecc' ? 'hecc' : message;
-    if (await this.soundFxManager.isSoundEffect(message)) {
+    if (await this.soundFx.isSoundEffect(message)) {
       return await this.activateSoundEffect(message);
     }
     if (await this.obsManager.isSceneEffect(message)) {
@@ -102,8 +102,8 @@ export default class EffectsManager {
     if (await this.obsManager.isSceneCommand(message)) {
       this.obsManager.executeSceneCommand(message);
     }
-    if (this.soundFxManager.isStopSoundCommand(message)) {
-      this.soundFxManager.stopSounds();
+    if (this.soundFx.isStopSoundCommand(message)) {
+      this.soundFx.stopSounds();
       this.obsManager.deactivateAllSceneEffects();
     }
   }
@@ -156,7 +156,7 @@ export default class EffectsManager {
   };
 
   private async activateSoundEffect(message: string) {
-    const soundEffect = await this.soundFxManager.determineSoundEffect(message);
+    const soundEffect = await this.soundFx.determineSoundEffect(message);
     if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
       const sceneEffect = await this.obsManager.determineSceneEffectByName(
         soundEffect.setting.sceneEffectName
@@ -167,7 +167,7 @@ export default class EffectsManager {
       }
     }
     // TODO: use corresponding soundEffect setting if available (to do things like control volume at which the sound is played)
-    return this.soundFxManager.playSoundEffect(soundEffect.fileFullPath);
+    return this.soundFx.playSoundEffect(soundEffect.fileFullPath);
   }
 
   /**
@@ -184,8 +184,8 @@ export default class EffectsManager {
         this.permittedScenesForCommand,
         this.sceneAliases
       );
-      this.soundFxManager = new SoundFxManager(this.soundEffects);
-      this.overlayManager = new OverlayManager(this.soundFxManager);
+      this.soundFx = new SoundFxManager(this.soundEffects);
+      this.overlayManager = new OverlayManager(this.soundFx);
     };
   }
 }

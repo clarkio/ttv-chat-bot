@@ -111,11 +111,9 @@ export class TwitchChat {
   private ttvChat = (channel: string, user: ChatUserstate, message: string) => {
     const userName = user['display-name'] || user.username!;
     const lowerCaseMessage = message.toLowerCase();
+    let isMod = this.moderators.indexOf(userName.toLocaleLowerCase()) > -1;
 
-    if (
-      this.moderators.indexOf(userName.toLowerCase()) > -1 &&
-      this.isLightControlCommand(message)
-    ) {
+    if (isMod && this.isLightControlCommand(message)) {
       const logMessage = `Moderator (${userName}) sent a message`;
       log('info', logMessage);
 
