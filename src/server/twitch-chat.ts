@@ -3,6 +3,7 @@ import { Client, ChatUserstate } from 'tmi.js';
 import { log } from './log';
 import * as config from './config';
 import EffectsManager from './effects-manager';
+import Commander from './commander';
 
 import {
   chatCommands,
@@ -20,7 +21,10 @@ export class TwitchChat {
   private lightControlCommands: string[] = chatCommands.toString().split(',');
   private isChatClientEnabled: boolean = true;
 
-  constructor(private effectsManager: EffectsManager) {
+  constructor(
+    private effectsManager: EffectsManager,
+    private commander: Commander
+  ) {
     this.ttvChatClient = Client(this.setTwitchChatOptions());
     this.ttvChatClient.on('join', this.ttvJoin);
     this.ttvChatClient.on('part', this.ttvPart);

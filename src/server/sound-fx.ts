@@ -1,4 +1,4 @@
-import { getSoundEffectsFiles } from './file-manager';
+import { getSoundEffectsFilesSync } from './file-manager';
 import { log } from './log';
 import { resolve as resolvePath } from 'path';
 
@@ -27,8 +27,8 @@ export class SoundFxSetting {
   constructor(
     public name: string,
     public fileName: string,
-    public sceneEffectName: string | undefined,
-    public volume: number | 1
+    public volume: number = 1,
+    public sceneEffectName?: string
   ) {}
 }
 
@@ -38,13 +38,9 @@ export default class SoundFxManager {
   private stopSoundCommand = '!stop';
   private currentlyPlayingAudio: any[] = new Array<any>();
 
-  constructor(private soundEffectSettings: any | undefined) {
-    getSoundEffectsFiles()
-      .then(this.mapFiles)
-      .catch(error => {
-        log('log', 'There was an error attempting to read sound effects files');
-        log('error', error);
-      });
+  constructor(private soundEffectSettings?: any) {
+    const soundFiles = getSoundEffectsFilesSync();
+    this.mapFiles(soundFiles);
   }
 
   /**

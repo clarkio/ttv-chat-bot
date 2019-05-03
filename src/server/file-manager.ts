@@ -1,4 +1,12 @@
-import { appendFile, existsSync, writeFile, readFile, readdir } from 'fs';
+import {
+  appendFile,
+  existsSync,
+  writeFile,
+  readFile,
+  readdir,
+  readdirSync,
+  readFileSync
+} from 'fs';
 import { resolve as resolvePath } from 'path';
 
 const CSS_FILE_NAME = resolvePath(
@@ -33,6 +41,10 @@ export function readEffects(): Promise<string> {
   });
 }
 
+export function readEffectsSync(): string {
+  return readFileSync(EFFECTS_FILE_NAME, 'utf8');
+}
+
 export function readCommands(): Promise<string> {
   return new Promise((resolve, reject) => {
     readFile(COMMANDS_FILE_NAME, 'utf8', (err: any, data: any) =>
@@ -41,12 +53,20 @@ export function readCommands(): Promise<string> {
   });
 }
 
+export function readCommandsSync(): string {
+  return readFileSync(COMMANDS_FILE_NAME, 'utf8');
+}
+
 export function getSoundEffectsFiles(): Promise<string[]> {
   return new Promise((resolve, reject) => {
     readdir(SOUND_FX_DIRECTORY, (err: any, files: string[]) =>
       handleFileActionCallback(err, files, resolve, reject)
     );
   });
+}
+
+export function getSoundEffectsFilesSync(): string[] {
+  return readdirSync(SOUND_FX_DIRECTORY);
 }
 
 function handleFileActionCallback(

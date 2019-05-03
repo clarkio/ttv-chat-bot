@@ -6,11 +6,11 @@ import Commander from './commander';
 import * as config from './config';
 
 const effectsManager = new EffectsManager();
-const commander = new Commander(effectsManager);
 
 const appServer: AppServer = new AppServer(effectsManager);
 
-const twitchChat: TwitchChat = new TwitchChat(effectsManager);
+const commander = new Commander(effectsManager);
+const twitchChat: TwitchChat = new TwitchChat(effectsManager, commander);
 twitchChat.connect();
 
 const alertManager: AlertsManager = new AlertsManager(

@@ -1,4 +1,4 @@
-import { readEffects } from './file-manager';
+import { readEffectsSync } from './file-manager';
 import SoundFxManager from './sound-fx';
 import ObsManager from './obs-manager';
 import OverlayManager from './overlay';
@@ -9,19 +9,20 @@ import { log } from './log';
 export default class EffectsManager {
   public azureBot!: AzureBot;
   public soundFx!: SoundFxManager;
-  private allEffects: any | undefined;
-  private specialEffects: any | undefined;
-  private alertEffects: any | undefined;
-  private sceneEffects: any | undefined;
-  private soundEffects: any | undefined;
-  private permittedScenesForCommand: any | undefined;
-  private sceneAliases: any | undefined;
+  private allEffects?: any;
+  private specialEffects?: any;
+  private alertEffects?: any;
+  private sceneEffects?: any;
+  private soundEffects?: any;
+  private permittedScenesForCommand?: any;
+  private sceneAliases?: any;
   private obsManager!: ObsManager;
   private overlayManager!: OverlayManager;
-  private joinSoundEffects: any[] | undefined;
+  private joinSoundEffects?: any[];
 
   constructor() {
-    this.loadEffects().then(this.initEffectControllers());
+    this.loadEffects();
+    this.initEffectControllers();
     this.startAzureBot();
   }
 
@@ -127,22 +128,17 @@ export default class EffectsManager {
     return alertEffectKey && this.alertEffects[alertEffectKey];
   };
 
-  private loadEffects = async (): Promise<any> => {
-    try {
-      const result = await readEffects();
-      this.allEffects = JSON.parse(result);
-      this.specialEffects = this.allEffects.specialEffects;
-      this.alertEffects = this.allEffects.alertEffects;
-      this.sceneEffects = this.allEffects.sceneEffects;
-      this.soundEffects = this.allEffects.soundEffects;
-      this.permittedScenesForCommand = this.allEffects.permittedScenesForCommand;
-      this.sceneAliases = this.allEffects.sceneAliases;
-      this.joinSoundEffects = this.allEffects.joinSoundEffects;
-      return;
-    } catch (error) {
-      log('error', error);
-      return;
-    }
+  private loadEffects = () => {
+    const result = readEffectsSync();
+    this.allEffects = JSON.parse(result);
+    this.specialEffects = this.allEffects.specialEffects;
+    this.alertEffects = this.allEffects.alertEffects;
+    this.sceneEffects = this.allEffects.sceneEffects;
+    this.soundEffects = this.allEffects.soundEffects;
+    this.permittedScenesForCommand = this.allEffects.permittedScenesForCommand;
+    this.sceneAliases = this.allEffects.sceneAliases;
+    this.joinSoundEffects = this.allEffects.joinSoundEffects;
+    return;
   };
 
   /**
@@ -173,19 +169,14 @@ export default class EffectsManager {
   /**
    * Initialize classes that assist in controlling effects
    */
-  private initEffectControllers():
-    | ((value: any) => void | PromiseLike<void>)
-    | null
-    | undefined {
-    return () => {
-      // All effects will have been read from the file system at this point
-      this.obsManager = new ObsManager(
-        this.sceneEffects,
-        this.permittedScenesForCommand,
-        this.sceneAliases
-      );
-      this.soundFx = new SoundFxManager(this.soundEffects);
-      this.overlayManager = new OverlayManager(this.soundFx);
-    };
+  private initEffectControllers() {
+    // All effects will have been read from the file system at this point
+    this.obsManager = new ObsManager(
+      this.sceneEffects,
+      this.permittedScenesForCommand,
+      this.sceneAliases
+    );
+    this.soundFx = new SoundFxManager(this.soundEffects);
+    this.overlayManager = new OverlayManager(this.soundFx);
   }
 }
