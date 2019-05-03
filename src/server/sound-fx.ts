@@ -71,7 +71,7 @@ export default class SoundFxManager {
 
   public async isSoundEffect(message: string): Promise<boolean> {
     return this.availableSoundEffects.some((soundEffect: SoundFxFile) =>
-      soundEffect.fileName.includes(message)
+      soundEffect.fileName.includes(message.toLocaleLowerCase())
     );
   }
 
@@ -81,7 +81,7 @@ export default class SoundFxManager {
 
   public async determineSoundEffect(message: string): Promise<SoundFxFile> {
     return this.availableSoundEffects.filter((soundEffect: SoundFxFile) =>
-      soundEffect.fileName.includes(message)
+      soundEffect.fileName.includes(message.toLocaleLowerCase())
     )[0];
   }
 
@@ -99,7 +99,7 @@ export default class SoundFxManager {
       const fileFullPath = `${this.SOUND_FX_DIRECTORY}/${fileName}`;
       mp3Duration(fileFullPath, (error: any, duration: any) => {
         if (error) {
-          log('error',error);
+          log('error', error);
         }
         const soundEffectSetting = this.soundEffectSettings.find(
           (setting: SoundFxSetting) =>

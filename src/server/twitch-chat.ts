@@ -1,4 +1,4 @@
-import { Client, ChatUserstate }  from 'tmi.js';
+import { Client, ChatUserstate } from 'tmi.js';
 
 import { log } from './log';
 import * as config from './config';
@@ -41,6 +41,11 @@ export class TwitchChat {
   public pingTtv = () => {
     this.ttvChatClient.ping();
   };
+
+  public sendChatMessage(message: string) {
+    // Default to first channel in connected channels
+    this.ttvChatClient.say(config.ttvChannels[0], message);
+  }
 
   /**
    * Set the options for the twitch bot
@@ -85,6 +90,10 @@ export class TwitchChat {
         .catch((error: any) =>
           log('error', `There was an error getting moderators: ${error}`)
         );
+    } else {
+      this.effectsManager.activateJoinEffectIfFound(
+        username.toLocaleLowerCase()
+      );
     }
   };
 
@@ -195,7 +204,10 @@ export class TwitchChat {
    * @param message chat message to check
    */
   private isOtherCommand(message: string): any {
-    return message.startsWith(config.chatCommandPrefix);
+    return (
+      message.startsWith(config.chatCommandPrefix) ||
+      message.includes('robert68hecc')
+    );
   }
 
   /**

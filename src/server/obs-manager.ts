@@ -140,7 +140,12 @@ export default class ObsManager {
     return this.obs.send('GetCurrentScene');
   }
 
-  public async activateSceneEffect(sceneEffect: SceneEffect): Promise<any> {
+  public async activateSceneEffect(
+    sceneEffect: SceneEffect,
+    duration?: number
+  ): Promise<any> {
+    // TODO: handle tracking duration to show effect properly
+    // search for setTimeout(duration)
     this.activeSceneEffects.push(sceneEffect);
 
     const isForAllScenes = sceneEffect.scenes.some(

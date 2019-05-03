@@ -6,7 +6,11 @@
     {
       "label": "Compile & Copy",
       "type": "npm",
-      "script": "compile-copy-assets"
+      "script": "compile-copy-assets",
+      "problemMatcher": [
+        "$tsc-watch"
+      ],
+      "isBackground": true
     }
   ]
 }

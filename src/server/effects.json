@@ -38,6 +38,30 @@
       "fileName": "pbjtime",
       "sceneEffectName": "pbjtime-banana-dance",
       "volume": 1
+    },
+    {
+      "name": "xperror",
+      "fileName": "xperror",
+      "sceneEffectName": "xp-error",
+      "volume": 1
+    },
+    {
+      "name": "doit",
+      "fileName": "doit",
+      "sceneEffectName": "do-it",
+      "volume": 1
+    },
+    {
+      "name": "whocares",
+      "fileName": "whocares",
+      "sceneEffectName": "who-cares",
+      "volume": 1
+    },
+    {
+      "name": "epicsax",
+      "fileName": "epicsaxe",
+      "sceneEffectName": "epic-sax",
+      "volume": 1
     }
   ],
   "sceneEffects": [
@@ -48,6 +72,70 @@
       "sources": [
         {
           "name": "pbj-banana",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "xp-error",
+      "scenes": ["*"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "xp-error",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "do-it",
+      "scenes": ["*"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "doit",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "who-cares",
+      "scenes": ["*"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "whocares",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "epic-sax",
+      "scenes": ["*"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "epic-sax",
           "activeState": {
             "visible": true
           },
@@ -68,6 +156,11 @@
     { "cam": "Full Cam Overlay" },
     { "brb": "BRB" },
     { "game": "" }
+  ],
+  "joinSoundEffects": [
+    { "themichaeljolley": "whocares" },
+    { "roberttables": "hecc" },
+    { "electrichavoc": "shock" }
   ],
   "specialEffectsOld": {
     "cop mode": ["cop-red", "cop-blue"],
