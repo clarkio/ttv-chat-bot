@@ -160,7 +160,8 @@
   "joinSoundEffects": [
     { "themichaeljolley": "whocares" },
     { "roberttables": "hecc" },
-    { "electrichavoc": "shock" }
+    { "electrichavoc": "shock" },
+    { "rhonin52": "swipe" }
   ],
   "specialEffectsOld": {
     "cop mode": ["cop-red", "cop-blue"],
