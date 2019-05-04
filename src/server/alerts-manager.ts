@@ -59,7 +59,7 @@ export class AlertsManager {
   private onAuthenticated = (data: any) => {
     const { channelId } = data;
 
-    log('info', `Successfully authenticated for channel ${channelId}`);
+    log('info', `Successfully authenticated for the channel`);
   };
 
   /**
