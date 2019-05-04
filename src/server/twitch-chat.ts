@@ -109,7 +109,7 @@ export class TwitchChat {
    * When a user sends a message in chat
    */
   private ttvChat = (channel: string, user: ChatUserstate, message: string) => {
-    const userName = user['display-name'] || user.username!;
+    const userName = user['display-name'] || user.username! || '';
     const lowerCaseMessage = message.toLowerCase();
 
     if (
