@@ -21,7 +21,7 @@ export default class EffectsManager {
   private joinSoundEffects: any[] | undefined;
 
   constructor() {
-    this.loadEffects().then(this.initEffectControllers());
+    this.loadEffects().then(this.initEffectControllers);
     this.startAzureBot();
   }
 
@@ -173,19 +173,14 @@ export default class EffectsManager {
   /**
    * Initialize classes that assist in controlling effects
    */
-  private initEffectControllers():
-    | ((value: any) => void | PromiseLike<void>)
-    | null
-    | undefined {
-    return () => {
-      // All effects will have been read from the file system at this point
-      this.obsManager = new ObsManager(
-        this.sceneEffects,
-        this.permittedScenesForCommand,
-        this.sceneAliases
-      );
-      this.soundFxManager = new SoundFxManager(this.soundEffects);
-      this.overlayManager = new OverlayManager(this.soundFxManager);
-    };
-  }
+  private initEffectControllers = (): void => {
+    // All effects will have been read from the file system at this point
+    this.obsManager = new ObsManager(
+      this.sceneEffects,
+      this.permittedScenesForCommand,
+      this.sceneAliases
+    );
+    this.soundFxManager = new SoundFxManager(this.soundEffects);
+    this.overlayManager = new OverlayManager(this.soundFxManager);
+  };
 }
