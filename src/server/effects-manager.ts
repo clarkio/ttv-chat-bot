@@ -30,7 +30,7 @@ export default class EffectsManager {
       this.joinSoundEffects &&
       this.joinSoundEffects.find(joinEffect => joinEffect[username]);
 
-    if (userEffect) {
+    if (userEffect && config.isSoundFxEnabled) {
       const userSoundEffect = userEffect[username];
       this.activateSoundEffect(userSoundEffect);
     }
@@ -91,15 +91,24 @@ export default class EffectsManager {
     // Remove the command prefix from the message (example: '!')
     message = message.replace(config.chatCommandPrefix, '');
     message = message === 'robert68hecc' ? 'hecc' : message;
-    if (await this.soundFxManager.isSoundEffect(message)) {
+    if (
+      (await this.soundFxManager.isSoundEffect(message)) &&
+      config.isSoundFxEnabled
+    ) {
       return await this.activateSoundEffect(message);
     }
-    if (await this.obsManager.isSceneEffect(message)) {
+    if (
+      (await this.obsManager.isSceneEffect(message)) &&
+      config.isSceneFxEnabled
+    ) {
       const sceneEffect = await this.obsManager.determineSceneEffect(message);
       this.obsManager.applySceneEffect(sceneEffect);
     }
 
-    if (await this.obsManager.isSceneCommand(message)) {
+    if (
+      (await this.obsManager.isSceneCommand(message)) &&
+      config.isSceneFxEnabled
+    ) {
       this.obsManager.executeSceneCommand(message);
     }
     if (this.soundFxManager.isStopSoundCommand(message)) {

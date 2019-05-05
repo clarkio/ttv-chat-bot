@@ -20,6 +20,8 @@ try {
 const {
   PORT,
   AZURE_BOT_ENABLED,
+  SOUND_FX_ENABLED,
+  SCENE_FX_ENABLED,
   TTV_CLIENT_ID,
   TTV_CLIENT_TOKEN,
   TTV_CLIENT_USERNAME,
@@ -45,6 +47,16 @@ export const port: number = PORT || fileConfig.port || 1337;
 export const azureBotEnabled: boolean =
   Boolean(AZURE_BOT_ENABLED === 'true') ||
   Boolean(fileConfig.azureBotEnabled === 'true') ||
+  false;
+
+export const isSoundFxEnabled: boolean =
+  Boolean(SOUND_FX_ENABLED === 'true') ||
+  Boolean(fileConfig.isSoundFxEnabled === 'true') ||
+  false;
+
+export const isSceneFxEnabled: boolean =
+  Boolean(SCENE_FX_ENABLED === 'true') ||
+  Boolean(fileConfig.isSceneFxEnabled === 'true') ||
   false;
 
 export const ttvClientId: string =

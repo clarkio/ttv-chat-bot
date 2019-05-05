@@ -17,7 +17,8 @@ export class TwitchChat {
   private lightCommandUsed: string = '';
   private clientUsername: string = ttvClientUsername.toString();
   private moderators: string[] = [this.clientUsername];
-  private lightControlCommands: string[] = chatCommands.toString().split(',');
+  private commands = chatCommands.toString().split(',');
+  private lightControlCommands: string[] = ['!bulb'];
   private isChatClientEnabled: boolean = true;
 
   constructor(private effectsManager: EffectsManager) {
@@ -56,7 +57,8 @@ export class TwitchChat {
     return {
       channels,
       connection: {
-        reconnect: true
+        reconnect: true,
+        secure: true
       },
       identity: {
         password: ttvClientToken,
