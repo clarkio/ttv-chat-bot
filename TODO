@@ -11,3 +11,25 @@ Todo:
       - It receives triggers from Alerts Manager and Chat Manager
       - It will determine if the alert or chat trigger maps to a supported command and therefore has some associated effect to apply
       - Once an effect is found to be applied the effects manager will handle starting all the various effects that go with it (such as sound, light, scene, overlay)
+
+
+Other:
+// tslint:ignore
+J
+robert68Hecc
+
+!bulb <color> (!bulb blue)
+!bulb <effect> (e.g. !bulb cop mode)
+!scene <scene name> (e.g. !scene cam)
+!<sound> (!fart)
+other text !<sound> more text
+maybe !sfx <filename>?
+
+1. Identify the command being used (parse chat for a command)
+2. Get command definitions which describes command signatures (meaning its options)
+  Example: !bulb blue or !bulb cop mode
+  yargs, minimist
+  {
+
+  }
+3. Apply input/data to command (execute the command using the input provide from the chat message)
