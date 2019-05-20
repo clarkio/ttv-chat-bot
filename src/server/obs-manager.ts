@@ -20,7 +20,8 @@ export class SceneEffect {
     public name: string,
     public effectType: EffectType,
     public scenes: string[],
-    public sources: SceneEffectSource[]
+    public sources: SceneEffectSource[],
+    public duration: number
   ) {}
 }
 
@@ -259,7 +260,8 @@ export default class ObsManager {
         sceneEffectSetting.name,
         sceneEffectType as EffectType,
         sceneEffectSetting.scenes,
-        this.getSceneEffectSourcesForSetting(sceneEffectSetting.sources)
+        this.getSceneEffectSourcesForSetting(sceneEffectSetting.sources),
+        sceneEffectSetting.duration
       );
       this.sceneEffects.push(sceneEffect);
     });

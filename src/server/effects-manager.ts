@@ -175,7 +175,7 @@ export default class EffectsManager {
         // automatically deactivate the scene effect based on the duration of the corresponding sound effect that triggered it
         setTimeout(() => {
           this.obsManager.deactivateSceneEffect(sceneEffect);
-        }, soundEffect.duration * 1000);
+        }, sceneEffect.duration || soundEffect.duration * 1000);
       }
     }
     // TODO: use corresponding soundEffect setting if available (to do things like control volume at which the sound is played)
