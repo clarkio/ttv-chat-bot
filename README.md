@@ -59,6 +59,10 @@ Please make sure you've completed all steps in the "Getting Started" and "Run th
 
 ## Twitch Viewers that have helped contribute to the project (in no particular order):
 
+Want to contribute? Check out our [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing](CONTRIBUTING.md) docs. This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.  Contributions of any kind welcome!
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
 - sockelo
 - [frenck](https://github.com/frenck)
 - [tallpants](https://github.com/tallpants)
