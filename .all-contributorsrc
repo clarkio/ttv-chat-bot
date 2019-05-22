@@ -1,0 +1,23 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "jakegny",
+      "name": "Jake Nylund",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6787885?v=4",
+      "profile": "https://github.com/jakegny",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "ttv-chat-light",
+  "projectOwner": "clarkio",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}
