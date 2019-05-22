@@ -1,0 +1,23 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "MichaelJolley",
+      "name": "Michael Jolley",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1228996?v=4",
+      "profile": "https://michaeljolley.com/",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "ttv-chat-light",
+  "projectOwner": "clarkio",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}
