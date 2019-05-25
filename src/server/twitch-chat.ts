@@ -45,7 +45,10 @@ export class TwitchChat {
 
   public sendChatMessage(message: string) {
     // Default to first channel in connected channels
-    this.ttvChatClient.say(config.ttvChannels[0], message);
+    this.ttvChatClient.say(
+      config.ttvChannels.toString().split(',')[0],
+      message
+    );
   }
 
   /**
