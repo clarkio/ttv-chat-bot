@@ -274,7 +274,7 @@ export class TwitchChat {
     // TODO update so that effects manager handles azure bot related workload
     this.effectsManager.azureBot
       .getConversationMessages()
-      .then(result => {
+      .then((result: any) => {
         const messages = result.messages;
         const lastMessage = messages[messages.length - 1].text;
         log('info', `Bot response: ${lastMessage}`);
