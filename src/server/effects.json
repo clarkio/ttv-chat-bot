@@ -84,6 +84,18 @@
       "fileName": "fart",
       "sceneEffectName": "fart-smoke",
       "volume": 1
+    },
+    {
+      "name": "juicyfart",
+      "fileName": "juicyfart",
+      "sceneEffectName": "fart-smoke",
+      "volume": 1
+    },
+    {
+      "name": "steeljuicyfart",
+      "fileName": "steeljuicyfart",
+      "sceneEffectName": "fart-smoke",
+      "volume": 1
     }
   ],
   "sceneEffects": [

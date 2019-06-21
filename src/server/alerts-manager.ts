@@ -79,6 +79,9 @@ export class AlertsManager {
     if (event.type.toLocaleLowerCase() === 'follow') {
       this.twitchChat.sendChatMessage(`!followthx ${event.data.username}`);
     }
+    if (event.type.toLocaleLowerCase() === 'raid') {
+      this.twitchChat.sendChatMessage('!new');
+    }
   };
 
   /**
