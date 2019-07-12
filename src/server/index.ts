@@ -6,8 +6,6 @@ import * as config from './config';
 
 const effectsManager = new EffectsManager();
 
-const appServer: AppServer = new AppServer(effectsManager);
-
 const twitchChat: TwitchChat = new TwitchChat(effectsManager);
 twitchChat.connect();
 
@@ -17,5 +15,7 @@ const alertManager: AlertsManager = new AlertsManager(
   twitchChat
 );
 alertManager.listenToEvents();
+
+const appServer: AppServer = new AppServer(effectsManager, alertManager);
 
 export { appServer };

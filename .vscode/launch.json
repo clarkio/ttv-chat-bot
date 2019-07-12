@@ -6,13 +6,35 @@
   "configurations": [
     {
       "type": "node",
+      "request": "attach",
+      "name": "Attach",
+      "port": 9229
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Remote",
+      "address": "TCP/IP address of process to be debugged",
+      "port": 9229,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "Absolute path to the remote directory containing the program"
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach by Process ID",
+      "processId": "${command:PickProcess}"
+    },
+    {
+      "type": "node",
       "request": "launch",
       "name": "Server Break",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run-script", "debug-brk"],
       "sourceMaps": true,
       "port": 9229,
-      "preLaunchTask": "Compile & Copy"
+      "preLaunchTask": "Compile & Copy",
+      "useWSL": true
     },
     {
       "type": "node",
@@ -21,7 +43,8 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run-script", "debug"],
       "port": 9229,
-      "preLaunchTask": "Compile & Copy"
+      "preLaunchTask": "Compile & Copy",
+      "useWSL": true
     },
     {
       "type": "node",

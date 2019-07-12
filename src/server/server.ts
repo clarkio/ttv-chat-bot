@@ -12,6 +12,7 @@ import { changeLightColor, sendLightEffect } from './routes/lights';
 import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
 import EffectsManager from './effects-manager';
+import { AlertsManager } from './alerts-manager';
 
 // TODO: rename to just app? since index.ts is handling full server process?
 /**
@@ -24,7 +25,10 @@ export class AppServer {
   public discordHook!: WebhookClient;
   private http!: Server;
 
-  constructor(public effectsManager: EffectsManager) {
+  constructor(
+    public effectsManager: EffectsManager,
+    public alertManager: AlertsManager
+  ) {
     this.app = express();
     this.configApp();
     this.startDiscordHook();
@@ -83,6 +87,28 @@ export class AppServer {
 
     router.get('/bulb/color', (req, res) => {
       res.json({ color: this.effectsManager.getCurrentOverlayColor() });
+    });
+
+    router.get('/sub', (req, res) => {
+      this.alertManager.triggerEvent({
+        data: {
+          message: 'Chair is better than Clarkio',
+          username: 'Chair'
+        },
+        type: 'subscriber'
+      });
+      res.send('👍');
+    });
+
+    router.get('/follow', (req, res) => {
+      this.alertManager.triggerEvent({
+        data: {
+          message: 'Chair is better than Clarkio',
+          username: 'Chair'
+        },
+        type: 'follow'
+      });
+      res.send('👍');
     });
 
     this.app.use('/', router);

@@ -37,6 +37,14 @@ export class AlertsManager {
   }
 
   /**
+   * This a function to be used for testing so that we can manually trigger Twitch events like follow, subscribe, etc.
+   * @param event dummy event to use for testing
+   */
+  public triggerEvent(event: any) {
+    this.onEvent(event);
+  }
+
+  /**
    * A handler that is used when a connection has successfully completed for the socket.io server and then initiates the authentication flow
    */
   private onConnect = () => {
