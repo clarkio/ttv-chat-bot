@@ -1,1 +1,6 @@
-{ "files.exclude": { ".env": true } }
+{
+  "files.exclude": {
+    ".env": true
+  },
+  "typescript.tsdk": "node_modules\\typescript\\lib"
+}
