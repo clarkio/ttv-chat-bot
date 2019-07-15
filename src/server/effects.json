@@ -29,10 +29,26 @@
     "cheer": {
       "type": "pulse",
       "colors": ["purple", "green"]
+    },
+    "raid": {
+      "type": "pulse",
+      "colors": ["purple", "white"]
     }
   },
   "supportedColors": [],
   "soundEffects": [
+    {
+      "name": "sandstorm",
+      "fileName": "sandstorm",
+      "sceneEffectName": "raid-lights",
+      "volume": 1
+    },
+    {
+      "name": "pinkfluffyunicorns",
+      "fileName": "pinkfluffyunicorns",
+      "sceneEffectName": "pinkfluffyunicorns-dance",
+      "volume": 1
+    },
     {
       "name": "pbjtime",
       "fileName": "pbjtime",
@@ -68,6 +84,18 @@
       "fileName": "fart",
       "sceneEffectName": "fart-smoke",
       "volume": 1
+    },
+    {
+      "name": "juicyfart",
+      "fileName": "juicyfart",
+      "sceneEffectName": "fart-smoke",
+      "volume": 1
+    },
+    {
+      "name": "steeljuicyfart",
+      "fileName": "steeljuicyfart",
+      "sceneEffectName": "fart-smoke",
+      "volume": 1
     }
   ],
   "sceneEffects": [
@@ -78,6 +106,40 @@
       "sources": [
         {
           "name": "pbj-banana",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "pinkfluffyunicorns-dance",
+      "scenes": ["*"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "unicorn-right",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        },
+        {
+          "name": "unicorn-left",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        },
+        {
+          "name": "rainbow",
           "activeState": {
             "visible": true
           },
@@ -111,6 +173,22 @@
       "sources": [
         {
           "name": "xp-error",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "raid-lights",
+      "scenes": ["*"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "raid-lights",
           "activeState": {
             "visible": true
           },

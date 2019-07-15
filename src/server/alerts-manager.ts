@@ -70,11 +70,17 @@ export class AlertsManager {
     const alert = this.effectsManager.determineAlertEffect(event.type);
     if (alert) {
       this.startAlertEffect(alert, event.data.username);
+      if (event.type === 'raid') {
+        this.effectsManager.checkForCommand('sandstorm');
+      }
     } else {
       log('info', this.constants.unhandledAlertTypeLog + event.type);
     }
     if (event.type.toLocaleLowerCase() === 'follow') {
       this.twitchChat.sendChatMessage(`!followthx ${event.data.username}`);
+    }
+    if (event.type.toLocaleLowerCase() === 'raid') {
+      this.twitchChat.sendChatMessage('!new');
     }
   };
 
