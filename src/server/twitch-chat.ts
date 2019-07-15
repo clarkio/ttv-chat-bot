@@ -32,8 +32,16 @@ export class TwitchChat {
    * Connect to the TTV Chat Client
    */
   public connect = () => {
-    log('info', 'Client is online and running...');
-    this.ttvChatClient.connect();
+    log('info', 'Client is online and attempting to connect to chat...');
+    this.ttvChatClient
+      .connect()
+      .then(() => {
+        log('info', 'Successfully connected to Twitch chat');
+      })
+      .catch(error => {
+        log('error', 'Failed to connect to Twitch chat');
+        log('error', error);
+      });
   };
 
   /**
@@ -61,7 +69,7 @@ export class TwitchChat {
       channels,
       connection: {
         reconnect: true,
-        secure: true
+        secure: false
       },
       identity: {
         password: ttvClientToken,
@@ -274,7 +282,7 @@ export class TwitchChat {
     // TODO update so that effects manager handles azure bot related workload
     this.effectsManager.azureBot
       .getConversationMessages()
-      .then(result => {
+      .then((result: any) => {
         const messages = result.messages;
         const lastMessage = messages[messages.length - 1].text;
         log('info', `Bot response: ${lastMessage}`);
