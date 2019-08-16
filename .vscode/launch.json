@@ -12,7 +12,8 @@
       "runtimeArgs": ["run-script", "debug-brk"],
       "sourceMaps": true,
       "port": 9229,
-      "preLaunchTask": "Compile & Copy"
+      "preLaunchTask": "Compile & Copy",
+      "skipFiles": ["<node_internals>/**/*.js"]
     },
     {
       "type": "node",
@@ -21,7 +22,8 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run-script", "debug"],
       "port": 9229,
-      "preLaunchTask": "Compile & Copy"
+      "preLaunchTask": "Compile & Copy",
+      "skipFiles": ["<node_internals>/**/*.js"]
     },
     {
       "type": "node",
@@ -29,7 +31,8 @@
       "name": "Server Start",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["start"],
-      "port": 9229
+      "port": 9229,
+      "skipFiles": ["<node_internals>/**/*.js"]
     },
     {
       "name": "Client Debug",
