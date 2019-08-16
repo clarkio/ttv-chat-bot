@@ -206,7 +206,11 @@ export class TwitchChat {
     }
 
     if (this.isOtherCommand(message)) {
-      return this.effectsManager.checkForCommand(message);
+      this.effectsManager.checkForCommand(message).then(result => {
+        if (result) {
+          this.sendChatMessage(`${userName}, ${result}`);
+        }
+      });
     }
 
     return Promise.resolve('there was nothing to do');
