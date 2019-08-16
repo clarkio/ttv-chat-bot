@@ -85,6 +85,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore -->
 <table>
   <tr>
+    <td align="center"><a href="https://github.com/jakegny"><img src="https://avatars2.githubusercontent.com/u/6787885?v=4" width="100px;" alt="Jake Nylund"/><br /><sub><b>Jake Nylund</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=jakegny" title="Code">💻</a></td>
     <td align="center"><a href="https://michaeljolley.com/"><img src="https://avatars2.githubusercontent.com/u/1228996?v=4" width="100px;" alt="Michael Jolley"/><br /><sub><b>Michael Jolley</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=MichaelJolley" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/CodemanCodes"><img src="https://avatars3.githubusercontent.com/u/46641880?v=4" width="100px;" alt="CodemanCodes"/><br /><sub><b>CodemanCodes</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=CodemanCodes" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/jaredpsimpson"><img src="https://avatars0.githubusercontent.com/u/1933150?v=4" width="100px;" alt="jaredpsimpson"/><br /><sub><b>jaredpsimpson</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=jaredpsimpson" title="Code">💻</a></td>

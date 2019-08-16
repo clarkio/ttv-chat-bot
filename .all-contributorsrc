@@ -6,6 +6,15 @@
   "commit": false,
   "contributors": [
     {
+      "login": "jakegny",
+      "name": "Jake Nylund",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6787885?v=4",
+      "profile": "https://github.com/jakegny",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "MichaelJolley",
       "name": "Michael Jolley",
       "avatar_url": "https://avatars2.githubusercontent.com/u/1228996?v=4",
