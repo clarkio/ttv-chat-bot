@@ -28,6 +28,18 @@ Twitch TV chat reader to change the color of overlays loaded from streamelements
 
 Please make sure you've completed all steps in the "Getting Started" section before attempting to run the app.
 
+### From Docker
+
+- (@roberttables) Set OBS_SOCKETS_SERVER=host.docker.internal:<the port your OBS Websockets server is running>
+  - (@parithon) Note This dns name (host.docker.internal) only appears to work on Docker Desktop for Mac/Windows and not production environments nor other linux environments (Ubuntu)
+  - (@roberttables) In that case then you can use the override through docker0 bridge which exists in linux environments
+
+#### Windows
+
+#### MacOS
+
+#### Linux
+
 ### From the Command Line (CLI)
 
 1. Change to the directory of the project `ttv-chat-light` if you have not already done so.
