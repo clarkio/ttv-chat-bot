@@ -6,6 +6,15 @@
   "commit": false,
   "contributors": [
     {
+      "login": "jakegny",
+      "name": "Jake Nylund",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6787885?v=4",
+      "profile": "https://github.com/jakegny",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "MichaelJolley",
       "name": "Michael Jolley",
       "avatar_url": "https://avatars2.githubusercontent.com/u/1228996?v=4",
@@ -64,6 +73,15 @@
       "name": "Timmy Kokke",
       "avatar_url": "https://avatars1.githubusercontent.com/u/2283621?v=4",
       "profile": "http://timmykokke.com",
+      "contributions": [
+        "code"
+      ]
+     },
+     {
+      "login": "MichaelCduBois",
+      "name": "Michael duBois",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/39778093?v=4",
+      "profile": "https://www.mcduboiswebservices.com",
       "contributions": [
         "code"
       ]
