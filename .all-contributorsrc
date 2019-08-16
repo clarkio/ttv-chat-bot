@@ -58,8 +58,8 @@
       "contributions": [
         "code"
       ]
-     },
-     {
+    },
+    {
       "login": "PatPat1567",
       "name": "PatPat1567",
       "avatar_url": "https://avatars0.githubusercontent.com/u/41209202?v=4",
@@ -67,7 +67,16 @@
       "contributions": [
         "bug"
       ]
-     }
+    },
+    {
+      "login": "MichaelCduBois",
+      "name": "Michael duBois",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/39778093?v=4",
+      "profile": "https://www.mcduboiswebservices.com",
+      "contributions": [
+        "code"
+      ]
+    }
   ],
   "contributorsPerLine": 7,
   "projectName": "ttv-chat-light",
