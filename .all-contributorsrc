@@ -76,12 +76,21 @@
       "contributions": [
         "code"
       ]
-     },
-     {
+    },
+    {
       "login": "MichaelCduBois",
       "name": "Michael duBois",
       "avatar_url": "https://avatars0.githubusercontent.com/u/39778093?v=4",
       "profile": "https://www.mcduboiswebservices.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "lannonbr",
+      "name": "Benjamin Lannon",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/3685876?v=4",
+      "profile": "https://lannonbr.com",
       "contributions": [
         "code"
       ]
