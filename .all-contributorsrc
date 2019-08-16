@@ -49,8 +49,8 @@
       "contributions": [
         "code"
       ]
-     },
-     {
+    },
+    {
       "login": "PatPat1567",
       "name": "PatPat1567",
       "avatar_url": "https://avatars0.githubusercontent.com/u/41209202?v=4",
@@ -58,7 +58,16 @@
       "contributions": [
         "bug"
       ]
-     }
+    },
+    {
+      "login": "sorskoot",
+      "name": "Timmy Kokke",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2283621?v=4",
+      "profile": "http://timmykokke.com",
+      "contributions": [
+        "code"
+      ]
+    }
   ],
   "contributorsPerLine": 7,
   "projectName": "ttv-chat-light",
