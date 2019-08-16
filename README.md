@@ -87,6 +87,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://michaeljolley.com/"><img src="https://avatars2.githubusercontent.com/u/1228996?v=4" width="100px;" alt="Michael Jolley"/><br /><sub><b>Michael Jolley</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=MichaelJolley" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/jaredpsimpson"><img src="https://avatars0.githubusercontent.com/u/1933150?v=4" width="100px;" alt="jaredpsimpson"/><br /><sub><b>jaredpsimpson</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=jaredpsimpson" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/eeevans"><img src="https://avatars1.githubusercontent.com/u/272717?v=4" width="100px;" alt="Edward Evans"/><br /><sub><b>Edward Evans</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=eeevans" title="Code">💻</a></td>
+    <td align="center"><a href="https://nmarch213.github.io/Portfolio/"><img src="https://avatars1.githubusercontent.com/u/14193159?v=4" width="100px;" alt="Nicholas March"/><br /><sub><b>Nicholas March</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=nmarch213" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/PatPat1567"><img src="https://avatars0.githubusercontent.com/u/41209202?v=4" width="100px;" alt="PatPat1567"/><br /><sub><b>PatPat1567</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/issues?q=author%3APatPat1567" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
