@@ -87,7 +87,7 @@ export default class EffectsManager {
   };
 
   // TODO: abstract command check type work into a command manager class
-  public async checkForCommand(message: string): Promise<any> {
+  public async checkForCommand(message: string): Promise<string | undefined> {
     // Remove the command prefix from the message (example: '!')
     message = message.replace(config.chatCommandPrefix, '');
     message = message === 'robert68hecc' ? 'hecc' : message;
@@ -164,22 +164,38 @@ export default class EffectsManager {
     }
   };
 
-  private async activateSoundEffect(message: string) {
+  private async activateSoundEffect(
+    message: string
+  ): Promise<string | undefined> {
     const soundEffect = await this.soundFxManager.determineSoundEffect(message);
-    if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
-      const sceneEffect = await this.obsManager.determineSceneEffectByName(
-        soundEffect.setting.sceneEffectName
-      );
-      if (sceneEffect) {
-        this.obsManager.activateSceneEffect(sceneEffect);
-        // automatically deactivate the scene effect based on the duration of the corresponding sound effect that triggered it
-        setTimeout(() => {
-          this.obsManager.deactivateSceneEffect(sceneEffect);
-        }, sceneEffect.duration || soundEffect.duration * 1000);
+    if (soundEffect) {
+      if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
+        const sceneEffect = await this.obsManager.determineSceneEffectByName(
+          soundEffect.setting.sceneEffectName
+        );
+        if (sceneEffect) {
+          this.obsManager.activateSceneEffect(sceneEffect);
+          // automatically deactivate the scene effect based on the duration of the corresponding sound effect that triggered it
+          const duration = sceneEffect.duration || soundEffect.duration * 1000;
+          if (!duration || duration < 400) {
+            log(
+              'warn',
+              'A duration was either not available or too short (<400ms) for the effect so it will not be deactivated automatically'
+            );
+            return;
+          }
+
+          setTimeout(() => {
+            this.obsManager.deactivateSceneEffect(sceneEffect);
+          }, duration);
+        }
       }
+
+      // TODO: use corresponding soundEffect setting if available (to do things like control volume at which the sound is played)
+      return this.soundFxManager.playSoundEffect(soundEffect.fileFullPath);
     }
-    // TODO: use corresponding soundEffect setting if available (to do things like control volume at which the sound is played)
-    return this.soundFxManager.playSoundEffect(soundEffect.fileFullPath);
+
+    return 'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported';
   }
 
   /**

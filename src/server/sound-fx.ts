@@ -12,6 +12,7 @@ const mp3Duration = require('mp3-duration');
  */
 export class SoundFxFile {
   constructor(
+    public name: string,
     public fileName: string,
     public fileFullPath: string,
     public duration: number,
@@ -79,10 +80,13 @@ export default class SoundFxManager {
     return this.stopSoundCommand.includes(message);
   }
 
-  public async determineSoundEffect(message: string): Promise<SoundFxFile> {
-    return this.availableSoundEffects.filter((soundEffect: SoundFxFile) =>
-      soundEffect.fileName.includes(message.toLocaleLowerCase())
-    )[0];
+  public async determineSoundEffect(
+    message: string
+  ): Promise<SoundFxFile | undefined> {
+    const lowerCaseMessage = message.toLocaleLowerCase();
+    return this.availableSoundEffects.find(
+      (soundEffect: SoundFxFile) => soundEffect.name === lowerCaseMessage
+    );
   }
 
   private async playAudioFile(file: string): Promise<boolean> {
@@ -101,11 +105,13 @@ export default class SoundFxManager {
         if (error) {
           log('error', error);
         }
+
+        const name = fileName.replace('.mp3', '');
         const soundEffectSetting = this.soundEffectSettings.find(
-          (setting: SoundFxSetting) =>
-            setting.name === fileName.replace('.mp3', '')
+          (setting: SoundFxSetting) => setting.name === name
         );
         const soundFxFile = new SoundFxFile(
+          name,
           fileName,
           fileFullPath,
           duration,
