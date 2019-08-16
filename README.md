@@ -92,9 +92,11 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/eeevans"><img src="https://avatars1.githubusercontent.com/u/272717?v=4" width="100px;" alt="Edward Evans"/><br /><sub><b>Edward Evans</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=eeevans" title="Code">💻</a></td>
     <td align="center"><a href="https://nmarch213.github.io/Portfolio/"><img src="https://avatars1.githubusercontent.com/u/14193159?v=4" width="100px;" alt="Nicholas March"/><br /><sub><b>Nicholas March</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=nmarch213" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/PatPat1567"><img src="https://avatars0.githubusercontent.com/u/41209202?v=4" width="100px;" alt="PatPat1567"/><br /><sub><b>PatPat1567</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/issues?q=author%3APatPat1567" title="Bug reports">🐛</a></td>
-    <td align="center"><a href="http://timmykokke.com"><img src="https://avatars1.githubusercontent.com/u/2283621?v=4" width="100px;" alt="Timmy Kokke"/><br /><sub><b>Timmy Kokke</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=sorskoot" title="Code">💻</a></td>
-    <td align="center"><a href="https://www.mcduboiswebservices.com"><img src="https://avatars0.githubusercontent.com/u/39778093?v=4" width="100px;" alt="Michael duBois"/><br /><sub><b>Michael duBois</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=MichaelCduBois" title="Code">💻</a></td>
   </tr>
+   <tr>
+      <td align="center"><a href="http://timmykokke.com"><img src="https://avatars1.githubusercontent.com/u/2283621?v=4" width="100px;" alt="Timmy Kokke"/><br /><sub><b>Timmy Kokke</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=sorskoot" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.mcduboiswebservices.com"><img src="https://avatars0.githubusercontent.com/u/39778093?v=4" width="100px;" alt="Michael duBois"/><br /><sub><b>Michael duBois</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=MichaelCduBois" title="Code">💻</a></td>
+   </tr>
 </table>
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
