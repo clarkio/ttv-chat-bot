@@ -192,7 +192,10 @@ export default class EffectsManager {
       }
 
       // TODO: use corresponding soundEffect setting if available (to do things like control volume at which the sound is played)
-      return this.soundFxManager.playSoundEffect(soundEffect.fileFullPath);
+      const result = await this.soundFxManager.playSoundEffect(
+        soundEffect.fileFullPath
+      );
+      return result === true ? 'success!' : 'failed to play the sound effect';
     }
 
     return 'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported';
