@@ -160,13 +160,11 @@ export class TwitchChat {
    * Check if the message is a light control command
    */
   private isLightControlCommand = (message: string) =>
-    this.lightControlCommands.some(
-      (command: string): boolean => {
-        const comparison = message.startsWith(command.toLowerCase());
-        this.lightCommandUsed = comparison ? command : '';
-        return comparison;
-      }
-    );
+    this.lightControlCommands.some((command: string): boolean => {
+      const comparison = message.startsWith(command.toLowerCase());
+      this.lightCommandUsed = comparison ? command : '';
+      return comparison;
+    });
 
   private getTime = () => {
     const date = new Date();
@@ -206,11 +204,7 @@ export class TwitchChat {
     }
 
     if (this.isOtherCommand(message)) {
-      this.effectsManager.checkForCommand(message).then(result => {
-        if (result) {
-          this.sendChatMessage(`${userName}, ${result}`);
-        }
-      });
+      this.effectsManager.checkForCommand(message);
     }
 
     return Promise.resolve('there was nothing to do');
