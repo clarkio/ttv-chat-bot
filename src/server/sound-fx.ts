@@ -1,11 +1,11 @@
 import { getSoundEffectsFiles } from './file-manager';
 import { log } from './log';
-import { resolve as resolvePath } from 'path';
+import { resolve as resolvePath, join as joinPath } from 'path';
 
 // tslint:disable: no-var-requires
 const player = require('play-sound')({});
 // TODO: Switch this ^^^ to use node-mp3-player to which allows volumne control
-const mp3Duration = require('mp3-duration');
+const musicMetadata = require('music-metadata');
 
 /**
  * A class to capture properties for each mp3 file available within the sounds directory in this project
@@ -97,15 +97,13 @@ export default class SoundFxManager {
     return true;
   }
 
-  private mapFiles = (files: string[]) => {
-    // Array.forEach is blocking aka synchronous
-    files.forEach((fileName: string) => {
-      const fileFullPath = `${this.SOUND_FX_DIRECTORY}/${fileName}`;
-      mp3Duration(fileFullPath, (error: any, duration: any) => {
-        if (error) {
-          log('error', error);
-        }
-
+  private mapFiles = async (files: string[]) => {
+    // for loop is blocking aka synchronous, Array.forEach is not
+    for(const fileName of files) {
+      const fileFullPath = joinPath(`${this.SOUND_FX_DIRECTORY}, ${fileName}`);
+      try {
+        // The for & await will prevent parallel parsing of files
+        const metadata = await musicMetadata.parseFile(fileFullPath, {duration: true});
         const name = fileName.replace('.mp3', '');
         const soundEffectSetting = this.soundEffectSettings.find(
           (setting: SoundFxSetting) => setting.name === name
@@ -114,11 +112,13 @@ export default class SoundFxManager {
           name,
           fileName,
           fileFullPath,
-          duration,
+          metadata.common.duration,
           soundEffectSetting
         );
         this.availableSoundEffects.push(soundFxFile);
-      });
-    });
+      } catch(err) {
+        log('error', 'Error parsing audio file: ' + err.message);
+      }
+    }
   };
 }
