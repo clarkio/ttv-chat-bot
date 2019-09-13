@@ -48,12 +48,6 @@ export default class OverlayManager {
    * @param command - What to change to overlay to
    */
   public updateOverlay = (command: string): void => {
-    this.supportedOverlayColors.forEach((color: string) => {
-      if (command.includes(color)) {
-        this.currentBulbColor = color;
-        // communicate with the client to change overlay color
-        appServer.io.emit('color-change', color);
-      }
-    });
+    appServer.io.emit('color-change', command);
   };
 }

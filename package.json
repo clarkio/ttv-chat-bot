@@ -46,10 +46,11 @@
   },
   "snyk": true,
   "devDependencies": {
+    "@types/chroma-js": "^1.4.2",
     "@types/dotenv": "^4.0.3",
     "@types/express": "^4.16.0",
     "@types/isomorphic-fetch": "0.0.34",
-    "@types/jquery": "^3.3.6",
+    "@types/jquery": "^3.3.31",
     "@types/node": "^10.9.4",
     "@types/node-fetch": "^2.1.2",
     "@types/request-promise-native": "^1.0.15",
