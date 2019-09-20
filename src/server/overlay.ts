@@ -17,7 +17,7 @@ export default class OverlayManager {
     'gray',
     'white'
   ];
-  public currentBulbColor: string = 'blue';
+  public currentBulbColor: string = 'deepskyblue';
 
   constructor(private soundFx: SoundFxManager) {}
 

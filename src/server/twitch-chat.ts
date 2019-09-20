@@ -255,6 +255,7 @@ export class TwitchChat {
    * @param userName who sent the message
    */
   private startColorChange = (commandMessage: string, userName: string) => {
+    // TODO Convert color names to hex code before sending to the bot?
     this.effectsManager.updateOverlay(commandMessage);
 
     // TODO update so that effects manager handles azure bot related workload
