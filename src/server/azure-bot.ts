@@ -3,16 +3,23 @@ import fetch from 'isomorphic-fetch';
 import * as config from './config';
 import { log } from './log';
 
+import socket from 'ws';
+
 /**
  * A Plugin of sorts to deal with the AzureBot if the user has decided to configure it
  */
 export class AzureBot {
   private azureBotToken = config.azureBotToken;
 
-  private conversationId: string | undefined;
-  private conversationToken: string | undefined;
-  private expiration: number | undefined;
-  private watermark: string | undefined;
+  private conversationId?: string;
+  private conversationToken?: string;
+  private expiration?: number;
+  private watermark?: string;
+  private streamUrl?: string;
+  private socketConnection?: any;
+
+  private baseAzureBotUrl =
+    'https://directline.botframework.com/v3/directline/conversations/';
 
   constructor() {
     //
@@ -50,10 +57,13 @@ export class AzureBot {
    * @param user - The user who sent the message
    */
   public sendCommand = (commandMessage: string, user: string) => {
-    const fullMessage = { text: commandMessage, from: user };
-    const url = `https://directline.botframework.com/api/conversations/${
-      this.conversationId
-    }/messages`;
+    // Documentation: https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-send-activity?view=azure-bot-service-4.0#send-an-activity
+    const fullMessage = {
+      from: { id: user },
+      text: commandMessage,
+      type: 'message'
+    };
+    const url = `${this.baseAzureBotUrl}${this.conversationId}/activities`;
     const fetchOptions: RequestInit = {
       body: JSON.stringify(fullMessage),
       headers: {
@@ -75,12 +85,13 @@ export class AzureBot {
   /**
    * Opens up communication with the Azure bot if configured
    */
-  public createNewBotConversation = () => {
+  public createNewBotConversation = async () => {
     // For some reason we can't use the log when discord hook is enabled
     // seems to be a timing issue where discord hook is undefined
     // log('info', `Starting a new bot conversation at: ${new Date()}`);
     this.startBotConversation()
       .then((result: any) => this.handleConversationStart(result))
+      .then(this.connectToSocket)
       .catch((error: any) => {
         log('error', error);
         return error;
@@ -91,9 +102,7 @@ export class AzureBot {
     // The watermark let's us only retrieve new messages
     // since the last time we checked on the conversation
     const watermarkQuery = this.watermark ? `?watermark=${this.watermark}` : '';
-    const url = `https://directline.botframework.com/api/conversations/${
-      this.conversationId
-    }/messages${watermarkQuery}`;
+    const url = `https://directline.botframework.com/api/conversations/${this.conversationId}/messages${watermarkQuery}`;
     const fetchOptions: RequestInit = {
       headers: {
         Authorization: `Bearer ${this.conversationToken}`,
@@ -121,6 +130,30 @@ export class AzureBot {
       .catch(this.handleError);
   };
 
+  private connectToSocket = (): Promise<any> => {
+    this.socketConnection = new socket(this.streamUrl!);
+    this.socketConnection.onmessage = (message: any) => {
+      log('info', 'Received update on web socket for bot conversation');
+      // log('info', message.data);
+      log('info', message);
+      if (message.data) {
+        // Print the last message in the conversation
+        // Example of response: https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-receive-activities?view=azure-bot-service-4.0#response
+        // Note: websockets will munge the response to be message.data.activities
+        const activities = JSON.parse(message.data).activities;
+        const latestActivity = activities[activities.length - 1];
+        log(
+          'info',
+          `${latestActivity.type} ${latestActivity.from.id} ${latestActivity.text}`
+        );
+      } else {
+        log('info', message);
+      }
+    };
+
+    return Promise.resolve();
+  };
+
   private handleConversationStart = (result: any) => {
     if (result.Error) {
       log('Error', result.Error);
@@ -131,6 +164,7 @@ export class AzureBot {
     // eslint-disable-next-line prefer-destructuring
     this.conversationId = result.conversationId;
     this.conversationToken = result.token;
+    this.streamUrl = result.streamUrl;
 
     const expiresIn = parseInt(result.expires_in, 10);
     // Renew conversation 30 seconds before token expiration
@@ -142,10 +176,7 @@ export class AzureBot {
   /**
    * Contacts the bot url to authenticate the communication
    */
-  private startBotConversation = () => {
-    const url = 'https://directline.botframework.com/api/conversations';
-    // const url =
-    //   'https://directline.botframework.com/v3/directline/conversations';
+  private startBotConversation = (): Promise<any> => {
     const fetchOptions: RequestInit = {
       headers: {
         Authorization: `Bearer ${this.azureBotToken}`
@@ -153,7 +184,7 @@ export class AzureBot {
       method: 'POST'
     };
 
-    return fetch(url, fetchOptions)
+    return fetch(this.baseAzureBotUrl, fetchOptions)
       .then((response: any) => {
         return response.json();
       })

@@ -283,9 +283,10 @@ export class TwitchChat {
       .getConversationMessages()
       .then((result: any) => {
         const messages = result.messages;
-        const lastMessage = messages[messages.length - 1].text;
-        log('info', `Bot response: ${lastMessage}`);
-        this.ttvChatClient.say('clarkio', lastMessage);
+        log('info', messages);
+        // const lastMessage = messages[messages.length - 1].text;
+        // log('info', `Bot response: ${lastMessage}`);
+        // this.ttvChatClient.say('clarkio', lastMessage);
       })
       .catch(error => log('error', error));
   };
