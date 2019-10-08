@@ -183,7 +183,12 @@ export class TwitchChat {
    * @param userName the user who sent the message
    */
   private parseChat = (message: string, userName: string) => {
-    if (this.isLightControlCommand(message)) {
+    // if message.startsWith('!')
+        // Send the message to the AI
+        // Read the AI's response
+        // Do something based on the AI's response
+
+    if (this.isLightControlCommand (message)) {
       // viewer attempting to control the overlay/lights
       const commandMessage = message.slice(this.lightCommandUsed.length).trim();
       log('info', `Received a command from ${userName}: ${commandMessage}`);
