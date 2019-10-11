@@ -198,6 +198,22 @@ export default class EffectsManager {
       return result === true ? 'success!' : 'failed to play the sound effect';
     }
 
+    log(
+      'warn',
+      'user entered an unsupported sound effect. Playing the sorry sound effect instead.'
+    );
+
+    const wrongEffect = await this.soundFxManager.determineSoundEffect('sorry'); // Using sorry for now since it seems fitting -ToeFrog
+
+    if( wrongEffect ){
+      const wrongResult = await this.soundFxManager.playSoundEffect(
+        wrongEffect.fileFullPath
+      );
+
+      return wrongResult === true ? 'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported' : 'failed to play the sorry sound effect';
+    }
+
+    // This return is a last resort
     return 'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported';
   }
 
