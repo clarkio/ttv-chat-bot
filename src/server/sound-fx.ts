@@ -3,7 +3,17 @@ import { log } from './log';
 import { resolve as resolvePath } from 'path';
 
 // tslint:disable: no-var-requires
-const player = require('play-sound')({});
+const player = require('play-sound')({
+  players: [
+    'mplayer',
+    'afplay', // afplay is default on macos
+    'mpg123', // works on ubuntu with `sudo apt install mpg123`
+    'mpg321',
+    'play',
+    'omxplayer',
+    'cmdmp3'
+  ]
+});
 // TODO: Switch this ^^^ to use node-mp3-player to which allows volumne control
 const mp3Duration = require('mp3-duration');
 
