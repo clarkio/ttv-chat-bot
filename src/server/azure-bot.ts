@@ -47,9 +47,7 @@ export class AzureBot {
    */
   public sendCommand = (commandMessage: string, user: string) => {
     const fullMessage = { text: commandMessage, from: user };
-    const url = `https://directline.botframework.com/api/conversations/${
-      this.conversationId
-    }/messages`;
+    const url = `https://directline.botframework.com/api/conversations/${this.conversationId}/messages`;
     const fetchOptions: RequestInit = {
       body: JSON.stringify(fullMessage),
       headers: {
@@ -87,9 +85,7 @@ export class AzureBot {
     // The watermark let's us only retrieve new messages
     // since the last time we checked on the conversation
     const watermarkQuery = this.watermark ? `?watermark=${this.watermark}` : '';
-    const url = `https://directline.botframework.com/api/conversations/${
-      this.conversationId
-    }/messages${watermarkQuery}`;
+    const url = `https://directline.botframework.com/api/conversations/${this.conversationId}/messages${watermarkQuery}`;
     const fetchOptions: RequestInit = {
       headers: {
         Authorization: `Bearer ${this.conversationToken}`,
@@ -119,7 +115,7 @@ export class AzureBot {
 
   private handleConversationStart = (result: any) => {
     if (result.Error) {
-      log('Error', result.Error);
+      log('error', result.Error);
       return result.Error;
     }
     log('info', 'Bot conversation started');
