@@ -14,10 +14,6 @@ export class AzureBot {
   private expiration: number | undefined;
   private watermark: string | undefined;
 
-  constructor() {
-    //
-  }
-
   /**
    * This will trigger specific effects based on the message
    *
@@ -106,7 +102,7 @@ export class AzureBot {
       .then((response: any) => {
         // Since we need to get the watermark before returning
         // the conversation messages we'll return a new Promise
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
           response
             .json()
             .then((conversation: any) => {
@@ -180,19 +176,4 @@ export class AzureBot {
     log('error', error.message);
     return error;
   };
-
-  /**
-   * Better than naming the function DoNothing
-   */
-  private noop = (): void => {
-    //
-  };
-
-  /**
-   * A Promise to do nothing
-   */
-  private noopPromise = () => ({
-    catch: () => Promise.reject(),
-    then: () => Promise.resolve()
-  });
 }
