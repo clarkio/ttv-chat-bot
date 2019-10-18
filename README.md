@@ -7,22 +7,26 @@ Twitch TV chat reader to change the color of overlays loaded from streamelements
 
 ## Getting Started
 
-1. `git clone git@github.com:clarkio/ttv-chat-light.git`
-2. cd `ttv-chat-light`
-3. npm install
-4. Login on [https://twitch.tv](https://twitch.tv)
-5. Go to [https://twitchapps.com/tmi/](https://twitchapps.com/tmi/)
+1. Clone with: `git clone git@github.com:clarkio/ttv-chat-light.git`
+1. Goto project: `cd ttv-chat-light`
+1. Install node dependencies: `npm install`
+1. If on:
+   * **Debian/Ubuntu** run: `sudo apt install mpg123`
+   * **Windows** install: [cmdmp3](https://github.com/jimlawless/cmdmp3)
+   * **MacOS** you should have [afplay](https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/afplay.1.html) already available
+1. Login on [https://twitch.tv](https://twitch.tv)
+1. Go to [https://twitchapps.com/tmi/](https://twitchapps.com/tmi/)
    1. Click "Connect with Twitch"
-   2. Click "Authorize"
-   3. Copy the token value (starts with "oauth:")
-6. Rename the file `.env-example` to `.env`
-7. Update `TTV_CLIENT_TOKEN` with the token value you copied before in step 4.c
-8. Update `TTV_CLIENT_USERNAME` to your client username (defaults to "clarkio")
-9. For each overlay in streamelements (a.k.a. scenes) copy the URL to the scene and add it to the `.env` file as a new environment variable for each one.
+   1. Click "Authorize"
+   1. Copy the token value (starts with "oauth:")
+1. Rename the file `.env-example` to `.env`
+1. Update `TTV_CLIENT_TOKEN` with the token value you copied before in step 4.c
+1. Update `TTV_CLIENT_USERNAME` to your client username (defaults to "clarkio")
+1. For each overlay in streamelements (a.k.a. scenes) copy the URL to the scene and add it to the `.env` file as a new environment variable for each one.
 
    Example: mainScene=https://streamelements.com/overlay/abc/123
 
-10. Get Streamelements JWT from your account and update `STREAMELEMENTS_JWT` in your `.env` file.
+1. Get Streamelements JWT from your account and update `STREAMELEMENTS_JWT` in your `.env` file.
 
 ## Run the Application
 
@@ -43,16 +47,16 @@ Please make sure you've completed all steps in the "Getting Started" section bef
 ### From the Command Line (CLI)
 
 1. Change to the directory of the project `ttv-chat-light` if you have not already done so.
-2. Run `npm start`
-3. Open your browser and go to [http://localhost:1337/scenes?sceneName=<your-scene-name-from-.env>](http://localhost:1337/scenes?sceneName=)
+1. Run `npm start`
+1. Open your browser and go to [http://localhost:1337/scenes?sceneName=<your-scene-name-from-.env>](http://localhost:1337/scenes?sceneName=)
 
    Example: [http://localhost:1337/scenes?sceneName=mainScene](http://localhost:1337/scenes?sceneName=mainScene)
 
 ### From VS Code
 
 1. Go to the debugger view and confirm the debugger is set to "Server Start"
-2. Press the "Start Debugging" button (the green play button)
-3. Open your browser and go to [http://localhost:1337/scenes?sceneName=<your-scene-name-from-.env>](http://localhost:1337/scenes?sceneName=)
+1. Press the "Start Debugging" button (the green play button)
+1. Open your browser and go to [http://localhost:1337/scenes?sceneName=<your-scene-name-from-.env>](http://localhost:1337/scenes?sceneName=)
 
    Example: [http://localhost:1337/scenes?sceneName=mainScene](http://localhost:1337/scenes?sceneName=mainScene)
 
@@ -66,7 +70,7 @@ Please make sure you've completed all steps in the "Getting Started" and "Run th
 
    > If you'd like to have the client connect to another channel you can add it to the `TTV_CHANNELS` environment variable. The variable is comma-delimited so you can have it as clarkio,"your channel name" to connect to multiple channels
 
-2. Enter the following chat message "!bulb go green" and you should see your overlay change color in your other tab/window which loaded [http://localhost:1337/scenes?sceneName=mainScene](http://localhost:1337/scenes?sceneName=mainScene)
+1. Enter the following chat message "!bulb go green" and you should see your overlay change color in your other tab/window which loaded [http://localhost:1337/scenes?sceneName=mainScene](http://localhost:1337/scenes?sceneName=mainScene)
 
    > WARNING: the implementation is currently based off of an overlay being blue by default and will alter the hue from that. If your overlay default color is different it will not exactly change to the color you may be intending. We are working on making this better to support different default overlay colors.
 

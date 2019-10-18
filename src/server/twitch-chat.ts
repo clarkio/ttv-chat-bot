@@ -5,7 +5,6 @@ import * as config from './config';
 import EffectsManager from './effects-manager';
 
 import {
-  chatCommands,
   ttvChannels,
   ttvClientId,
   ttvClientToken,
@@ -17,7 +16,6 @@ export class TwitchChat {
   private lightCommandUsed: string = '';
   private clientUsername: string = ttvClientUsername.toString();
   private moderators: string[] = [this.clientUsername];
-  private commands = chatCommands.toString().split(',');
   private lightControlCommands: string[] = ['!bulb'];
   private isChatClientEnabled: boolean = true;
 
