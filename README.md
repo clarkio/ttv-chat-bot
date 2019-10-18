@@ -12,6 +12,8 @@ Twitch TV chat reader to change the color of overlays loaded from streamelements
 1. Install node dependencies: `npm install`
 1. If on:
    * **Debian/Ubuntu** run: `sudo apt install mpg123`
+   * **Windows** install: [cmdmp3](https://github.com/jimlawless/cmdmp3)
+   * **MacOS** you should have [afplay](https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/afplay.1.html) already available
 1. Login on [https://twitch.tv](https://twitch.tv)
 1. Go to [https://twitchapps.com/tmi/](https://twitchapps.com/tmi/)
    1. Click "Connect with Twitch"
