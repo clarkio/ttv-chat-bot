@@ -14,10 +14,6 @@ export class AzureBot {
   private expiration: number | undefined;
   private watermark: string | undefined;
 
-  constructor() {
-    //
-  }
-
   /**
    * This will trigger specific effects based on the message
    *
@@ -51,9 +47,7 @@ export class AzureBot {
    */
   public sendCommand = (commandMessage: string, user: string) => {
     const fullMessage = { text: commandMessage, from: user };
-    const url = `https://directline.botframework.com/api/conversations/${
-      this.conversationId
-    }/messages`;
+    const url = `https://directline.botframework.com/api/conversations/${this.conversationId}/messages`;
     const fetchOptions: RequestInit = {
       body: JSON.stringify(fullMessage),
       headers: {
@@ -91,9 +85,7 @@ export class AzureBot {
     // The watermark let's us only retrieve new messages
     // since the last time we checked on the conversation
     const watermarkQuery = this.watermark ? `?watermark=${this.watermark}` : '';
-    const url = `https://directline.botframework.com/api/conversations/${
-      this.conversationId
-    }/messages${watermarkQuery}`;
+    const url = `https://directline.botframework.com/api/conversations/${this.conversationId}/messages${watermarkQuery}`;
     const fetchOptions: RequestInit = {
       headers: {
         Authorization: `Bearer ${this.conversationToken}`,
@@ -106,7 +98,7 @@ export class AzureBot {
       .then((response: any) => {
         // Since we need to get the watermark before returning
         // the conversation messages we'll return a new Promise
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
           response
             .json()
             .then((conversation: any) => {
@@ -123,7 +115,7 @@ export class AzureBot {
 
   private handleConversationStart = (result: any) => {
     if (result.Error) {
-      log('Error', result.Error);
+      log('error', result.Error);
       return result.Error;
     }
     log('info', 'Bot conversation started');
@@ -180,19 +172,4 @@ export class AzureBot {
     log('error', error.message);
     return error;
   };
-
-  /**
-   * Better than naming the function DoNothing
-   */
-  private noop = (): void => {
-    //
-  };
-
-  /**
-   * A Promise to do nothing
-   */
-  private noopPromise = () => ({
-    catch: () => Promise.reject(),
-    then: () => Promise.resolve()
-  });
 }
