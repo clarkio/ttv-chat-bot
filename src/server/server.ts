@@ -8,7 +8,7 @@ import io from 'socket.io';
 import * as config from './config';
 import { DiscordBot } from './discord-bot';
 import { log } from './log';
-import { ligthsRouter } from './routes/lights';
+import { lightsRouter } from './routes/lights';
 import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
 import EffectsManager from './effects-manager';
@@ -71,7 +71,7 @@ export class AppServer {
    */
   private defineRoutes(): void {
     const router: express.Router = express.Router();
-    const { changeLightColor, sendLightEffect } = ligthsRouter(this);
+    const { changeLightColor, sendLightEffect } = lightsRouter(this);
 
     router.get('/scenes', scenesRoute);
 
