@@ -1,19 +1,16 @@
 import * as dotenv from 'dotenv';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { log } from './log';
 dotenv.config();
 
 let fileConfig;
+export let hasLoadedConfigJSON = false;
 
 try {
   const buffer = readFileSync(resolve(__dirname, '../config.json'));
   fileConfig = JSON.parse(buffer.toString());
+  hasLoadedConfigJSON = true;
 } catch (e) {
-  log(
-    'log',
-    'Unable to retrieve configuration from a file. Falling back to environment variables'
-  );
   fileConfig = {};
 }
 
