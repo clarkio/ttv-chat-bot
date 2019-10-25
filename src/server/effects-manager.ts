@@ -5,6 +5,7 @@ import OverlayManager from './overlay';
 import * as config from './config';
 import { AzureBot } from './azure-bot';
 import { log } from './log';
+import { AppServer } from './server';
 
 export default class EffectsManager {
   public azureBot!: AzureBot;
@@ -21,7 +22,7 @@ export default class EffectsManager {
   private joinSoundEffects: any[] | undefined;
   private playedUserJoinSounds: string[] = [];
 
-  constructor() {
+  constructor(private appServer: AppServer) {
     this.loadEffects().then(this.initEffectControllers);
     this.startAzureBot();
     this.playedUserJoinSounds = [];
@@ -223,6 +224,9 @@ export default class EffectsManager {
       this.sceneAliases
     );
     this.soundFxManager = new SoundFxManager(this.soundEffects);
-    this.overlayManager = new OverlayManager(this.soundFxManager);
+    this.overlayManager = new OverlayManager(
+      this.soundFxManager,
+      this.appServer.io
+    );
   };
 }
