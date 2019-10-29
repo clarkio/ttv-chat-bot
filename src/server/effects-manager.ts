@@ -5,6 +5,7 @@ import OverlayManager from './overlay';
 import * as config from './config';
 import { AzureBot } from './azure-bot';
 import { log } from './log';
+import { AppServer } from './server';
 
 export default class EffectsManager {
   public azureBot!: AzureBot;
@@ -19,10 +20,12 @@ export default class EffectsManager {
   private obsManager!: ObsManager;
   private overlayManager!: OverlayManager;
   private joinSoundEffects: any[] | undefined;
+  private playedUserJoinSounds: string[] = [];
 
-  constructor() {
+  constructor(private appServer: AppServer) {
     this.loadEffects().then(this.initEffectControllers);
     this.startAzureBot();
+    this.playedUserJoinSounds = [];
   }
 
   public activateJoinEffectIfFound(username: string) {
@@ -30,9 +33,14 @@ export default class EffectsManager {
       this.joinSoundEffects &&
       this.joinSoundEffects.find(joinEffect => joinEffect[username]);
 
-    if (userEffect && config.isSoundFxEnabled) {
+    if (
+      userEffect &&
+      config.isSoundFxEnabled &&
+      !this.hasJoinSoundPlayed(username)
+    ) {
       const userSoundEffect = userEffect[username];
       this.activateSoundEffect(userSoundEffect);
+      this.playedUserJoinSounds.push(username);
     }
   }
 
@@ -136,6 +144,10 @@ export default class EffectsManager {
     return alertEffectKey && this.alertEffects[alertEffectKey];
   };
 
+  private hasJoinSoundPlayed(username: string): boolean {
+    return this.playedUserJoinSounds.includes(username);
+  }
+
   private loadEffects = async (): Promise<any> => {
     try {
       const result = await readEffects();
@@ -228,6 +240,9 @@ export default class EffectsManager {
       this.sceneAliases
     );
     this.soundFxManager = new SoundFxManager(this.soundEffects);
-    this.overlayManager = new OverlayManager(this.soundFxManager);
+    this.overlayManager = new OverlayManager(
+      this.soundFxManager,
+      this.appServer.io
+    );
   };
 }

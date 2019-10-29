@@ -8,17 +8,13 @@
   "jsRules": {},
   "rules": {
     "ordered-imports": false,
-    "no-use-before-define": "off",
     "linebreak-style": false,
     "trailing-comma": false,
     "no-magic-numbers": false,
-    "semicolon": [true, "always", "ignore-bound-class-methods"],
     "arrow-parens": [true, "ban-single-arg-parens"]
   },
   "rulesDirectory": [],
   "linterOptions": {
-    "exclude": [
-      "node_modules"
-    ]
+    "exclude": ["node_modules"]
   }
 }

@@ -1,19 +1,32 @@
 import { AppServer } from './server';
 import { TwitchChat } from './twitch-chat';
 import { AlertsManager } from './alerts-manager';
-import EffectsManager from './effects-manager';
 import * as config from './config';
+import { log, setHook } from './log';
 
-const effectsManager = new EffectsManager();
+if (!config.hasLoadedConfigJSON) {
+  log(
+    'log',
+    'Unable to retrieve configuration from a file. Falling back to environment variables'
+  );
+}
 
-const appServer: AppServer = new AppServer(effectsManager);
+const appServer = new AppServer();
 
-const twitchChat: TwitchChat = new TwitchChat(effectsManager);
+setHook(message => {
+  if (config.discordHookEnabled) {
+    appServer.discordHook
+      .send(message)
+      .catch(error => log('error', `Discord: ${error}`));
+  }
+});
+
+const twitchChat = new TwitchChat(appServer.effectsManager);
 twitchChat.connect();
 
-const alertManager: AlertsManager = new AlertsManager(
+const alertManager = new AlertsManager(
   config.streamElementsJwt,
-  effectsManager,
+  appServer.effectsManager,
   twitchChat
 );
 alertManager.listenToEvents();

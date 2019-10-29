@@ -8,7 +8,7 @@ import io from 'socket.io';
 import * as config from './config';
 import { DiscordBot } from './discord-bot';
 import { log } from './log';
-import { changeLightColor, sendLightEffect } from './routes/lights';
+import { lightsRouter } from './routes/lights';
 import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
 import EffectsManager from './effects-manager';
@@ -22,9 +22,10 @@ export class AppServer {
   public app: express.Application;
   public io!: SocketIO.Server;
   public discordHook!: WebhookClient;
+  public effectsManager = new EffectsManager(this);
   private http!: Server;
 
-  constructor(public effectsManager: EffectsManager) {
+  constructor() {
     this.app = express();
     this.configApp();
     this.startDiscordHook();
@@ -70,6 +71,8 @@ export class AppServer {
    */
   private defineRoutes(): void {
     const router: express.Router = express.Router();
+    const { changeLightColor, sendLightEffect } = lightsRouter(this);
+
     router.get('/scenes', scenesRoute);
 
     router.post('/save', saveCssRoute);
@@ -92,9 +95,7 @@ export class AppServer {
    * Start the Node.js server
    */
   private listen = (): void => {
-    const runningMessage = `Overlay server is running on port http://localhost:${
-      config.port
-    }`;
+    const runningMessage = `Overlay server is running on port http://localhost:${config.port}`;
     this.http.listen(config.port, () => {
       log('info', runningMessage);
     });
