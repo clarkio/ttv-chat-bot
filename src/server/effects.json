@@ -157,8 +157,7 @@
             "visible": false
           }
         }
-      ],
-      "comboEffects": ["zoom-main"]
+      ]
     },
     {
       "name": "headpat",
@@ -176,11 +175,6 @@
         }
       ],
       "duration": 10000
-    },
-    {
-      "name": "zoom-main",
-      "effectType": "SetCurrentScene",
-      "sceneName": "Zoom Face Main"
     },
     {
       "name": "pinkfluffyunicorns-dance",
