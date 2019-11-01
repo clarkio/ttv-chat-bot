@@ -21,7 +21,9 @@ export class SceneEffect {
     public effectType: EffectType,
     public scenes: string[],
     public sources: SceneEffectSource[],
-    public duration: number
+    public duration: number,
+    public comboEffects: string[],
+    public sceneName: string
   ) {}
 }
 
@@ -131,14 +133,14 @@ export default class ObsManager {
    * @param sceneEffect the scene effect to apply within OBS
    */
   public async applySceneEffect(sceneEffect: SceneEffect) {
-    this.activateSceneEffect(sceneEffect);
+    return await this.activateSceneEffect(sceneEffect);
   }
 
   /**
    * Returns the currently active scene that's visible in OBS via websockets
    */
   public async getCurrentScene(): Promise<string> {
-    return this.obs.send('GetCurrentScene');
+    return await this.obs.send('GetCurrentScene');
   }
 
   public async activateSceneEffect(sceneEffect: SceneEffect): Promise<any> {
@@ -151,6 +153,36 @@ export default class ObsManager {
       ? await this.getCurrentScene()
       : undefined;
 
+    // Let's assume a combo effect involves trigger an effect BEFORE the main effect
+    if (sceneEffect.comboEffects) {
+      await this.executeComboEffects(sceneEffect.comboEffects);
+    }
+
+    return this.runEffect(sceneEffect, isForAllScenes, currentScene);
+  }
+
+  public async executeComboEffects(comboEffects: string[]) {
+    comboEffects.map(async comboEffect => {
+      const currentEffect = await this.determineSceneEffect(comboEffect);
+      const scene = currentEffect.sceneName;
+
+      this.obs.send(
+        currentEffect.effectType,
+        Object.assign(
+          {},
+          {
+            'scene-name': scene
+          }
+        )
+      );
+    });
+  }
+
+  public async runEffect(
+    sceneEffect: SceneEffect,
+    isForAllScenes: boolean,
+    currentScene: string | undefined
+  ) {
     sceneEffect.scenes.forEach((scene: string | undefined) => {
       scene = isForAllScenes ? currentScene : scene;
       sceneEffect.sources.forEach((source: SceneEffectSource) => {
@@ -255,6 +287,7 @@ export default class ObsManager {
   private initSceneEffects() {
     this.sceneEffectSettings.forEach((sceneEffectSetting: any) => {
       const sceneEffectType =
+        // @ts-ignore-next
         EffectType[sceneEffectSetting.effectType] || EffectType.None;
       const sceneEffect = new SceneEffect(
         sceneEffectSetting.name,
