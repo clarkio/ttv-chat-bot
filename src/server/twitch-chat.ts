@@ -114,6 +114,9 @@ export class TwitchChat {
   private ttvPart = (channel: string, username: string) => {
     const { hours, minutes } = this.getTime();
     log('info', `[${hours}:${minutes}] ${username} has LEFT the channel`);
+
+    // play leave effect for all users
+    this.effectsManager.activatePartEffect();
   };
 
   /**

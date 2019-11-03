@@ -44,6 +44,15 @@ export default class EffectsManager {
     }
   }
 
+  /*
+   * Activates a sound effect for when a user leaves the chat
+   */
+  public activatePartEffect(){
+    const partEffect = 'byefelicia';
+
+    this.activateSoundEffect(partEffect);
+  }
+
   public triggerAzureBotEffect(alertEffect: any, userName: string) {
     if (this.azureBot) {
       return this.azureBot.triggerEffect(alertEffect, userName);
