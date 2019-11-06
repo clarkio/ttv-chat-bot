@@ -2,61 +2,37 @@
   "specialEffects": {
     "cop mode": {
       "type": "pulse",
-      "colors": [
-        "cop-red",
-        "cop-blue"
-      ]
+      "colors": ["cop-red", "cop-blue"]
     },
     "party mode": {
       "type": "pulse",
-      "colors": [
-        "pink",
-        "blue"
-      ]
+      "colors": ["pink", "blue"]
     }
   },
   "alertEffects": {
     "follow": {
       "type": "pulse",
-      "colors": [
-        "purple",
-        "white"
-      ]
+      "colors": ["purple", "white"]
     },
     "host": {
       "type": "pulse",
-      "colors": [
-        "purple",
-        "white"
-      ]
+      "colors": ["purple", "white"]
     },
     "subscriber": {
       "type": "pulse",
-      "colors": [
-        "purple",
-        "green"
-      ]
+      "colors": ["purple", "green"]
     },
     "tip": {
       "type": "pulse",
-      "colors": [
-        "purple",
-        "green"
-      ]
+      "colors": ["purple", "green"]
     },
     "cheer": {
       "type": "pulse",
-      "colors": [
-        "purple",
-        "green"
-      ]
+      "colors": ["purple", "green"]
     },
     "raid": {
       "type": "pulse",
-      "colors": [
-        "purple",
-        "white"
-      ]
+      "colors": ["purple", "white"]
     }
   },
   "supportedColors": [],
@@ -120,14 +96,18 @@
       "fileName": "steeljuicyfart",
       "sceneEffectName": "fart-smoke",
       "volume": 1
+    },
+    {
+      "name": "themoreyouknow",
+      "fileName": "themoreyouknow",
+      "sceneEffectName": "themoreyouknow",
+      "volume": 1
     }
   ],
   "sceneEffects": [
     {
       "name": "pbjtime-banana-dance",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -143,9 +123,7 @@
     },
     {
       "name": "pinkfluffyunicorns-dance",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -179,9 +157,7 @@
     },
     {
       "name": "fart-smoke",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -198,9 +174,7 @@
     },
     {
       "name": "xp-error",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -216,9 +190,7 @@
     },
     {
       "name": "raid-lights",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -234,9 +206,7 @@
     },
     {
       "name": "do-it",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -252,9 +222,7 @@
     },
     {
       "name": "who-cares",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -270,13 +238,27 @@
     },
     {
       "name": "epic-sax",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
           "name": "epic-sax",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "themoreyouknow",
+      "scenes": ["*"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "themoreyouknow",
           "activeState": {
             "visible": true
           },
@@ -325,35 +307,14 @@
     }
   ],
   "specialEffectsOld": {
-    "cop mode": [
-      "cop-red",
-      "cop-blue"
-    ],
-    "party mode": [
-      "pink",
-      "blue"
-    ]
+    "cop mode": ["cop-red", "cop-blue"],
+    "party mode": ["pink", "blue"]
   },
   "alertEffectsOld": {
-    "follow": [
-      "purple",
-      "white"
-    ],
-    "host": [
-      "purple",
-      "white"
-    ],
-    "subscriber": [
-      "purple",
-      "green"
-    ],
-    "tip": [
-      "purple",
-      "green"
-    ],
-    "cheer": [
-      "purple",
-      "green"
-    ]
+    "follow": ["purple", "white"],
+    "host": ["purple", "white"],
+    "subscriber": ["purple", "green"],
+    "tip": ["purple", "green"],
+    "cheer": ["purple", "green"]
   }
 }
