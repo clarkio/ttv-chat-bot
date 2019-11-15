@@ -2,61 +2,37 @@
   "specialEffects": {
     "cop mode": {
       "type": "pulse",
-      "colors": [
-        "cop-red",
-        "cop-blue"
-      ]
+      "colors": ["cop-red", "cop-blue"]
     },
     "party mode": {
       "type": "pulse",
-      "colors": [
-        "pink",
-        "blue"
-      ]
+      "colors": ["pink", "blue"]
     }
   },
   "alertEffects": {
     "follow": {
       "type": "pulse",
-      "colors": [
-        "purple",
-        "white"
-      ]
+      "colors": ["purple", "white"]
     },
     "host": {
       "type": "pulse",
-      "colors": [
-        "purple",
-        "white"
-      ]
+      "colors": ["purple", "white"]
     },
     "subscriber": {
       "type": "pulse",
-      "colors": [
-        "purple",
-        "green"
-      ]
+      "colors": ["purple", "green"]
     },
     "tip": {
       "type": "pulse",
-      "colors": [
-        "purple",
-        "green"
-      ]
+      "colors": ["purple", "green"]
     },
     "cheer": {
       "type": "pulse",
-      "colors": [
-        "purple",
-        "green"
-      ]
+      "colors": ["purple", "green"]
     },
     "raid": {
       "type": "pulse",
-      "colors": [
-        "purple",
-        "white"
-      ]
+      "colors": ["purple", "white"]
     }
   },
   "supportedColors": [],
@@ -65,6 +41,18 @@
       "name": "sandstorm",
       "fileName": "sandstorm",
       "sceneEffectName": "raid-lights",
+      "volume": 1
+    },
+    {
+      "name": "smack",
+      "fileName": "smack",
+      "sceneEffectName": "smack",
+      "volume": 1
+    },
+    {
+      "name": "highfive",
+      "fileName": "highfive",
+      "sceneEffectName": "highfive",
       "volume": 1
     },
     {
@@ -120,14 +108,18 @@
       "fileName": "steeljuicyfart",
       "sceneEffectName": "fart-smoke",
       "volume": 1
+    },
+    {
+      "name": "themoreyouknow",
+      "fileName": "themoreyouknow",
+      "sceneEffectName": "themoreyouknow",
+      "volume": 1
     }
   ],
   "sceneEffects": [
     {
       "name": "pbjtime-banana-dance",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -142,10 +134,57 @@
       ]
     },
     {
-      "name": "pinkfluffyunicorns-dance",
-      "scenes": [
-        "*"
+      "name": "smack",
+      "scenes": ["Main Scene Green Screen"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "smack",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "highfive",
+      "scenes": ["Main Scene Green Screen"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "highfive",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "headpat",
+      "scenes": ["*"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "headpat",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
       ],
+      "duration": 10000
+    },
+    {
+      "name": "pinkfluffyunicorns-dance",
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -179,9 +218,7 @@
     },
     {
       "name": "fart-smoke",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -198,9 +235,7 @@
     },
     {
       "name": "xp-error",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -216,9 +251,7 @@
     },
     {
       "name": "raid-lights",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -234,9 +267,7 @@
     },
     {
       "name": "do-it",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -252,9 +283,7 @@
     },
     {
       "name": "who-cares",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -270,13 +299,27 @@
     },
     {
       "name": "epic-sax",
-      "scenes": [
-        "*"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
           "name": "epic-sax",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "themoreyouknow",
+      "scenes": ["*"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "themoreyouknow",
           "activeState": {
             "visible": true
           },
@@ -328,38 +371,20 @@
     },
     {
       "nallaj": "tacticalnuke"
+    },
+    {
+      "pranav-29": "wow"
     }
   ],
   "specialEffectsOld": {
-    "cop mode": [
-      "cop-red",
-      "cop-blue"
-    ],
-    "party mode": [
-      "pink",
-      "blue"
-    ]
+    "cop mode": ["cop-red", "cop-blue"],
+    "party mode": ["pink", "blue"]
   },
   "alertEffectsOld": {
-    "follow": [
-      "purple",
-      "white"
-    ],
-    "host": [
-      "purple",
-      "white"
-    ],
-    "subscriber": [
-      "purple",
-      "green"
-    ],
-    "tip": [
-      "purple",
-      "green"
-    ],
-    "cheer": [
-      "purple",
-      "green"
-    ]
+    "follow": ["purple", "white"],
+    "host": ["purple", "white"],
+    "subscriber": ["purple", "green"],
+    "tip": ["purple", "green"],
+    "cheer": ["purple", "green"]
   }
 }
