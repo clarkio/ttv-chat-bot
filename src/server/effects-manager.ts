@@ -88,32 +88,48 @@ export default class EffectsManager {
 
   // TODO: abstract command check type work into a command manager class
   public async checkForCommand(message: string): Promise<string | undefined> {
+    let isCmdValid = false;
     // Remove the command prefix from the message (example: '!')
     message = message.replace(config.chatCommandPrefix, '');
     message = message === 'robert68hecc' ? 'hecc' : message;
-    if (
-      (await this.soundFxManager.isSoundEffect(message)) &&
-      config.isSoundFxEnabled
-    ) {
+
+
+
+    if ( (await this.soundFxManager.isSoundEffect(message)) && config.isSoundFxEnabled ) {
+      isCmdValid = true;
       return await this.activateSoundEffect(message);
     }
-    if (
-      (await this.obsManager.isSceneEffect(message)) &&
-      config.isSceneFxEnabled
-    ) {
+
+    if ( (await this.obsManager.isSceneEffect(message)) && config.isSceneFxEnabled ) {
+      isCmdValid = true;
       const sceneEffect = await this.obsManager.determineSceneEffect(message);
       this.obsManager.applySceneEffect(sceneEffect);
     }
 
-    if (
-      (await this.obsManager.isSceneCommand(message)) &&
-      config.isSceneFxEnabled
-    ) {
+    if ( (await this.obsManager.isSceneCommand(message)) && config.isSceneFxEnabled ) {
+      isCmdValid = true;
       this.obsManager.executeSceneCommand(message);
     }
+
     if (this.soundFxManager.isStopSoundCommand(message)) {
+      isCmdValid = true;
       this.soundFxManager.stopSounds();
       this.obsManager.deactivateAllSceneEffects();
+    }
+
+    if( !isCmdValid ){
+      const wrongEffect = await this.soundFxManager.determineSoundEffect('sorry'); // Using sorry for now since it seems fitting -ToeFrog
+
+      if( wrongEffect ){
+        const wrongResult = await this.soundFxManager.playSoundEffect(
+          wrongEffect.fileFullPath
+        );
+  
+        return wrongResult === true ? 'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported' : 'failed to play the sorry sound effect';
+      }
+  
+      // This return is a last resort
+      return 'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported';  
     }
   }
 
@@ -197,24 +213,6 @@ export default class EffectsManager {
       );
       return result === true ? 'success!' : 'failed to play the sound effect';
     }
-
-    log(
-      'warn',
-      'user entered an unsupported sound effect. Playing the sorry sound effect instead.'
-    );
-
-    const wrongEffect = await this.soundFxManager.determineSoundEffect('sorry'); // Using sorry for now since it seems fitting -ToeFrog
-
-    if( wrongEffect ){
-      const wrongResult = await this.soundFxManager.playSoundEffect(
-        wrongEffect.fileFullPath
-      );
-
-      return wrongResult === true ? 'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported' : 'failed to play the sorry sound effect';
-    }
-
-    // This return is a last resort
-    return 'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported';
   }
 
   /**
