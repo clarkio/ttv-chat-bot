@@ -204,7 +204,13 @@ export class TwitchChat {
     }
 
     if (this.isOtherCommand(message)) {
-      this.effectsManager.checkForCommand(message);
+      this.effectsManager.checkForCommand(message).then(value => {
+        if (value !== 'success!') {
+          this.sendChatMessage(
+            'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported'
+          );
+        }
+      });
     }
 
     return Promise.resolve('there was nothing to do');
