@@ -1,19 +1,16 @@
 import * as dotenv from 'dotenv';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { log } from './log';
 dotenv.config();
 
 let fileConfig;
+export let hasLoadedConfigJSON = false;
 
 try {
   const buffer = readFileSync(resolve(__dirname, '../config.json'));
   fileConfig = JSON.parse(buffer.toString());
+  hasLoadedConfigJSON = true;
 } catch (e) {
-  log(
-    'log',
-    'Unable to retrieve configuration from a file. Falling back to environment variables'
-  );
   fileConfig = {};
 }
 
@@ -42,22 +39,30 @@ const {
 
 const requireConfigMessage = 'REQUIRED CONFIGURATION WAS NOT PROVIDED';
 
+/*****************************************************************************
+ * App
+ *****************************************************************************/
+
 export const port: number = PORT || fileConfig.port || 1337;
 
 export const azureBotEnabled: boolean =
-  Boolean(AZURE_BOT_ENABLED === 'true') ||
-  Boolean(fileConfig.azureBotEnabled === 'true') ||
+  isTrueString(AZURE_BOT_ENABLED) ||
+  isTrueString(fileConfig.azureBotEnabled) ||
   false;
 
 export const isSoundFxEnabled: boolean =
-  Boolean(SOUND_FX_ENABLED === 'true') ||
-  Boolean(fileConfig.isSoundFxEnabled === 'true') ||
+  isTrueString(SOUND_FX_ENABLED) ||
+  isTrueString(fileConfig.isSoundFxEnabled) ||
   false;
 
 export const isSceneFxEnabled: boolean =
-  Boolean(SCENE_FX_ENABLED === 'true') ||
-  Boolean(fileConfig.isSceneFxEnabled === 'true') ||
+  isTrueString(SCENE_FX_ENABLED) ||
+  isTrueString(fileConfig.isSceneFxEnabled) ||
   false;
+
+/*****************************************************************************
+ * Twitch
+ *****************************************************************************/
 
 export const ttvClientId: string =
   TTV_CLIENT_ID || fileConfig.ttvClientId || requireConfigMessage;
@@ -80,12 +85,25 @@ export const chatCommandPrefix: string =
 export const specialEffectsChatCommands = SPECIAL_EFFECTS_CHAT_COMMANDS ||
   fileConfig.specialEffectsChatCommands || [requireConfigMessage];
 
+/*****************************************************************************
+ * Azure
+ *****************************************************************************/
+
 export const azureBotToken: string =
   AZURE_BOT_TOKEN || fileConfig.azureBotToken || requireConfigMessage;
 
+export const azureBotResponseCheckDelay: number =
+  AZURE_BOT_RESPONSE_CHECK_DELAY ||
+  fileConfig.azureBotResponseCheckDelay ||
+  4000;
+
+/*****************************************************************************
+ * Discord
+ *****************************************************************************/
+
 export const discordHookEnabled: boolean =
-  Boolean(DISCORD_HOOK_ENABLED === 'true') ||
-  Boolean(fileConfig.discordHookEnabled === 'true') ||
+  isTrueString(DISCORD_HOOK_ENABLED) ||
+  isTrueString(fileConfig.discordHookEnabled) ||
   false;
 
 export const discordHookId: string =
@@ -94,11 +112,19 @@ export const discordHookId: string =
 export const discordHookToken: string =
   DISCORD_HOOK_TOKEN || fileConfig.discordHookToken || requireConfigMessage;
 
+/*****************************************************************************
+ * OBS
+ *****************************************************************************/
+
 export const obsSocketsKey: string =
   OBS_SOCKETS_KEY || fileConfig.obsSocketsKey || requireConfigMessage;
 
 export const obsSocketsServer: string =
   OBS_SOCKETS_SERVER || fileConfig.obsSocketsServer || 'localhost:4444';
+
+/*****************************************************************************
+ * StreamElements
+ *****************************************************************************/
 
 export const streamElementsJwt: string =
   STREAMELEMENTS_JWT || fileConfig.streamElementsJwt || requireConfigMessage;
@@ -108,7 +134,10 @@ export const streamElementsWebsocketsUrl: string =
   fileConfig.streamElementsWebsocketsUrl ||
   'https://realtime.streamelements.com';
 
-export const azureBotResponseCheckDelay: number =
-  AZURE_BOT_RESPONSE_CHECK_DELAY ||
-  fileConfig.azureBotResponseCheckDelay ||
-  4000;
+/*****************************************************************************
+ * Helpers
+ *****************************************************************************/
+
+function isTrueString(value: any) {
+  return value === 'true';
+}

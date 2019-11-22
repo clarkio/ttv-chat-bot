@@ -1,6 +1,5 @@
 import io from 'socket.io-client';
 
-import { appServer } from './index';
 import { log } from './log';
 import * as config from './config';
 import EffectsManager from './effects-manager';
@@ -57,8 +56,6 @@ export class AlertsManager {
    * A handler function to receive the result of successfully authenticating with the socket.io server and storing the channelId for that server
    */
   private onAuthenticated = (data: any) => {
-    const { channelId } = data;
-
     log('info', `Successfully authenticated for the channel`);
   };
 

@@ -1,10 +1,11 @@
 import { readEffects } from './file-manager';
-import SoundFxManager from './sound-fx';
-import ObsManager from './obs-manager';
+import SoundFxManager, { SoundFxFile } from './sound-fx';
+import ObsManager, { SceneEffect } from './obs-manager';
 import OverlayManager from './overlay';
 import * as config from './config';
 import { AzureBot } from './azure-bot';
 import { log } from './log';
+import { AppServer } from './server';
 
 export default class EffectsManager {
   public azureBot!: AzureBot;
@@ -19,10 +20,12 @@ export default class EffectsManager {
   private obsManager!: ObsManager;
   private overlayManager!: OverlayManager;
   private joinSoundEffects: any[] | undefined;
+  private playedUserJoinSounds: string[] = [];
 
-  constructor() {
+  constructor(private appServer: AppServer) {
     this.loadEffects().then(this.initEffectControllers);
     this.startAzureBot();
+    this.playedUserJoinSounds = [];
   }
 
   public activateJoinEffectIfFound(username: string) {
@@ -30,9 +33,14 @@ export default class EffectsManager {
       this.joinSoundEffects &&
       this.joinSoundEffects.find(joinEffect => joinEffect[username]);
 
-    if (userEffect && config.isSoundFxEnabled) {
+    if (
+      userEffect &&
+      config.isSoundFxEnabled &&
+      !this.hasJoinSoundPlayed(username)
+    ) {
       const userSoundEffect = userEffect[username];
       this.activateSoundEffect(userSoundEffect);
+      this.playedUserJoinSounds.push(username);
     }
   }
 
@@ -106,6 +114,9 @@ export default class EffectsManager {
       isCmdValid = true;
       const sceneEffect = await this.obsManager.determineSceneEffect(message);
       this.obsManager.applySceneEffect(sceneEffect);
+      setTimeout(() => {
+        this.obsManager.deactivateSceneEffect(sceneEffect);
+      }, sceneEffect.duration || 15000);
     }
 
     if (
@@ -161,6 +172,10 @@ export default class EffectsManager {
     return alertEffectKey && this.alertEffects[alertEffectKey];
   };
 
+  private hasJoinSoundPlayed(username: string): boolean {
+    return this.playedUserJoinSounds.includes(username);
+  }
+
   private loadEffects = async (): Promise<any> => {
     try {
       const result = await readEffects();
@@ -199,29 +214,37 @@ export default class EffectsManager {
           soundEffect.setting.sceneEffectName
         );
         if (sceneEffect) {
-          this.obsManager.activateSceneEffect(sceneEffect);
-          // automatically deactivate the scene effect based on the duration of the corresponding sound effect that triggered it
-          const duration = sceneEffect.duration || soundEffect.duration * 1000;
-          if (!duration || duration < 400) {
-            log(
-              'warn',
-              'A duration was either not available or too short (<400ms) for the effect so it will not be deactivated automatically'
-            );
-            return;
-          }
-
           setTimeout(() => {
-            this.obsManager.deactivateSceneEffect(sceneEffect);
-          }, duration);
+            this.activateSceneEffectFromSoundEffect(sceneEffect, soundEffect);
+          }, 500);
         }
       }
 
-      // TODO: use corresponding soundEffect setting if available (to do things like control volume at which the sound is played)
       const result = await this.soundFxManager.playSoundEffect(
         soundEffect.fileFullPath
       );
       return result === true ? 'success!' : 'failed to play the sound effect';
     }
+  }
+
+  private activateSceneEffectFromSoundEffect(
+    sceneEffect: SceneEffect,
+    soundEffect: SoundFxFile
+  ) {
+    this.obsManager.activateSceneEffect(sceneEffect);
+    // automatically deactivate the scene effect based on the duration of the corresponding sound effect that triggered it
+    const duration = sceneEffect.duration || soundEffect.duration * 1000;
+    if (!duration || duration < 400) {
+      log(
+        'warn',
+        'A duration was either not available or too short (<400ms) for the effect so it will not be deactivated automatically'
+      );
+      return;
+    }
+
+    setTimeout(() => {
+      this.obsManager.deactivateSceneEffect(sceneEffect);
+    }, duration);
   }
 
   /**
@@ -235,6 +258,9 @@ export default class EffectsManager {
       this.sceneAliases
     );
     this.soundFxManager = new SoundFxManager(this.soundEffects);
-    this.overlayManager = new OverlayManager(this.soundFxManager);
+    this.overlayManager = new OverlayManager(
+      this.soundFxManager,
+      this.appServer.io
+    );
   };
 }
