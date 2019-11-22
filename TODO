@@ -1,5 +1,25 @@
+Reorganizing as of 11/22/2019:
 
-Todo:
+- remove hard-coded strings to be either environment variables or constants (whatever is more appropriate)
+- play any sound files via the browser sources instead of via node.js directly
+  - steal code from the michael jolley for handling this (hahahahaha)
+- instead of having code handle parsing the commands and having to know all the chat commands let's leverage the trained AI to determine if a message is a command and parse the arguments out of the message for us
+- Figure out the bug for the overlay getting stuck on a color after an alert is triggered
+
+
+
+Big Bright Future Plans 11/22/2019:
+
+*** Make the bot more platform agnostic ***
+- Something that will actively listen for channel events in a stream.
+  Figure out all the alerts/events per platform to see where there are overlaps that can be included in a core package
+    - Twitch: Follows, Subscriptions (Gifted Subs, Prime Subs), Cheers (Bits), Raid/Host, Join Chat, Part Chat
+    - Mixer: Follows, Subscriptsion, Embers, Sparks
+    - YouTube:
+    - Facebook:
+
+
+Old Todo:
   ☐ Add code to limit permissions for !scene commands @created(19-03-22 20:27)
   ☐ Determine a way to automatically stop any scene effects that correspond to this sound effect when the sound effect is done
   Problem: Audio file is long and the effect is overplayed
