@@ -135,7 +135,7 @@
     },
     {
       "name": "smack",
-      "scenes": ["Main Scene Green Screen"],
+      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -151,7 +151,7 @@
     },
     {
       "name": "highfive",
-      "scenes": ["Main Scene Green Screen"],
+      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
@@ -167,11 +167,62 @@
     },
     {
       "name": "headpat",
-      "scenes": ["*"],
+      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
           "name": "headpat",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ],
+      "duration": 10000
+    },
+    {
+      "name": "water",
+      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "water",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ],
+      "duration": 10000
+    },
+    {
+      "name": "backpat",
+      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "backpat",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ],
+      "duration": 10000
+    },
+    {
+      "name": "tickle",
+      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "tickle",
           "activeState": {
             "visible": true
           },
