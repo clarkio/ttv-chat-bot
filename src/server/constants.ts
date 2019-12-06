@@ -13,3 +13,7 @@ export const alertsManager = {
   websocketsConnectLog:
     'Successfully connected to the *Streamelements* websocket'
 };
+
+export const azureBot = {
+  apiBaseUrl: 'https://directline.botframework.com/api/conversations/'
+};

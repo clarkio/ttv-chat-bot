@@ -2,6 +2,7 @@ import fetch from 'isomorphic-fetch';
 
 import * as config from './config';
 import { log } from './log';
+import { azureBot as azureBotConstants } from './constants';
 
 /**
  * A Plugin of sorts to deal with the AzureBot if the user has decided to configure it
@@ -47,7 +48,9 @@ export class AzureBot {
    */
   public sendCommand = (commandMessage: string, user: string) => {
     const fullMessage = { text: commandMessage, from: user };
-    const url = `https://directline.botframework.com/api/conversations/${this.conversationId}/messages`;
+    const url =
+      azureBotConstants.apiBaseUrl + `${this.conversationId}/messages`;
+
     const fetchOptions: RequestInit = {
       body: JSON.stringify(fullMessage),
       headers: {
@@ -70,9 +73,6 @@ export class AzureBot {
    * Opens up communication with the Azure bot if configured
    */
   public createNewBotConversation = () => {
-    // For some reason we can't use the log when discord hook is enabled
-    // seems to be a timing issue where discord hook is undefined
-    // log('info', `Starting a new bot conversation at: ${new Date()}`);
     this.startBotConversation()
       .then((result: any) => this.handleConversationStart(result))
       .catch((error: any) => {
@@ -85,7 +85,10 @@ export class AzureBot {
     // The watermark let's us only retrieve new messages
     // since the last time we checked on the conversation
     const watermarkQuery = this.watermark ? `?watermark=${this.watermark}` : '';
-    const url = `https://directline.botframework.com/api/conversations/${this.conversationId}/messages${watermarkQuery}`;
+    const url =
+      azureBotConstants.apiBaseUrl +
+      `${this.conversationId}/messages${watermarkQuery}`;
+
     const fetchOptions: RequestInit = {
       headers: {
         Authorization: `Bearer ${this.conversationToken}`,
@@ -135,9 +138,6 @@ export class AzureBot {
    * Contacts the bot url to authenticate the communication
    */
   private startBotConversation = () => {
-    const url = 'https://directline.botframework.com/api/conversations';
-    // const url =
-    //   'https://directline.botframework.com/v3/directline/conversations';
     const fetchOptions: RequestInit = {
       headers: {
         Authorization: `Bearer ${this.azureBotToken}`
@@ -145,7 +145,7 @@ export class AzureBot {
       method: 'POST'
     };
 
-    return fetch(url, fetchOptions)
+    return fetch(azureBotConstants.apiBaseUrl, fetchOptions)
       .then((response: any) => {
         return response.json();
       })
