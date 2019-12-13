@@ -17,3 +17,12 @@ export const alertsManager = {
 export const azureBot = {
   apiBaseUrl: 'https://directline.botframework.com/api/conversations/'
 };
+
+export const effectsManager = {
+  robertTablesHeccEmote: 'robert68hecc',
+  heccSoundEffect: 'hecc',
+  sorrySoundEffect: 'sorry',
+  unsupportedSoundEffectMessage:
+    'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported',
+  failedSoundEffectMessage: 'failed to play the sorry sound effect'
+};
