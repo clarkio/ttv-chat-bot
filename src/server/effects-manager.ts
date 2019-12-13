@@ -1,10 +1,11 @@
 import { readEffects } from './file-manager';
-import SoundFxManager from './sound-fx';
-import ObsManager from './obs-manager';
+import SoundFxManager, { SoundFxFile } from './sound-fx';
+import ObsManager, { SceneEffect } from './obs-manager';
 import OverlayManager from './overlay';
 import * as config from './config';
 import { AzureBot } from './azure-bot';
 import { log } from './log';
+import { AppServer } from './server';
 
 export default class EffectsManager {
   public azureBot!: AzureBot;
@@ -19,10 +20,12 @@ export default class EffectsManager {
   private obsManager!: ObsManager;
   private overlayManager!: OverlayManager;
   private joinSoundEffects: any[] | undefined;
+  private playedUserJoinSounds: string[] = [];
 
-  constructor() {
+  constructor(private appServer: AppServer) {
     this.loadEffects().then(this.initEffectControllers);
     this.startAzureBot();
+    this.playedUserJoinSounds = [];
   }
 
   public activateJoinEffectIfFound(username: string) {
@@ -30,9 +33,14 @@ export default class EffectsManager {
       this.joinSoundEffects &&
       this.joinSoundEffects.find(joinEffect => joinEffect[username]);
 
-    if (userEffect && config.isSoundFxEnabled) {
+    if (
+      userEffect &&
+      config.isSoundFxEnabled &&
+      !this.hasJoinSoundPlayed(username)
+    ) {
       const userSoundEffect = userEffect[username];
       this.activateSoundEffect(userSoundEffect);
+      this.playedUserJoinSounds.push(username);
     }
   }
 
@@ -87,7 +95,8 @@ export default class EffectsManager {
   };
 
   // TODO: abstract command check type work into a command manager class
-  public async checkForCommand(message: string): Promise<any> {
+  public async checkForCommand(message: string): Promise<string | undefined> {
+    let isCmdValid = false;
     // Remove the command prefix from the message (example: '!')
     message = message.replace(config.chatCommandPrefix, '');
     message = message === 'robert68hecc' ? 'hecc' : message;
@@ -95,25 +104,52 @@ export default class EffectsManager {
       (await this.soundFxManager.isSoundEffect(message)) &&
       config.isSoundFxEnabled
     ) {
+      isCmdValid = true;
       return await this.activateSoundEffect(message);
     }
     if (
       (await this.obsManager.isSceneEffect(message)) &&
       config.isSceneFxEnabled
     ) {
+      isCmdValid = true;
       const sceneEffect = await this.obsManager.determineSceneEffect(message);
       this.obsManager.applySceneEffect(sceneEffect);
+      setTimeout(() => {
+        this.obsManager.deactivateSceneEffect(sceneEffect);
+      }, sceneEffect.duration || 15000);
     }
 
     if (
       (await this.obsManager.isSceneCommand(message)) &&
       config.isSceneFxEnabled
     ) {
+      isCmdValid = true;
       this.obsManager.executeSceneCommand(message);
     }
+
     if (this.soundFxManager.isStopSoundCommand(message)) {
+      isCmdValid = true;
       this.soundFxManager.stopSounds();
       this.obsManager.deactivateAllSceneEffects();
+    }
+
+    if (!isCmdValid) {
+      const wrongEffect = await this.soundFxManager.determineSoundEffect(
+        'sorry'
+      ); // Using sorry for now since it seems fitting -ToeFrog
+
+      if (wrongEffect) {
+        const wrongResult = await this.soundFxManager.playSoundEffect(
+          wrongEffect.fileFullPath
+        );
+
+        return wrongResult === true
+          ? 'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported'
+          : 'failed to play the sorry sound effect';
+      }
+
+      // This return is a last resort
+      return 'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported';
     }
   }
 
@@ -135,6 +171,10 @@ export default class EffectsManager {
 
     return alertEffectKey && this.alertEffects[alertEffectKey];
   };
+
+  private hasJoinSoundPlayed(username: string): boolean {
+    return this.playedUserJoinSounds.includes(username);
+  }
 
   private loadEffects = async (): Promise<any> => {
     try {
@@ -164,22 +204,47 @@ export default class EffectsManager {
     }
   };
 
-  private async activateSoundEffect(message: string) {
+  private async activateSoundEffect(
+    message: string
+  ): Promise<string | undefined> {
     const soundEffect = await this.soundFxManager.determineSoundEffect(message);
-    if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
-      const sceneEffect = await this.obsManager.determineSceneEffectByName(
-        soundEffect.setting.sceneEffectName
-      );
-      if (sceneEffect) {
-        this.obsManager.activateSceneEffect(sceneEffect);
-        // automatically deactivate the scene effect based on the duration of the corresponding sound effect that triggered it
-        setTimeout(() => {
-          this.obsManager.deactivateSceneEffect(sceneEffect);
-        }, sceneEffect.duration || soundEffect.duration * 1000);
+    if (soundEffect) {
+      if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
+        const sceneEffect = await this.obsManager.determineSceneEffectByName(
+          soundEffect.setting.sceneEffectName
+        );
+        if (sceneEffect) {
+          setTimeout(() => {
+            this.activateSceneEffectFromSoundEffect(sceneEffect, soundEffect);
+          }, 500);
+        }
       }
+
+      const result = await this.soundFxManager.playSoundEffect(
+        soundEffect.fileFullPath
+      );
+      return result === true ? 'success!' : 'failed to play the sound effect';
     }
-    // TODO: use corresponding soundEffect setting if available (to do things like control volume at which the sound is played)
-    return this.soundFxManager.playSoundEffect(soundEffect.fileFullPath);
+  }
+
+  private activateSceneEffectFromSoundEffect(
+    sceneEffect: SceneEffect,
+    soundEffect: SoundFxFile
+  ) {
+    this.obsManager.activateSceneEffect(sceneEffect);
+    // automatically deactivate the scene effect based on the duration of the corresponding sound effect that triggered it
+    const duration = sceneEffect.duration || soundEffect.duration * 1000;
+    if (!duration || duration < 400) {
+      log(
+        'warn',
+        'A duration was either not available or too short (<400ms) for the effect so it will not be deactivated automatically'
+      );
+      return;
+    }
+
+    setTimeout(() => {
+      this.obsManager.deactivateSceneEffect(sceneEffect);
+    }, duration);
   }
 
   /**
@@ -193,6 +258,9 @@ export default class EffectsManager {
       this.sceneAliases
     );
     this.soundFxManager = new SoundFxManager(this.soundEffects);
-    this.overlayManager = new OverlayManager(this.soundFxManager);
+    this.overlayManager = new OverlayManager(
+      this.soundFxManager,
+      this.appServer.io
+    );
   };
 }

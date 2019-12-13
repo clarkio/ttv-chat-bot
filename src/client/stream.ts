@@ -48,8 +48,17 @@ socket.on('color-change', (color: string) => {
 
 function setOverlayColor(color: string) {
   localStorage.setItem(STORE_OVERLAY_COLOR_NAME, color);
-  $('#container').removeClass();
-  $('#container').addClass(color);
+
+  const hexColor = chroma(color).hex();
+  const hslColor = chroma(hexColor).hsl();
+  const [degRotation, saturation, lightness] = hslColor;
+
+  const correctedLightness = lightness * 2;
+
+  $('#container').css(
+    '-webkit-filter',
+    `hue-rotate(${degRotation}deg) saturate(${saturation}) brightness(${correctedLightness})`
+  );
 }
 
 function getCurrentBulbColor() {

@@ -92,7 +92,7 @@ iframe {
 }
 
 .black {
-  filter: brightness(0);
+  filter: brightness(0.1);
 }
 
 .white {

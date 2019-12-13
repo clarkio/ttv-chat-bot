@@ -29,10 +29,38 @@
     "cheer": {
       "type": "pulse",
       "colors": ["purple", "green"]
+    },
+    "raid": {
+      "type": "pulse",
+      "colors": ["purple", "white"]
     }
   },
   "supportedColors": [],
   "soundEffects": [
+    {
+      "name": "sandstorm",
+      "fileName": "sandstorm",
+      "sceneEffectName": "raid-lights",
+      "volume": 1
+    },
+    {
+      "name": "smack",
+      "fileName": "smack",
+      "sceneEffectName": "smack",
+      "volume": 1
+    },
+    {
+      "name": "highfive",
+      "fileName": "highfive",
+      "sceneEffectName": "highfive",
+      "volume": 1
+    },
+    {
+      "name": "pinkfluffyunicorns",
+      "fileName": "pinkfluffyunicorns",
+      "sceneEffectName": "pinkfluffyunicorns-dance",
+      "volume": 1
+    },
     {
       "name": "pbjtime",
       "fileName": "pbjtime",
@@ -68,6 +96,24 @@
       "fileName": "fart",
       "sceneEffectName": "fart-smoke",
       "volume": 1
+    },
+    {
+      "name": "juicyfart",
+      "fileName": "juicyfart",
+      "sceneEffectName": "fart-smoke",
+      "volume": 1
+    },
+    {
+      "name": "steeljuicyfart",
+      "fileName": "steeljuicyfart",
+      "sceneEffectName": "fart-smoke",
+      "volume": 1
+    },
+    {
+      "name": "themoreyouknow",
+      "fileName": "themoreyouknow",
+      "sceneEffectName": "themoreyouknow",
+      "volume": 1
     }
   ],
   "sceneEffects": [
@@ -78,6 +124,140 @@
       "sources": [
         {
           "name": "pbj-banana",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "smack",
+      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "smack",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "highfive",
+      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "highfive",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "headpat",
+      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "headpat",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ],
+      "duration": 10000
+    },
+    {
+      "name": "water",
+      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "water",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ],
+      "duration": 10000
+    },
+    {
+      "name": "backpat",
+      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "backpat",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ],
+      "duration": 10000
+    },
+    {
+      "name": "tickle",
+      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "tickle",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ],
+      "duration": 10000
+    },
+    {
+      "name": "pinkfluffyunicorns-dance",
+      "scenes": ["*"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "unicorn-right",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        },
+        {
+          "name": "unicorn-left",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        },
+        {
+          "name": "rainbow",
           "activeState": {
             "visible": true
           },
@@ -111,6 +291,22 @@
       "sources": [
         {
           "name": "xp-error",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "raid-lights",
+      "scenes": ["*"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "raid-lights",
           "activeState": {
             "visible": true
           },
@@ -167,24 +363,69 @@
           }
         }
       ]
+    },
+    {
+      "name": "themoreyouknow",
+      "scenes": ["*"],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "themoreyouknow",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
     }
   ],
   "permittedScenesForCommand": [
     "Main Scene Green Screen",
     "Full Cam Overlay",
-    "BRB"
+    "BRB",
+    "TED"
   ],
   "sceneAliases": [
-    { "main": "Main Scene Green Screen" },
-    { "cam": "Full Cam Overlay" },
-    { "brb": "BRB" },
-    { "game": "" }
+    {
+      "main": "Main Scene Green Screen"
+    },
+    {
+      "cam": "Full Cam Overlay"
+    },
+    {
+      "brb": "BRB"
+    },
+    {
+      "ted": "TED"
+    }
   ],
   "joinSoundEffects": [
-    { "themichaeljolley": "whocares" },
-    { "roberttables": "hecc" },
-    { "electrichavoc": "shock" },
-    { "rhonin52": "swipe" }
+    {
+      "themichaeljolley": "whocares"
+    },
+    {
+      "roberttables": "hecc"
+    },
+    {
+      "electrichavoc": "shock"
+    },
+    {
+      "rhonin52": "swipe"
+    },
+    {
+      "toefrog": "iliketurtles"
+    },
+    {
+      "goonpontoon": "dolphin"
+    },
+    {
+      "nallaj": "tacticalnuke"
+    },
+    {
+      "pranav-29": "wow"
+    }
   ],
   "specialEffectsOld": {
     "cop mode": ["cop-red", "cop-blue"],

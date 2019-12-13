@@ -1,4 +1,3 @@
-import { appServer } from './index';
 import SoundFxManager from './sound-fx';
 
 export default class OverlayManager {
@@ -17,9 +16,9 @@ export default class OverlayManager {
     'gray',
     'white'
   ];
-  public currentBulbColor: string = 'blue';
+  public currentBulbColor: string = 'deepskyblue';
 
-  constructor(private soundFx: SoundFxManager) {}
+  constructor(private soundFx: SoundFxManager, private io: SocketIO.Server) {}
 
   /**
    * @returns The current Bulb Color
@@ -33,7 +32,7 @@ export default class OverlayManager {
    */
   public triggerSpecialEffect = (colors: string[]): void => {
     if (colors) {
-      appServer.io.emit('color-effect', colors);
+      this.io.emit('color-effect', colors);
       if (colors[0].includes('cop')) {
         this.soundFx.playSoundEffect(
           `${this.soundFx.SOUND_FX_DIRECTORY}/beedoo.mp3`
@@ -48,12 +47,6 @@ export default class OverlayManager {
    * @param command - What to change to overlay to
    */
   public updateOverlay = (command: string): void => {
-    this.supportedOverlayColors.forEach((color: string) => {
-      if (command.includes(color)) {
-        this.currentBulbColor = color;
-        // communicate with the client to change overlay color
-        appServer.io.emit('color-change', color);
-      }
-    });
+    this.io.emit('color-change', command);
   };
 }

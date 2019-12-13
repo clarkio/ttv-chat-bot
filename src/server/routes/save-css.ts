@@ -5,7 +5,7 @@ export const saveCssRoute = (req: express.Request, res: express.Response) => {
   const { colorName, hueRotateDeg } = req.body;
   const data = formatForCSS(colorName, hueRotateDeg);
   writeCssFile(data)
-    .then((result: any) => {
+    .then(() => {
       res.send({ message: 'Saved' });
     })
     .catch((error: any) => {
