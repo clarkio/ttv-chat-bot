@@ -19,12 +19,12 @@ export const azureBot = {
 };
 
 export const effectsManager = {
-  robertTablesHeccEmote: 'robert68hecc',
   heccSoundEffect: 'hecc',
+  failedSoundEffectMessage: 'failed to play the sorry sound effect',
+  robertTablesHeccEmote: 'robert68hecc',
   sorrySoundEffect: 'sorry',
   unsupportedSoundEffectMessage:
-    'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported',
-  failedSoundEffectMessage: 'failed to play the sorry sound effect'
+    'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported'
 };
 
 export const index = {
@@ -32,4 +32,12 @@ export const index = {
     configFileReadWarningMessage:
       'Unable to retrieve configuration from a file. Falling back to environment variables'
   }
+};
+
+export const obsManager = {
+  logs: {
+    obsConnectionSuccessfulMessage:
+      'Connected successfully to websockets server in OBS'
+  },
+  sceneCommand: 'scene'
 };

@@ -6,7 +6,7 @@ import * as config from './config';
 import { AzureBot } from './azure-bot';
 import { log } from './log';
 import { AppServer } from './server';
-import { effectsManager as effectsManagerConstants } from './constants';
+import { effectsManager as constants } from './constants';
 
 export default class EffectsManager {
   public azureBot!: AzureBot;
@@ -101,8 +101,8 @@ export default class EffectsManager {
     // Remove the command prefix from the message (example: '!')
     message = message.replace(config.chatCommandPrefix, '');
     message =
-      message === effectsManagerConstants.robertTablesHeccEmote
-        ? effectsManagerConstants.heccSoundEffect
+      message === constants.robertTablesHeccEmote
+        ? constants.heccSoundEffect
         : message;
     if (
       (await this.soundFxManager.isSoundEffect(message)) &&
@@ -139,7 +139,7 @@ export default class EffectsManager {
 
     if (!isCmdValid) {
       const wrongEffect = await this.soundFxManager.determineSoundEffect(
-        effectsManagerConstants.sorrySoundEffect
+        constants.sorrySoundEffect
       ); // Using sorry for now since it seems fitting -ToeFrog
 
       if (wrongEffect) {
@@ -148,12 +148,12 @@ export default class EffectsManager {
         );
 
         return wrongResult === true
-          ? effectsManagerConstants.unsupportedSoundEffectMessage
-          : effectsManagerConstants.failedSoundEffectMessage;
+          ? constants.unsupportedSoundEffectMessage
+          : constants.failedSoundEffectMessage;
       }
 
       // This return is a last resort
-      return effectsManagerConstants.unsupportedSoundEffectMessage;
+      return constants.unsupportedSoundEffectMessage;
     }
   }
 
