@@ -69,3 +69,22 @@ export const soundEffects = {
   soundsRelativeDirectory: '../assets/sounds',
   stopCommand: '!stop'
 };
+
+export const twitchChat = {
+  defaultLightControlCommand: '!bulb',
+  disableCommandMessage: 'disable',
+  enableCommandMessage: 'enable',
+  heccEmote: 'robert68hecc',
+  logs: {
+    ignoredCommandMessage:
+      'Command was ignored because the TTV Chat Listener is disabled',
+    nothingToParseMessage: 'there was nothing to do',
+    twitchClientJoinedMessage: 'This client joined the channel...',
+    twitchConnectionAttemptMessage:
+      'Client is online and attempting to connect to chat...',
+    twitchConnectionFailMessage: 'Failed to connect to Twitch chat',
+    twitchConnectionSuccessMessage: 'Successfully connected to Twitch chat'
+  },
+  streamElementsUserName: 'streamelements',
+  userDisplayNameKey: 'display-name'
+};
