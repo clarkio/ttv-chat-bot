@@ -43,10 +43,29 @@ export const obsManager = {
 };
 
 export const overlay = {
-  colorEffectEvent: 'color-effect',
   colorChangeEvent: 'color-change',
+  colorEffectEvent: 'color-effect',
   copColorName: 'cop',
   defaultColor: 'deepskyblue',
   defaultPort: 1337,
   minionSoundEffectFileName: 'beedoo.mp3'
+};
+
+export const soundEffects = {
+  logs: {
+    readFileError: 'There was an error attempting to read sound effects files'
+  },
+  playSoundConfig: {
+    players: [
+      'mplayer',
+      'afplay', // afplay is default on macos
+      'mpg123', // works on ubuntu with `sudo apt install mpg123`
+      'mpg321',
+      'play',
+      'omxplayer',
+      'cmdmp3'
+    ]
+  },
+  soundsRelativeDirectory: '../assets/sounds',
+  stopCommand: '!stop'
 };
