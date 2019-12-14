@@ -41,3 +41,12 @@ export const obsManager = {
   },
   sceneCommand: 'scene'
 };
+
+export const overlay = {
+  colorEffectEvent: 'color-effect',
+  colorChangeEvent: 'color-change',
+  copColorName: 'cop',
+  defaultColor: 'deepskyblue',
+  defaultPort: 1337,
+  minionSoundEffectFileName: 'beedoo.mp3'
+};

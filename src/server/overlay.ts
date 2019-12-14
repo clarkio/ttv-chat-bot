@@ -1,22 +1,9 @@
 import SoundFxManager from './sound-fx';
+import { overlay as constants } from './constants';
 
 export default class OverlayManager {
-  public static readonly PORT: number = 1337;
-  // TODO: determine better way to define these such as env vars
-  public supportedOverlayColors: string[] = [
-    'blue',
-    'red',
-    'green',
-    'purple',
-    'pink',
-    'yellow',
-    'orange',
-    'teal',
-    'black',
-    'gray',
-    'white'
-  ];
-  public currentBulbColor: string = 'deepskyblue';
+  public static readonly PORT: number = constants.defaultPort;
+  public currentBulbColor: string = constants.defaultColor;
 
   constructor(private soundFx: SoundFxManager, private io: SocketIO.Server) {}
 
@@ -32,10 +19,10 @@ export default class OverlayManager {
    */
   public triggerSpecialEffect = (colors: string[]): void => {
     if (colors) {
-      this.io.emit('color-effect', colors);
-      if (colors[0].includes('cop')) {
+      this.io.emit(constants.colorEffectEvent, colors);
+      if (colors[0].includes(constants.copColorName)) {
         this.soundFx.playSoundEffect(
-          `${this.soundFx.SOUND_FX_DIRECTORY}/beedoo.mp3`
+          `${this.soundFx.SOUND_FX_DIRECTORY}/${constants.minionSoundEffectFileName}`
         );
       }
     }
@@ -47,6 +34,6 @@ export default class OverlayManager {
    * @param command - What to change to overlay to
    */
   public updateOverlay = (command: string): void => {
-    this.io.emit('color-change', command);
+    this.io.emit(constants.colorChangeEvent, command);
   };
 }
