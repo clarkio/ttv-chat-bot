@@ -1,6 +1,6 @@
 Reorganizing as of 11/22/2019:
 
-- remove hard-coded strings to be either environment variables or constants (whatever is more appropriate)
+✔ remove hard-coded strings to be constants (when appropriate) @created(Sat 12/14/2019 - 12:49 AM) @done(19-12-14 00:49)
 - play any sound files via the browser sources instead of via node.js directly
   - steal code from the michael jolley for handling this (hahahahaha)
 - instead of having code handle parsing the commands and having to know all the chat commands let's leverage the trained AI to determine if a message is a command and parse the arguments out of the message for us
