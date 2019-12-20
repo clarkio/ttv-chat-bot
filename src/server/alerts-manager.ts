@@ -4,16 +4,10 @@ import { log } from './log';
 import * as config from './config';
 import EffectsManager from './effects-manager';
 import { TwitchChat } from './twitch-chat';
+import { alertsManager as alertsConstants } from './constants';
 
 export class AlertsManager {
   public socket!: SocketIOClient.Socket;
-  private connectionType: string = 'websocket';
-  private constants = {
-    authenticateMethod: 'jwt',
-    unhandledAlertTypeLog: 'An alert was triggered that is not supported: ',
-    websocketsConnectLog:
-      'Successfully connected to the *Streamelements* websocket'
-  };
 
   constructor(
     private accessToken: string,
@@ -21,7 +15,7 @@ export class AlertsManager {
     private twitchChat: TwitchChat
   ) {
     this.socket = io(config.streamElementsWebsocketsUrl, {
-      transports: [this.connectionType]
+      transports: [alertsConstants.connectionType]
     });
   }
 
@@ -39,16 +33,16 @@ export class AlertsManager {
    * A handler that is used when a connection has successfully completed for the socket.io server and then initiates the authentication flow
    */
   private onConnect = () => {
-    log('info', this.constants.websocketsConnectLog);
+    log('info', alertsConstants.websocketsConnectLog);
 
     this.socket.emit('authenticate', {
-      method: this.constants.authenticateMethod,
+      method: alertsConstants.authenticateMethod,
       token: this.accessToken
     });
   };
 
   private onDisconnect = () => {
-    log('info', 'Disconnected from Streamelements websocket');
+    log('info', alertsConstants.logs.disconnected);
     // TODO: Handle Reconnect
   };
 
@@ -56,27 +50,26 @@ export class AlertsManager {
    * A handler function to receive the result of successfully authenticating with the socket.io server and storing the channelId for that server
    */
   private onAuthenticated = (data: any) => {
-    log('info', `Successfully authenticated for the channel`);
+    log('info', alertsConstants.logs.authenticated);
   };
 
   /**
    * A handler function to receive events that occur on the socket.io channel and take action upon those events. In this case we'll be trying to determine if there was an alert
    */
   private onEvent = (event: any) => {
-    log('info', `Received alert: ${event.type}`);
     const alert = this.effectsManager.determineAlertEffect(event.type);
     if (alert) {
       this.startAlertEffect(alert, event.data.username);
-      if (event.type === 'raid') {
+      if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.raid) {
         this.effectsManager.checkForCommand('sandstorm');
       }
     } else {
-      log('info', this.constants.unhandledAlertTypeLog + event.type);
+      log('info', alertsConstants.unhandledAlertTypeLog + event.type);
     }
-    if (event.type.toLocaleLowerCase() === 'follow') {
+    if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.follow) {
       this.twitchChat.sendChatMessage(`!followthx ${event.data.username}`);
     }
-    if (event.type.toLocaleLowerCase() === 'raid') {
+    if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.raid) {
       this.twitchChat.sendChatMessage('!new');
     }
   };

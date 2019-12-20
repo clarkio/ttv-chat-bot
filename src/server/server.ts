@@ -13,7 +13,6 @@ import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
 import EffectsManager from './effects-manager';
 
-// TODO: rename to just app? since index.ts is handling full server process?
 /**
  * The base Express Application. This is where most of the other parts of the application
  * will live. This allows for easy enabling and disabling of features within the application

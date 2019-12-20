@@ -3,12 +3,10 @@ import { TwitchChat } from './twitch-chat';
 import { AlertsManager } from './alerts-manager';
 import * as config from './config';
 import { log, setHook } from './log';
+import { index as indexConstants } from './constants';
 
 if (!config.hasLoadedConfigJSON) {
-  log(
-    'log',
-    'Unable to retrieve configuration from a file. Falling back to environment variables'
-  );
+  log('log', indexConstants.logs.configFileReadWarningMessage);
 }
 
 const appServer = new AppServer();

@@ -3,7 +3,7 @@ import { Client, ChatUserstate } from 'tmi.js';
 import { log } from './log';
 import * as config from './config';
 import EffectsManager from './effects-manager';
-
+import { twitchChat as constants } from './constants';
 import {
   ttvChannels,
   ttvClientId,
@@ -16,7 +16,9 @@ export class TwitchChat {
   private lightCommandUsed: string = '';
   private clientUsername: string = ttvClientUsername.toString();
   private moderators: string[] = [this.clientUsername];
-  private lightControlCommands: string[] = ['!bulb'];
+  private lightControlCommands: string[] = [
+    constants.defaultLightControlCommand
+  ];
   private isChatClientEnabled: boolean = true;
 
   constructor(private effectsManager: EffectsManager) {
@@ -30,14 +32,14 @@ export class TwitchChat {
    * Connect to the TTV Chat Client
    */
   public connect = () => {
-    log('info', 'Client is online and attempting to connect to chat...');
+    log('info', constants.logs.twitchConnectionAttemptMessage);
     this.ttvChatClient
       .connect()
       .then(() => {
-        log('info', 'Successfully connected to Twitch chat');
+        log('info', constants.logs.twitchConnectionSuccessMessage);
       })
       .catch(error => {
-        log('error', 'Failed to connect to Twitch chat');
+        log('error', constants.logs.twitchConnectionFailMessage);
         log('error', error);
       });
   };
@@ -90,7 +92,7 @@ export class TwitchChat {
     log('info', `[${hours}:${minutes}] ${username} has JOINED the channel`);
 
     if (self) {
-      log('info', 'This client joined the channel...');
+      log('info', constants.logs.twitchClientJoinedMessage);
       // Assume first channel in channels array is 'self' - owner monitoring their own channel
       setTimeout(this.pingTtv, 30000);
       this.ttvChatClient
@@ -120,7 +122,7 @@ export class TwitchChat {
    * When a user sends a message in chat
    */
   private ttvChat = (channel: string, user: ChatUserstate, message: string) => {
-    const userName = user['display-name'] || user.username! || '';
+    const userName = user[constants.userDisplayNameKey] || user.username! || '';
     const lowerCaseMessage = message.toLowerCase();
 
     if (
@@ -131,10 +133,12 @@ export class TwitchChat {
       log('info', logMessage);
 
       if (
-        lowerCaseMessage.includes('enable') ||
-        lowerCaseMessage.includes('disable')
+        lowerCaseMessage.includes(constants.enableCommandMessage) ||
+        lowerCaseMessage.includes(constants.disableCommandMessage)
       ) {
-        this.isChatClientEnabled = lowerCaseMessage.includes('enable');
+        this.isChatClientEnabled = lowerCaseMessage.includes(
+          constants.enableCommandMessage
+        );
         const state = this.isChatClientEnabled ? 'enabled' : 'disabled';
         log(
           'info',
@@ -147,10 +151,7 @@ export class TwitchChat {
     if (this.isChatClientEnabled) {
       this.parseChat(lowerCaseMessage, userName);
     } else {
-      log(
-        'info',
-        'Command was ignored because the TTV Chat Listener is disabled'
-      );
+      log('info', constants.logs.ignoredCommandMessage);
     }
   };
 
@@ -205,7 +206,7 @@ export class TwitchChat {
       this.effectsManager.checkForCommand(message);
     }
 
-    return Promise.resolve('there was nothing to do');
+    return Promise.resolve(constants.logs.nothingToParseMessage);
   };
 
   /**
@@ -215,7 +216,7 @@ export class TwitchChat {
   private isOtherCommand(message: string): any {
     return (
       message.startsWith(config.chatCommandPrefix) ||
-      message.includes('robert68hecc')
+      message.includes(constants.heccEmote)
     );
   }
 
@@ -291,5 +292,5 @@ export class TwitchChat {
    * USER OUR BOT TO SEE OTHER BOTS
    */
   private isStreamElements = (userName: string) =>
-    userName.toLowerCase() === 'streamelements';
+    userName.toLowerCase() === constants.streamElementsUserName;
 }

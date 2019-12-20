@@ -1,7 +1,14 @@
 import * as config from './config';
-import { log, dir } from './log';
+import { log } from './log';
+import { obsManager as constants } from './constants';
 
 import ObsWebSocket from 'obs-websocket-js';
+
+enum ObsRequests {
+  SetCurrentScene = 'SetCurrentScene',
+  GetCurrentScene = 'GetCurrentScene',
+  GetSceneList = 'GetSceneList'
+}
 
 /**
  * An enum to provide flexibility in what effects can be applied within OBS. Since we're using obs-websockets there are plenty of options within its API that can be leveraged for effects. Using this enum will allow for a more simple process for adding new effects
@@ -44,7 +51,6 @@ export default class ObsManager {
   public sceneEffects: SceneEffect[] = new Array<SceneEffect>();
   private obs: ObsWebSocket;
   private activeSceneEffects: SceneEffect[] = new Array<SceneEffect>();
-  private sceneCommand: string = 'scene';
 
   constructor(
     private sceneEffectSettings: any | undefined,
@@ -59,7 +65,7 @@ export default class ObsManager {
         password: config.obsSocketsKey
       })
       .then(() => {
-        log('log', 'Connected successfully to websockets server in OBS');
+        log('log', constants.logs.obsConnectionSuccessfulMessage);
         this.getSceneList();
       })
       .catch(this.handleError);
@@ -74,7 +80,7 @@ export default class ObsManager {
   public executeSceneCommand(message: string) {
     // !scene <scene name>
     message = message
-      .replace(`${this.sceneCommand}`, '')
+      .replace(`${constants.sceneCommand}`, '')
       .toLowerCase()
       .trim();
 
@@ -82,7 +88,7 @@ export default class ObsManager {
     if (sceneToActivate) {
       // tell OBS via websockets to activate the scene
       this.obs
-        .send('SetCurrentScene', {
+        .send(ObsRequests.SetCurrentScene, {
           'scene-name': sceneToActivate.name
         })
         .catch((error: any) => log('error', error));
@@ -102,7 +108,7 @@ export default class ObsManager {
    */
   public isSceneCommand(message: string): boolean {
     // !scene <scene name>
-    return message.startsWith(this.sceneCommand);
+    return message.startsWith(constants.sceneCommand);
   }
 
   /**
@@ -138,7 +144,7 @@ export default class ObsManager {
    * Returns the currently active scene that's visible in OBS via websockets
    */
   public async getCurrentScene(): Promise<string> {
-    return this.obs.send('GetCurrentScene');
+    return this.obs.send(ObsRequests.GetCurrentScene);
   }
 
   public async activateSceneEffect(sceneEffect: SceneEffect): Promise<any> {
@@ -242,8 +248,7 @@ export default class ObsManager {
   }
 
   private getSceneList() {
-    this.obs.send('GetSceneList').then((data: any) => {
-      dir('Scenes Found:', data.scenes);
+    this.obs.send(ObsRequests.GetSceneList).then((data: any) => {
       this.sceneList = data.scenes;
     });
   }

@@ -1,20 +1,11 @@
 import { getSoundEffectsFiles } from './file-manager';
 import { log } from './log';
+import { soundEffects as constants } from './constants';
+
 import { resolve as resolvePath } from 'path';
 
 // tslint:disable: no-var-requires
-const player = require('play-sound')({
-  players: [
-    'mplayer',
-    'afplay', // afplay is default on macos
-    'mpg123', // works on ubuntu with `sudo apt install mpg123`
-    'mpg321',
-    'play',
-    'omxplayer',
-    'cmdmp3'
-  ]
-});
-// TODO: Switch this ^^^ to use node-mp3-player to which allows volumne control
+const player = require('play-sound')(constants.playSoundConfig);
 const mp3Duration = require('mp3-duration');
 
 /**
@@ -43,16 +34,19 @@ export class SoundFxSetting {
 }
 
 export default class SoundFxManager {
-  public SOUND_FX_DIRECTORY = resolvePath(`${__dirname}`, '../assets/sounds');
+  public SOUND_FX_DIRECTORY = resolvePath(
+    `${__dirname}`,
+    constants.soundsRelativeDirectory
+  );
   private availableSoundEffects: SoundFxFile[] = new Array<SoundFxFile>();
-  private stopSoundCommand = '!stop';
+  private stopSoundCommand = constants.stopCommand;
   private currentlyPlayingAudio: any[] = new Array<any>();
 
   constructor(private soundEffectSettings: any | undefined) {
     getSoundEffectsFiles()
       .then(this.mapFiles)
       .catch(error => {
-        log('log', 'There was an error attempting to read sound effects files');
+        log('log', constants.logs.readFileError);
         log('error', error);
       });
   }

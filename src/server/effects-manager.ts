@@ -6,6 +6,7 @@ import * as config from './config';
 import { AzureBot } from './azure-bot';
 import { log } from './log';
 import { AppServer } from './server';
+import { effectsManager as constants } from './constants';
 
 export default class EffectsManager {
   public azureBot!: AzureBot;
@@ -99,7 +100,10 @@ export default class EffectsManager {
     let isCmdValid = false;
     // Remove the command prefix from the message (example: '!')
     message = message.replace(config.chatCommandPrefix, '');
-    message = message === 'robert68hecc' ? 'hecc' : message;
+    message =
+      message === constants.robertTablesHeccEmote
+        ? constants.heccSoundEffect
+        : message;
     if (
       (await this.soundFxManager.isSoundEffect(message)) &&
       config.isSoundFxEnabled
@@ -135,7 +139,7 @@ export default class EffectsManager {
 
     if (!isCmdValid) {
       const wrongEffect = await this.soundFxManager.determineSoundEffect(
-        'sorry'
+        constants.sorrySoundEffect
       ); // Using sorry for now since it seems fitting -ToeFrog
 
       if (wrongEffect) {
@@ -144,12 +148,12 @@ export default class EffectsManager {
         );
 
         return wrongResult === true
-          ? 'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported'
-          : 'failed to play the sorry sound effect';
+          ? constants.unsupportedSoundEffectMessage
+          : constants.failedSoundEffectMessage;
       }
 
       // This return is a last resort
-      return 'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported';
+      return constants.unsupportedSoundEffectMessage;
     }
   }
 

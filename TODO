@@ -1,10 +1,15 @@
 Reorganizing as of 11/22/2019:
 
-- remove hard-coded strings to be either environment variables or constants (whatever is more appropriate)
+✔ remove hard-coded strings to be constants (when appropriate) @created(Sat 12/14/2019 - 12:49 AM) @done(19-12-14 00:49)
 - play any sound files via the browser sources instead of via node.js directly
   - steal code from the michael jolley for handling this (hahahahaha)
 - instead of having code handle parsing the commands and having to know all the chat commands let's leverage the trained AI to determine if a message is a command and parse the arguments out of the message for us
 - Figure out the bug for the overlay getting stuck on a color after an alert is triggered
+- speech to text
+- game idea (yet to be revealed on stream): viewers send commands in chat to participate in a game. if chat wins and solves the game then that triggers something to happen to clarkio otherwise.
+- Maybe refactor to this: [13:26] nallaj: @Clarkio why not use TS enums for this?
+- Refactor Manager file names: [13:27] roberttables: @Clarkio You know MPJ will harp on you for using "manager" in your names Kappa
+- Add tests (Kappa): [13:29] roberttables: Wait, do we have tests for this code @Clarkio ??
 
 
 
