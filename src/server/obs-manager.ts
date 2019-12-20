@@ -1,8 +1,7 @@
-import * as config from './config';
-import { log } from './log';
-import { obsManager as constants } from './constants';
-
 import ObsWebSocket from 'obs-websocket-js';
+import * as config from './config';
+import { obsManager as constants } from './constants';
+import { log } from './log';
 
 enum ObsRequests {
   SetCurrentScene = 'SetCurrentScene',
@@ -18,6 +17,8 @@ enum EffectType {
   SourceChange = 'SourceChange',
   SetSceneItemProperties = 'SetSceneItemProperties'
 }
+
+type EffectTypeStrings = keyof typeof EffectType;
 
 /**
  * A class to capture scene effect properties defined from the "effects.json" file
@@ -260,7 +261,9 @@ export default class ObsManager {
   private initSceneEffects() {
     this.sceneEffectSettings.forEach((sceneEffectSetting: any) => {
       const sceneEffectType =
-        EffectType[sceneEffectSetting.effectType] || EffectType.None;
+        EffectType[sceneEffectSetting.effectType as EffectTypeStrings] ||
+        EffectType.None;
+
       const sceneEffect = new SceneEffect(
         sceneEffectSetting.name,
         sceneEffectType as EffectType,
@@ -268,6 +271,7 @@ export default class ObsManager {
         this.getSceneEffectSourcesForSetting(sceneEffectSetting.sources),
         sceneEffectSetting.duration
       );
+
       this.sceneEffects.push(sceneEffect);
     });
   }
