@@ -1,5 +1,5 @@
 import * as config from './config';
-import { log, dir } from './log';
+import { log } from './log';
 import { obsManager as constants } from './constants';
 
 import ObsWebSocket from 'obs-websocket-js';
