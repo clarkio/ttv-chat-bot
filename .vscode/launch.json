@@ -12,7 +12,7 @@
       "runtimeArgs": ["run-script", "debug-brk"],
       "sourceMaps": true,
       "port": 9229,
-      "preLaunchTask": "Compile & Copy",
+      "preLaunchTask": "Compile",
       "skipFiles": ["<node_internals>/**/*.js"]
     },
     {
@@ -22,7 +22,7 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run-script", "debug"],
       "port": 9229,
-      "preLaunchTask": "Compile & Copy",
+      "preLaunchTask": "Compile",
       "skipFiles": ["<node_internals>/**/*.js"]
     },
     {

@@ -61,8 +61,9 @@ export class AppServer {
   private configApp(): void {
     this.app.use(bodyParser.json());
     this.app.set('view engine', 'pug');
-    this.app.set('views', resolvePath(`${__dirname}`, '../views'));
-    this.app.use(express.static(resolvePath(`${__dirname}`, '../')));
+    this.app.set('views', resolvePath(`${__dirname}`, '../../views'));
+    this.app.use('/assets',express.static(resolvePath(`${__dirname}`, '../../assets')));
+    this.app.use('/client',express.static(resolvePath(`${__dirname}`, '../../dist/client')));
   }
 
   /**
