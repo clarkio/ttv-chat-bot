@@ -116,6 +116,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://lannonbr.com"><img src="https://avatars2.githubusercontent.com/u/3685876?v=4" width="100px;" alt=""/><br /><sub><b>Benjamin Lannon</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=lannonbr" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/OiYouYeahYou"><img src="https://avatars2.githubusercontent.com/u/20130059?v=4" width="100px;" alt=""/><br /><sub><b>Jason Allan</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=OiYouYeahYou" title="Code">💻</a></td>
     <td align="center"><a href="https://toefrog.github.io/Blog/"><img src="https://avatars0.githubusercontent.com/u/1122675?v=4" width="100px;" alt=""/><br /><sub><b>Chris Gargotta</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=ToeFrog" title="Code">💻</a> <a href="#ideas-ToeFrog" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/Wingysam"><img src="https://avatars3.githubusercontent.com/u/18403742?v=4" width="100px;" alt=""/><br /><sub><b>Wingysam</b></sub></a><br /><a href="#ideas-Wingysam" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
