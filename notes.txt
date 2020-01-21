@@ -1,0 +1,14 @@
+ElectricHavoc: ok so... here's my theory and it's not super simple.... !cmd > (docker: ffmpeg mp3 > icecast) > os host connected to icecast ---- or serve webpage and play audio via websockets. is likely the most xplat compatible.
+
+
+
+
+
+ docker run -p 4000:1337 543c219533f0 --device /dev/snd
+
+ docker run -it 543c /bin/sh ls /dev
+
+ ElectricHavoc: So for example... if my network is 172.16.0.x..... docker network create -d macvlan \ --subnet=172.16.0.0/24 \ --gateway=172.16.0.1 \ --ip-range=172.16.0.240/28 \ -o macvlan_mode=bridge \ -o  parent=eth0 public
+
+
+ ElectricHavoc: This creates a network called public on 172.16.0.1 and allows containers to have their own ip.
