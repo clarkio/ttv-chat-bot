@@ -31,7 +31,7 @@ What kind of change does this Pull Request introduce?
 - Get the code
 
 ```
-git clone git@github.com:clarkio/ttv-chat-light.git
+git clone git@github.com:clarkio/ttv-chat-bot.git
 cd ttv-chat-client
 git checkout [branch-name]
 npm install

@@ -1,4 +1,4 @@
-# ttv-chat-light
+# ttv-chat-bot
 [![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors)
 
 Twitch TV chat reader to change the color of overlays loaded from streamelements and/or colors of internet connected lights via Azure Bot Service and Language Understanding AI (LUIS)
@@ -7,8 +7,8 @@ Twitch TV chat reader to change the color of overlays loaded from streamelements
 
 ## Getting Started
 
-1. Clone with: `git clone git@github.com:clarkio/ttv-chat-light.git`
-1. Goto project: `cd ttv-chat-light`
+1. Clone with: `git clone git@github.com:clarkio/ttv-chat-bot.git`
+1. Goto project: `cd ttv-chat-bot`
 1. Install node dependencies: `npm install`
 1. If on:
    * **Debian/Ubuntu** run: `sudo apt install mpg123`
@@ -46,7 +46,7 @@ Please make sure you've completed all steps in the "Getting Started" section bef
 
 ### From the Command Line (CLI)
 
-1. Change to the directory of the project `ttv-chat-light` if you have not already done so.
+1. Change to the directory of the project `ttv-chat-bot` if you have not already done so.
 1. Run `npm start`
 1. Open your browser and go to [http://localhost:1337/scenes?sceneName=<your-scene-name-from-.env>](http://localhost:1337/scenes?sceneName=)
 
@@ -101,18 +101,18 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/jakegny"><img src="https://avatars2.githubusercontent.com/u/6787885?v=4" width="100px;" alt="Jake Nylund"/><br /><sub><b>Jake Nylund</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=jakegny" title="Code">💻</a></td>
-    <td align="center"><a href="https://michaeljolley.com/"><img src="https://avatars2.githubusercontent.com/u/1228996?v=4" width="100px;" alt="Michael Jolley"/><br /><sub><b>Michael Jolley</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=MichaelJolley" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/CodemanCodes"><img src="https://avatars3.githubusercontent.com/u/46641880?v=4" width="100px;" alt="CodemanCodes"/><br /><sub><b>CodemanCodes</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=CodemanCodes" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/jaredpsimpson"><img src="https://avatars0.githubusercontent.com/u/1933150?v=4" width="100px;" alt="jaredpsimpson"/><br /><sub><b>jaredpsimpson</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=jaredpsimpson" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/eeevans"><img src="https://avatars1.githubusercontent.com/u/272717?v=4" width="100px;" alt="Edward Evans"/><br /><sub><b>Edward Evans</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=eeevans" title="Code">💻</a></td>
-    <td align="center"><a href="https://nmarch213.github.io/Portfolio/"><img src="https://avatars1.githubusercontent.com/u/14193159?v=4" width="100px;" alt="Nicholas March"/><br /><sub><b>Nicholas March</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=nmarch213" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/PatPat1567"><img src="https://avatars0.githubusercontent.com/u/41209202?v=4" width="100px;" alt="PatPat1567"/><br /><sub><b>PatPat1567</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/issues?q=author%3APatPat1567" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/jakegny"><img src="https://avatars2.githubusercontent.com/u/6787885?v=4" width="100px;" alt="Jake Nylund"/><br /><sub><b>Jake Nylund</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=jakegny" title="Code">💻</a></td>
+    <td align="center"><a href="https://michaeljolley.com/"><img src="https://avatars2.githubusercontent.com/u/1228996?v=4" width="100px;" alt="Michael Jolley"/><br /><sub><b>Michael Jolley</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=MichaelJolley" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/CodemanCodes"><img src="https://avatars3.githubusercontent.com/u/46641880?v=4" width="100px;" alt="CodemanCodes"/><br /><sub><b>CodemanCodes</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=CodemanCodes" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/jaredpsimpson"><img src="https://avatars0.githubusercontent.com/u/1933150?v=4" width="100px;" alt="jaredpsimpson"/><br /><sub><b>jaredpsimpson</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=jaredpsimpson" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/eeevans"><img src="https://avatars1.githubusercontent.com/u/272717?v=4" width="100px;" alt="Edward Evans"/><br /><sub><b>Edward Evans</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=eeevans" title="Code">💻</a></td>
+    <td align="center"><a href="https://nmarch213.github.io/Portfolio/"><img src="https://avatars1.githubusercontent.com/u/14193159?v=4" width="100px;" alt="Nicholas March"/><br /><sub><b>Nicholas March</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=nmarch213" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/PatPat1567"><img src="https://avatars0.githubusercontent.com/u/41209202?v=4" width="100px;" alt="PatPat1567"/><br /><sub><b>PatPat1567</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/issues?q=author%3APatPat1567" title="Bug reports">🐛</a></td>
   </tr>
   <tr>
-    <td align="center"><a href="http://timmykokke.com"><img src="https://avatars1.githubusercontent.com/u/2283621?v=4" width="100px;" alt="Timmy Kokke"/><br /><sub><b>Timmy Kokke</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=sorskoot" title="Code">💻</a></td>
-    <td align="center"><a href="https://www.mcduboiswebservices.com"><img src="https://avatars0.githubusercontent.com/u/39778093?v=4" width="100px;" alt="Michael duBois"/><br /><sub><b>Michael duBois</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=MichaelCduBois" title="Code">💻</a></td>
-    <td align="center"><a href="https://lannonbr.com"><img src="https://avatars2.githubusercontent.com/u/3685876?v=4" width="100px;" alt="Benjamin Lannon"/><br /><sub><b>Benjamin Lannon</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-light/commits?author=lannonbr" title="Code">💻</a></td>
+    <td align="center"><a href="http://timmykokke.com"><img src="https://avatars1.githubusercontent.com/u/2283621?v=4" width="100px;" alt="Timmy Kokke"/><br /><sub><b>Timmy Kokke</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=sorskoot" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.mcduboiswebservices.com"><img src="https://avatars0.githubusercontent.com/u/39778093?v=4" width="100px;" alt="Michael duBois"/><br /><sub><b>Michael duBois</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=MichaelCduBois" title="Code">💻</a></td>
+    <td align="center"><a href="https://lannonbr.com"><img src="https://avatars2.githubusercontent.com/u/3685876?v=4" width="100px;" alt="Benjamin Lannon"/><br /><sub><b>Benjamin Lannon</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=lannonbr" title="Code">💻</a></td>
   </tr>
 </table>
 
