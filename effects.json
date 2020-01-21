@@ -385,12 +385,7 @@
       ]
     }
   ],
-  "permittedScenesForCommand": [
-    "Main Scene Green Screen",
-    "Full Cam Overlay",
-    "BRB",
-    "TED"
-  ],
+  "permittedScenesForCommand": ["Full Cam Overlay", "BRB", "TED"],
   "sceneAliases": [
     {
       "main": "Main Scene Green Screen"
