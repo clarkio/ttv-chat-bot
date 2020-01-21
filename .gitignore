@@ -4,7 +4,7 @@
 /dist/*
 
 # custom css files
-src/assets/custom-styles.css
+assets/custom-styles.css
 
 # Logs
 logs

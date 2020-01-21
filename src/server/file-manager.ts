@@ -5,8 +5,8 @@ const CSS_FILE_NAME = resolvePath(
   `${__dirname}`,
   '../assets/custom-styles.css'
 );
-const EFFECTS_FILE_NAME = resolvePath(`${__dirname}`, './effects.json');
-const SOUND_FX_DIRECTORY = resolvePath(`${__dirname}`, '../assets/sounds');
+const EFFECTS_FILE_NAME = resolvePath(`${__dirname}`, '../../effects.json');
+const SOUND_FX_DIRECTORY = resolvePath(`${__dirname}`, '../../assets/sounds');
 
 export function writeCssFile(data: any) {
   if (existsSync(CSS_FILE_NAME)) {
