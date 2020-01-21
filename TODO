@@ -1,6 +1,6 @@
 Reorganizing as of 11/22/2019:
 
-- Figure out the bug for the overlay getting stuck on a color after an alert is triggered
+✔ Figure out the bug for the overlay getting stuck on a color after an alert is triggered @done(Sat 01/11/2020 - 05:07 PM)
 ✔ remove hard-coded strings to be constants (when appropriate) @created(Sat 12/14/2019 - 12:49 AM) @done(19-12-14 00:49)
 - play any sound files via the browser sources instead of via node.js directly
   - steal code from the michael jolley for handling this (hahahahaha)
