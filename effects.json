@@ -135,7 +135,11 @@
     },
     {
       "name": "smack",
-      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "scenes": [
+        "Main Scene Green Screen",
+        "Zoom Face Main",
+        "Full Cam Overlay"
+      ],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
