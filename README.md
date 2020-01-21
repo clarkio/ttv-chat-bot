@@ -98,24 +98,28 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/jakegny"><img src="https://avatars2.githubusercontent.com/u/6787885?v=4" width="100px;" alt="Jake Nylund"/><br /><sub><b>Jake Nylund</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=jakegny" title="Code">💻</a></td>
-    <td align="center"><a href="https://michaeljolley.com/"><img src="https://avatars2.githubusercontent.com/u/1228996?v=4" width="100px;" alt="Michael Jolley"/><br /><sub><b>Michael Jolley</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=MichaelJolley" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/CodemanCodes"><img src="https://avatars3.githubusercontent.com/u/46641880?v=4" width="100px;" alt="CodemanCodes"/><br /><sub><b>CodemanCodes</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=CodemanCodes" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/jaredpsimpson"><img src="https://avatars0.githubusercontent.com/u/1933150?v=4" width="100px;" alt="jaredpsimpson"/><br /><sub><b>jaredpsimpson</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=jaredpsimpson" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/eeevans"><img src="https://avatars1.githubusercontent.com/u/272717?v=4" width="100px;" alt="Edward Evans"/><br /><sub><b>Edward Evans</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=eeevans" title="Code">💻</a></td>
-    <td align="center"><a href="https://nmarch213.github.io/Portfolio/"><img src="https://avatars1.githubusercontent.com/u/14193159?v=4" width="100px;" alt="Nicholas March"/><br /><sub><b>Nicholas March</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=nmarch213" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/PatPat1567"><img src="https://avatars0.githubusercontent.com/u/41209202?v=4" width="100px;" alt="PatPat1567"/><br /><sub><b>PatPat1567</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/issues?q=author%3APatPat1567" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/jakegny"><img src="https://avatars2.githubusercontent.com/u/6787885?v=4" width="100px;" alt=""/><br /><sub><b>Jake Nylund</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=jakegny" title="Code">💻</a></td>
+    <td align="center"><a href="https://michaeljolley.com/"><img src="https://avatars2.githubusercontent.com/u/1228996?v=4" width="100px;" alt=""/><br /><sub><b>Michael Jolley</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=MichaelJolley" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/CodemanCodes"><img src="https://avatars3.githubusercontent.com/u/46641880?v=4" width="100px;" alt=""/><br /><sub><b>CodemanCodes</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=CodemanCodes" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/jaredpsimpson"><img src="https://avatars0.githubusercontent.com/u/1933150?v=4" width="100px;" alt=""/><br /><sub><b>jaredpsimpson</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=jaredpsimpson" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/eeevans"><img src="https://avatars1.githubusercontent.com/u/272717?v=4" width="100px;" alt=""/><br /><sub><b>Edward Evans</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=eeevans" title="Code">💻</a></td>
+    <td align="center"><a href="https://nmarch213.github.io/Portfolio/"><img src="https://avatars1.githubusercontent.com/u/14193159?v=4" width="100px;" alt=""/><br /><sub><b>Nicholas March</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=nmarch213" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/PatPat1567"><img src="https://avatars0.githubusercontent.com/u/41209202?v=4" width="100px;" alt=""/><br /><sub><b>PatPat1567</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/issues?q=author%3APatPat1567" title="Bug reports">🐛</a></td>
   </tr>
   <tr>
-    <td align="center"><a href="http://timmykokke.com"><img src="https://avatars1.githubusercontent.com/u/2283621?v=4" width="100px;" alt="Timmy Kokke"/><br /><sub><b>Timmy Kokke</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=sorskoot" title="Code">💻</a></td>
-    <td align="center"><a href="https://www.mcduboiswebservices.com"><img src="https://avatars0.githubusercontent.com/u/39778093?v=4" width="100px;" alt="Michael duBois"/><br /><sub><b>Michael duBois</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=MichaelCduBois" title="Code">💻</a></td>
-    <td align="center"><a href="https://lannonbr.com"><img src="https://avatars2.githubusercontent.com/u/3685876?v=4" width="100px;" alt="Benjamin Lannon"/><br /><sub><b>Benjamin Lannon</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=lannonbr" title="Code">💻</a></td>
+    <td align="center"><a href="http://timmykokke.com"><img src="https://avatars1.githubusercontent.com/u/2283621?v=4" width="100px;" alt=""/><br /><sub><b>Timmy Kokke</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=sorskoot" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.mcduboiswebservices.com"><img src="https://avatars0.githubusercontent.com/u/39778093?v=4" width="100px;" alt=""/><br /><sub><b>Michael duBois</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=MichaelCduBois" title="Code">💻</a></td>
+    <td align="center"><a href="https://lannonbr.com"><img src="https://avatars2.githubusercontent.com/u/3685876?v=4" width="100px;" alt=""/><br /><sub><b>Benjamin Lannon</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=lannonbr" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/OiYouYeahYou"><img src="https://avatars2.githubusercontent.com/u/20130059?v=4" width="100px;" alt=""/><br /><sub><b>Jason Allan</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=OiYouYeahYou" title="Code">💻</a></td>
   </tr>
 </table>
 
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

@@ -94,11 +94,21 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "OiYouYeahYou",
+      "name": "Jason Allan",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/20130059?v=4",
+      "profile": "https://github.com/OiYouYeahYou",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "projectName": "ttv-chat-bot",
   "projectOwner": "clarkio",
   "repoType": "github",
-  "repoHost": "https://github.com"
+  "repoHost": "https://github.com",
+  "skipCi": true
 }
