@@ -51,8 +51,10 @@ function setOverlayColor(color: string) {
 
   const hexColor = chroma(color).hex();
   const hslColor = chroma(hexColor).hsl();
-  const [degRotation, saturation, lightness] = hslColor;
+  let [degRotation] = hslColor;
+  const [, saturation, lightness] = hslColor;
 
+  degRotation = Number.isNaN(degRotation) ? 0 : degRotation;
   const correctedLightness = lightness * 2;
 
   $('#container').css(

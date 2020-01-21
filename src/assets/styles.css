@@ -46,13 +46,11 @@ iframe {
 }
 
 .cop-blue {
-  /* filter: brightness(1) grayscale(100) sepia(100) saturate(32) hue-rotate(200deg); */
   filter: invert(140%) hue-rotate(200deg);
   transition: all 0.2s ease;
 }
 
 .cop-red {
-  /* filter: brightness(1) grayscale(100) sepia(100) saturate(32) hue-rotate(325deg); */
   filter: invert(140%) hue-rotate(340deg);
   transition: all 0.2s ease;
 }
@@ -63,12 +61,10 @@ iframe {
 
 .pink {
   filter: hue-rotate(125deg);
-  /* filter: sepia() saturate(12) hue-rotate(300deg); */
 }
 
 .red {
   filter: hue-rotate(170deg);
-  /* filter: sepia() saturate(12) hue-rotate(317deg); */
 }
 
 .orange {
