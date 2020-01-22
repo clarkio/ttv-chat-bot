@@ -3,9 +3,12 @@ import { resolve as resolvePath } from 'path';
 
 const CSS_FILE_NAME = resolvePath(
   `${__dirname}`,
-  '../assets/custom-styles.css'
+  '../../../assets/custom-styles.css'
 );
-const EFFECTS_FILE_NAME = resolvePath(`${__dirname}`, '../../effects.json');
+const EFFECTS_FILE_FULL_PATH = resolvePath(
+  `${__dirname}`,
+  '../../effects.json'
+);
 const SOUND_FX_DIRECTORY = resolvePath(`${__dirname}`, '../../assets/sounds');
 
 export function writeCssFile(data: any) {
@@ -23,9 +26,10 @@ export function writeCssFile(data: any) {
     );
   });
 }
+
 export function readEffects(): Promise<string> {
   return new Promise((resolve, reject) => {
-    readFile(EFFECTS_FILE_NAME, 'utf8', (err: any, data: any) =>
+    readFile(EFFECTS_FILE_FULL_PATH, 'utf8', (err: any, data: any) =>
       handleFileActionCallback(err, data, resolve, reject)
     );
   });

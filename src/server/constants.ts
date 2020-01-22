@@ -66,7 +66,7 @@ export const soundEffects = {
       'cmdmp3'
     ]
   },
-  soundsRelativeDirectory: '../assets/sounds',
+  soundsRelativeDirectory: '../../assets/sounds',
   stopCommand: '!stop'
 };
 
