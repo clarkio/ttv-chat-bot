@@ -6,16 +6,7 @@ const playNext = new CustomEvent('playNext', {
   bubbles: true
 });
 let audioQueue: any[] = [];
-
-// *** This ends up being null while debugging
-// *** I suspect it may be due to browser policies that
-// *** require the user to interact with the page first before
-// *** playing audio/video. So maybe it's not really there yet?
-const audioPlayerElement = document.getElementById('audio-player');
-
-if (audioPlayerElement) {
-  audioPlayerElement.addEventListener('playNext', playAudioQueue, false);
-}
+let audioPlayer = null;
 
 const socket = io('http://localhost:1338');
 socket.on('color-effect', (effectColors: string[]) => {
@@ -27,49 +18,33 @@ socket.on('play-audio', (fileName: string) => {
 });
 
 function playAudioQueue() {
-  if (audioQueue.length > 0 && audioPlayerElement) {
-    const audio = audioQueue.shift();
-
-    audioPlayerElement.appendChild(audio);
-    audio.play().catch((error: any) => {
-      throw error;
-    });
-  } else {
-    if (!audioPlayerElement) {
-      captains.warn(
-        'Audio Player HTML element was not found by the expected ID'
-      );
-      return;
+  if (audioQueue.length > 0) {
+    const audioFile = audioQueue.shift();
+    
+    audioPlayer = new Audio(audioFile);
+    audioPlayer.addEventListener('ended', () => {
+      console.log('audio playback finished');
+      playAudioQueue();
+    })
+    let playPromise = audioPlayer.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(_ => {
+          console.log('audio playback started');
+        })
+        .catch((error: any) => {
+          throw error;
+        });
     }
   }
 }
 
 function addAudioToQueue(fileName: string) {
-  const audio = document.createElement('audio');
-  audio.src = `${audioPath}${fileName}`;
-  // audio.autoplay = true;
-  audio.id = new Date().toLocaleString();
-  audio.addEventListener('ended', stopAudioQueue, false);
-
-  // const audioPlayerElement1 = document.getElementById('audio-player');
-
-  if (audioPlayerElement) {
-    if (audioPlayerElement.childElementCount > 0) {
-      audioQueue.push(audio);
-    } else {
-      audioPlayerElement.appendChild(audio);
-      const playPromise = audio.play().catch(error => {
-        captains.error(error);
-        throw error;
-      });
-    }
-  }
-}
-
-function stopAudioQueue() {
-  audioQueue = [];
-  if (audioPlayerElement) {
-    audioPlayerElement.innerHTML = '';
+  if (audioQueue.length == 0) {
+    audioQueue.push(`${audioPath}${fileName}`);
+    playAudioQueue();
+  } else {
+    audioQueue.push(`${audioPath}${fileName}`);
   }
 }
 
