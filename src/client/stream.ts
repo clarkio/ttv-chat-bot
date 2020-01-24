@@ -1,6 +1,3 @@
-import * as chroma from 'chroma-js';
-import * as io from 'socket.io-client';
-
 const captains = console;
 const STORE_OVERLAY_COLOR_NAME = 'streamOverlayColor';
 const beeDooAudio = new Audio('/assets/sounds/beedoo.mp3');
@@ -10,18 +7,24 @@ const playNext = new CustomEvent('playNext', {
 });
 let audioQueue: any[] = [];
 
+// *** This ends up being null while debugging
+// *** I suspect it may be due to browser policies that
+// *** require the user to interact with the page first before
+// *** playing audio/video. So maybe it's not really there yet?
 const audioPlayerElement = document.getElementById('audio-player');
 
 if (audioPlayerElement) {
   audioPlayerElement.addEventListener('playNext', playAudioQueue, false);
 }
 
-const socket = io();
+const socket = io('http://localhost:1338');
 socket.on('color-effect', (effectColors: string[]) => {
   startOverlayEffect(effectColors);
 });
 
-socket.on('play-audio', addAudioToQueue);
+socket.on('play-audio', (fileName: string) => {
+  addAudioToQueue(fileName);
+});
 
 function playAudioQueue() {
   if (audioQueue.length > 0 && audioPlayerElement) {
@@ -43,9 +46,12 @@ function playAudioQueue() {
 
 function addAudioToQueue(fileName: string) {
   const audio = document.createElement('audio');
-  audio.src = `${audioPath}${fileName}.mp3`;
+  audio.src = `${audioPath}${fileName}`;
+  // audio.autoplay = true;
   audio.id = new Date().toLocaleString();
   audio.addEventListener('ended', stopAudioQueue, false);
+
+  // const audioPlayerElement1 = document.getElementById('audio-player');
 
   if (audioPlayerElement) {
     if (audioPlayerElement.childElementCount > 0) {
@@ -53,6 +59,7 @@ function addAudioToQueue(fileName: string) {
     } else {
       audioPlayerElement.appendChild(audio);
       const playPromise = audio.play().catch(error => {
+        captains.error(error);
         throw error;
       });
     }

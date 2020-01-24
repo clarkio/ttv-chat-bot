@@ -38,7 +38,7 @@
       "name": "Client Debug",
       "type": "chrome",
       "request": "launch",
-      "url": "http://localhost:1339/",
+      "url": "http://localhost:1338/",
       "webRoot": "${workspaceFolder}/dist/client"
     }
   ],

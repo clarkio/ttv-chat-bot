@@ -1,12 +1,12 @@
+import { AzureBot } from './azure-bot';
+import * as config from './config';
+import { effectsManager as constants } from './constants';
 import { readEffects } from './file-manager';
-import SoundFxManager, { SoundFxFile } from './sound-fx';
+import { log } from './log';
 import ObsManager, { SceneEffect } from './obs-manager';
 import OverlayManager from './overlay';
-import * as config from './config';
-import { AzureBot } from './azure-bot';
-import { log } from './log';
 import { AppServer } from './server';
-import { effectsManager as constants } from './constants';
+import SoundFxManager, { SoundFxFile } from './sound-fx';
 
 export default class EffectsManager {
   public azureBot!: AzureBot;
@@ -222,12 +222,15 @@ export default class EffectsManager {
             this.activateSceneEffectFromSoundEffect(sceneEffect, soundEffect);
           }, 500);
         }
+
+        this.appServer.io.emit('play-audio', soundEffect.fileName);
       }
 
-      const result = await this.soundFxManager.playSoundEffect(
-        soundEffect.fileFullPath
-      );
-      return result === true ? 'success!' : 'failed to play the sound effect';
+      // const result = await this.soundFxManager.playSoundEffect(
+      //   soundEffect.fileFullPath
+      // );
+      // return result === true ? 'success!' : 'failed to play the sound effect';
+      return undefined;
     }
   }
 

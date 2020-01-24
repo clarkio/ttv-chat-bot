@@ -9,11 +9,11 @@ html(lang='en')
         script(src='../client/stream.js')
 
     body
+        <div id="audio-player"></div>
         <div id="minion-bee-doo" class="minion-div">
             <h3>Cop Mode Initiated!</h3>
             img(src='../assets/minion.gif')
         </div>
         <div id="container">
-        <iframe src="#{iframeSrc}" frameBorder="0" overflow="hidden" scrolling="no" seamless="seamless" allow="autoplay" />
+            <iframe src="#{iframeSrc}" frameBorder="0" overflow="hidden" scrolling="no" seamless="seamless" allow="autoplay" />
         </div>
-        <div id="audio-player" />
