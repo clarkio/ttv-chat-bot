@@ -1,11 +1,70 @@
+import * as chroma from 'chroma-js';
+import * as io from 'socket.io-client';
+
 const captains = console;
 const STORE_OVERLAY_COLOR_NAME = 'streamOverlayColor';
 const beeDooAudio = new Audio('/assets/sounds/beedoo.mp3');
-// @ts-ignore
+const audioPath = '/assets/sounds/';
+const playNext = new CustomEvent('playNext', {
+  bubbles: true
+});
+let audioQueue: any[] = [];
+
+const audioPlayerElement = document.getElementById('audio-player');
+
+if (audioPlayerElement) {
+  audioPlayerElement.addEventListener('playNext', playAudioQueue, false);
+}
+
 const socket = io();
 socket.on('color-effect', (effectColors: string[]) => {
   startOverlayEffect(effectColors);
 });
+
+socket.on('play-audio', addAudioToQueue);
+
+function playAudioQueue() {
+  if (audioQueue.length > 0 && audioPlayerElement) {
+    const audio = audioQueue.shift();
+
+    audioPlayerElement.appendChild(audio);
+    audio.play().catch((error: any) => {
+      throw error;
+    });
+  } else {
+    if (!audioPlayerElement) {
+      captains.warn(
+        'Audio Player HTML element was not found by the expected ID'
+      );
+      return;
+    }
+  }
+}
+
+function addAudioToQueue(fileName: string) {
+  const audio = document.createElement('audio');
+  audio.src = `${audioPath}${fileName}.mp3`;
+  audio.id = new Date().toLocaleString();
+  audio.addEventListener('ended', stopAudioQueue, false);
+
+  if (audioPlayerElement) {
+    if (audioPlayerElement.childElementCount > 0) {
+      audioQueue.push(audio);
+    } else {
+      audioPlayerElement.appendChild(audio);
+      const playPromise = audio.play().catch(error => {
+        throw error;
+      });
+    }
+  }
+}
+
+function stopAudioQueue() {
+  audioQueue = [];
+  if (audioPlayerElement) {
+    audioPlayerElement.innerHTML = '';
+  }
+}
 
 function triggerCopModeEffect() {
   startCopModeAudio();
