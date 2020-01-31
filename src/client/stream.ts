@@ -8,7 +8,7 @@ const playNext = new CustomEvent('playNext', {
 let audioQueue: any[] = [];
 let audioPlayer = null;
 
-const socket = io('http://localhost:1338');
+const socket = io();
 socket.on('color-effect', (effectColors: string[]) => {
   startOverlayEffect(effectColors);
 });
@@ -19,18 +19,19 @@ socket.on('play-audio', (fileName: string) => {
 
 function playAudioQueue() {
   if (audioQueue.length > 0) {
-    const audioFile = audioQueue.shift();
-    
+    const audioFile = audioQueue[0];
+
     audioPlayer = new Audio(audioFile);
     audioPlayer.addEventListener('ended', () => {
-      console.log('audio playback finished');
+      captains.log('audio playback finished');
+      audioQueue.shift();
       playAudioQueue();
-    })
-    let playPromise = audioPlayer.play();
+    });
+    const playPromise = audioPlayer.play();
     if (playPromise !== undefined) {
       playPromise
         .then(_ => {
-          console.log('audio playback started');
+          captains.log('audio playback started');
         })
         .catch((error: any) => {
           throw error;
@@ -40,7 +41,7 @@ function playAudioQueue() {
 }
 
 function addAudioToQueue(fileName: string) {
-  if (audioQueue.length == 0) {
+  if (audioQueue.length === 0) {
     audioQueue.push(`${audioPath}${fileName}`);
     playAudioQueue();
   } else {

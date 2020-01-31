@@ -212,26 +212,20 @@ export default class EffectsManager {
     message: string
   ): Promise<string | undefined> {
     const soundEffect = await this.soundFxManager.determineSoundEffect(message);
+
     if (soundEffect) {
       if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
         const sceneEffect = await this.obsManager.determineSceneEffectByName(
           soundEffect.setting.sceneEffectName
         );
         if (sceneEffect) {
-          setTimeout(() => {
-            this.activateSceneEffectFromSoundEffect(sceneEffect, soundEffect);
-          }, 500);
+          this.activateSceneEffectFromSoundEffect(sceneEffect, soundEffect);
         }
-
-        this.appServer.io.emit('play-audio', soundEffect.fileName);
       }
 
-      // const result = await this.soundFxManager.playSoundEffect(
-      //   soundEffect.fileFullPath
-      // );
-      // return result === true ? 'success!' : 'failed to play the sound effect';
-      return undefined;
+      this.appServer.io.emit('play-audio', soundEffect.fileName);
     }
+    return;
   }
 
   private activateSceneEffectFromSoundEffect(
