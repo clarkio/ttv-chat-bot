@@ -133,8 +133,9 @@ export default class EffectsManager {
 
     if (this.soundFxManager.isStopSoundCommand(message)) {
       isCmdValid = true;
-      this.soundFxManager.stopSounds();
+      // this.soundFxManager.stopSounds();
       this.obsManager.deactivateAllSceneEffects();
+      this.appServer.io.emit('stop-current-audio');
     }
 
     if (!isCmdValid) {

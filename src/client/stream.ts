@@ -5,8 +5,8 @@ const audioPath = '/assets/sounds/';
 const playNext = new CustomEvent('playNext', {
   bubbles: true
 });
-let audioQueue: any[] = [];
-let audioPlayer = null;
+let audioQueue: HTMLAudioElement[] = [];
+// let audioPlayer = null;
 
 const socket = io();
 socket.on('color-effect', (effectColors: string[]) => {
@@ -17,11 +17,13 @@ socket.on('play-audio', (fileName: string) => {
   addAudioToQueue(fileName);
 });
 
+socket.on('stop-current-audio', () => {
+  stopCurrentAudio();
+});
+
 function playAudioQueue() {
   if (audioQueue.length > 0) {
-    const audioFile = audioQueue[0];
-
-    audioPlayer = new Audio(audioFile);
+    const audioPlayer = audioQueue[0];
     audioPlayer.addEventListener('ended', () => {
       captains.log('audio playback finished');
       audioQueue.shift();
@@ -40,12 +42,30 @@ function playAudioQueue() {
   }
 }
 
+function stopAllAudio() {
+  // !stop
+  // !stopall
+}
+
+function stopCurrentAudio() {
+  if (audioQueue.length > 0) {
+    const currentAudio = audioQueue.shift();
+    currentAudio?.pause();
+
+    // currentAudio.stop();
+  }
+}
+
 function addAudioToQueue(fileName: string) {
+  const audioFile = `${audioPath}${fileName}`;
+  const audioPlayer = new Audio(audioFile);
+  audioPlayer.id = audioFile;
+
   if (audioQueue.length === 0) {
-    audioQueue.push(`${audioPath}${fileName}`);
+    audioQueue.push(audioPlayer);
     playAudioQueue();
   } else {
-    audioQueue.push(`${audioPath}${fileName}`);
+    audioQueue.push(audioPlayer);
   }
 }
 

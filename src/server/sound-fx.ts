@@ -55,10 +55,11 @@ export default class SoundFxManager {
    * Stops the currently play sounds/audio files
    */
   public stopSounds() {
-    this.currentlyPlayingAudio.forEach(audio => {
-      audio.kill();
-    });
-    this.currentlyPlayingAudio = new Array<any>();
+    // this.currentlyPlayingAudio.forEach(audio => {
+    //   audio.kill();
+    // });
+    // this.currentlyPlayingAudio = new Array<any>();
+    
   }
 
   /**
