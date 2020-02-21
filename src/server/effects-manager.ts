@@ -1,6 +1,6 @@
 import { AzureBot } from './azure-bot';
 import * as config from './config';
-import { effectsManager as constants } from './constants';
+import { effectsManager as constants, StopCommands } from './constants';
 import { readEffects } from './file-manager';
 import { log } from './log';
 import ObsManager, { SceneEffect } from './obs-manager';
@@ -97,7 +97,6 @@ export default class EffectsManager {
 
   // TODO: abstract command check type work into a command manager class
   public async checkForCommand(message: string): Promise<string | undefined> {
-    let isCmdValid = false;
     // Remove the command prefix from the message (example: '!')
     message = message.replace(config.chatCommandPrefix, '');
     message =
@@ -108,14 +107,12 @@ export default class EffectsManager {
       (await this.soundFxManager.isSoundEffect(message)) &&
       config.isSoundFxEnabled
     ) {
-      isCmdValid = true;
       return await this.activateSoundEffect(message);
     }
     if (
       (await this.obsManager.isSceneEffect(message)) &&
       config.isSceneFxEnabled
     ) {
-      isCmdValid = true;
       const sceneEffect = await this.obsManager.determineSceneEffect(message);
       this.obsManager.applySceneEffect(sceneEffect);
       setTimeout(() => {
@@ -127,35 +124,27 @@ export default class EffectsManager {
       (await this.obsManager.isSceneCommand(message)) &&
       config.isSceneFxEnabled
     ) {
-      isCmdValid = true;
       this.obsManager.executeSceneCommand(message);
     }
 
-    if (this.soundFxManager.isStopSoundCommand(message)) {
-      isCmdValid = true;
-      // this.soundFxManager.stopSounds();
-      this.obsManager.deactivateAllSceneEffects();
-      this.appServer.io.emit('stop-current-audio');
-    }
-
-    if (!isCmdValid) {
-      const wrongEffect = await this.soundFxManager.determineSoundEffect(
-        constants.sorrySoundEffect
-      ); // Using sorry for now since it seems fitting -ToeFrog
-
-      if (wrongEffect) {
-        const wrongResult = await this.soundFxManager.playSoundEffect(
-          wrongEffect.fileFullPath
-        );
-
-        return wrongResult === true
-          ? constants.unsupportedSoundEffectMessage
-          : constants.failedSoundEffectMessage;
+    if (this.soundFxManager.isAStopSoundCommand(message)) {
+      const stopCommandUsed = this.soundFxManager.getStopCommandUsed(message);
+      switch (stopCommandUsed) {
+        // TODO: play a toilet flushing first when this one is used
+        case StopCommands.Flush:
+        case StopCommands.StopAll:
+          this.appServer.io.emit(constants.stopAllAudioEvent);
+          break;
+        default:
+          this.appServer.io.emit(constants.stopCurrentAudioEvent);
+          break;
       }
 
-      // This return is a last resort
-      return constants.unsupportedSoundEffectMessage;
+      this.obsManager.deactivateAllSceneEffects();
     }
+
+    // This return is a last resort
+    return constants.unsupportedSoundEffectMessage;
   }
 
   /**

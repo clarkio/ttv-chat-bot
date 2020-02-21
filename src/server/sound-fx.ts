@@ -1,8 +1,7 @@
+import { resolve as resolvePath } from 'path';
+import { soundEffects as constants } from './constants';
 import { getSoundEffectsFiles } from './file-manager';
 import { log } from './log';
-import { soundEffects as constants } from './constants';
-
-import { resolve as resolvePath } from 'path';
 
 // tslint:disable: no-var-requires
 const player = require('play-sound')(constants.playSoundConfig);
@@ -39,7 +38,6 @@ export default class SoundFxManager {
     constants.soundsRelativeDirectory
   );
   private availableSoundEffects: SoundFxFile[] = new Array<SoundFxFile>();
-  private stopSoundCommand = constants.stopCommand;
   private currentlyPlayingAudio: any[] = new Array<any>();
 
   constructor(private soundEffectSettings: any | undefined) {
@@ -59,7 +57,6 @@ export default class SoundFxManager {
     //   audio.kill();
     // });
     // this.currentlyPlayingAudio = new Array<any>();
-    
   }
 
   /**
@@ -81,8 +78,12 @@ export default class SoundFxManager {
     );
   }
 
-  public isStopSoundCommand(message: string): boolean {
-    return this.stopSoundCommand.includes(message);
+  public isAStopSoundCommand(message: string): boolean {
+    return constants.stopCommands.some(command => message === command);
+  }
+
+  public getStopCommandUsed(message: string): string | undefined {
+    return constants.stopCommands.find(command => message === command);
   }
 
   public async determineSoundEffect(

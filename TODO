@@ -3,7 +3,11 @@ Reorganizing as of 11/22/2019:
 ✔ Figure out the bug for the overlay getting stuck on a color after an alert is triggered @done(Sat 01/11/2020 - 05:07 PM)
 ✔ remove hard-coded strings to be constants (when appropriate) @created(Sat 12/14/2019 - 12:49 AM) @done(19-12-14 00:49)
 - play any sound files via the browser sources instead of via node.js directly
-  - steal code from the michael jolley for handling this (hahahahaha)
+  ✔ steal code from the michael jolley for handling this (hahahahaha) JK JK @done(Fri 02/21/2020 - 03:44 PM)
+  - As of 20-02-21 we have things mostly working. We need to figure out a way to get the timing of the visual effects to align with the sound effects now that we're queuing the sound effects and they won't necessarily play immediately when the command is received.
+  - Fix issue where bot thinks an incorrect command is used and plays a sound effect to indicate it
+  - play a toilet flushing first when !flush is used to stop all audio (as suggested by ToeFrog)
+  - look into how to have a common constants file across two TS projects (client/server)?
 - instead of having code handle parsing the commands and having to know all the chat commands let's leverage the trained AI to determine if a message is a command and parse the arguments out of the message for us
 - speech to text
 - game idea (yet to be revealed on stream): viewers send commands in chat to participate in a game. if chat wins and solves the game then that triggers something to happen to clarkio otherwise.

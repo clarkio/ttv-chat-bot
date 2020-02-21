@@ -19,10 +19,12 @@ export const azureBot = {
 };
 
 export const effectsManager = {
-  heccSoundEffect: 'hecc',
   failedSoundEffectMessage: 'failed to play the sorry sound effect',
+  heccSoundEffect: 'hecc',
   robertTablesHeccEmote: 'robert68hecc',
   sorrySoundEffect: 'sorry',
+  stopAllAudioEvent: 'stop-all-audio',
+  stopCurrentAudioEvent: 'stop-current-audio',
   unsupportedSoundEffectMessage:
     'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported'
 };
@@ -51,6 +53,12 @@ export const overlay = {
   minionSoundEffectFileName: 'beedoo.mp3'
 };
 
+export enum StopCommands {
+  Stop = 'stop',
+  StopAll = 'stopall',
+  Flush = 'flush'
+}
+
 export const soundEffects = {
   logs: {
     readFileError: 'There was an error attempting to read sound effects files'
@@ -67,7 +75,7 @@ export const soundEffects = {
     ]
   },
   soundsRelativeDirectory: '../../assets/sounds',
-  stopCommand: '!stop'
+  stopCommands: [StopCommands.Stop, StopCommands.StopAll, StopCommands.Flush]
 };
 
 export const twitchChat = {

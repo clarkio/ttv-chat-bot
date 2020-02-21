@@ -19,6 +19,11 @@ socket.on('play-audio', (fileName: string) => {
 
 socket.on('stop-current-audio', () => {
   stopCurrentAudio();
+  playAudioQueue();
+});
+
+socket.on('stop-all-audio', () => {
+  stopAllAudio();
 });
 
 function playAudioQueue() {
@@ -45,14 +50,14 @@ function playAudioQueue() {
 function stopAllAudio() {
   // !stop
   // !stopall
+  stopCurrentAudio();
+  audioQueue = [];
 }
 
 function stopCurrentAudio() {
   if (audioQueue.length > 0) {
     const currentAudio = audioQueue.shift();
-    currentAudio?.pause();
-
-    // currentAudio.stop();
+    currentAudio!.pause();
   }
 }
 
