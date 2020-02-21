@@ -1,15 +1,15 @@
-import { Client, ChatUserstate } from 'tmi.js';
-
-import { log } from './log';
+import { ChatUserstate, Client } from 'tmi.js';
 import * as config from './config';
-import EffectsManager from './effects-manager';
-import { twitchChat as constants } from './constants';
 import {
   ttvChannels,
   ttvClientId,
   ttvClientToken,
   ttvClientUsername
 } from './config';
+import { twitchChat as constants } from './constants';
+import EffectsManager from './effects-manager';
+import { log } from './log';
+import TwitchUser from './twitch-user';
 
 export class TwitchChat {
   public ttvChatClient: Client;
@@ -121,15 +121,20 @@ export class TwitchChat {
   /**
    * When a user sends a message in chat
    */
-  private ttvChat = (channel: string, user: ChatUserstate, message: string) => {
-    const userName = user[constants.userDisplayNameKey] || user.username! || '';
+  private ttvChat = (
+    channel: string,
+    userState: ChatUserstate,
+    message: string
+  ) => {
+    const user = new TwitchUser(userState, channel, ttvClientUsername);
     const lowerCaseMessage = message.toLowerCase();
+    const isHighlightedMessage = userState['msg-id'] === 'highlighted-message';
+    const customRewardId = userState['custom-reward-id'] || null;
+    log('info', isHighlightedMessage.toString());
+    log('info', customRewardId);
 
-    if (
-      this.moderators.indexOf(userName.toLowerCase()) > -1 &&
-      this.isLightControlCommand(message)
-    ) {
-      const logMessage = `Moderator (${userName}) sent a message`;
+    if (user.isMod && this.isLightControlCommand(message)) {
+      const logMessage = `Moderator (${user.username}) sent a message`;
       log('info', logMessage);
 
       if (
@@ -149,9 +154,10 @@ export class TwitchChat {
     }
 
     if (this.isChatClientEnabled) {
-      this.parseChat(lowerCaseMessage, userName);
+      this.parseChat(lowerCaseMessage, user.username);
     } else {
       log('info', constants.logs.ignoredCommandMessage);
+      this.sendChatMessage('Bot is not enabled');
     }
   };
 
