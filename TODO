@@ -5,6 +5,7 @@ Reorganizing as of 11/22/2019:
 - play any sound files via the browser sources instead of via node.js directly
   ✔ steal code from the michael jolley for handling this (hahahahaha) JK JK @done(Fri 02/21/2020 - 03:44 PM)
   - As of 20-02-21 we have things mostly working. We need to figure out a way to get the timing of the visual effects to align with the sound effects now that we're queuing the sound effects and they won't necessarily play immediately when the command is received.
+    - We most likely can accomplish this by moving the queue of the audio files to play from the client to the server so we can trigger both the audio and scene at the same time
   - Fix issue where bot thinks an incorrect command is used and plays a sound effect to indicate it
   - play a toilet flushing first when !flush is used to stop all audio (as suggested by ToeFrog)
   - look into how to have a common constants file across two TS projects (client/server)?
