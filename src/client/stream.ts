@@ -14,7 +14,7 @@ socket.on('color-effect', (effectColors: string[]) => {
 });
 
 socket.on('play-audio', (fileName: string) => {
-  addAudioToQueue(fileName);
+  playAudio(fileName);
 });
 
 socket.on('stop-current-audio', () => {
@@ -61,10 +61,26 @@ function stopCurrentAudio() {
   }
 }
 
-function addAudioToQueue(fileName: string) {
+function playAudio(fileName: string) {
   const audioFile = `${audioPath}${fileName}`;
   const audioPlayer = new Audio(audioFile);
   audioPlayer.id = audioFile;
+
+  audioPlayer.addEventListener('ended', () => {
+    captains.log('audio playback finished and emitting to socket');
+    socket.emit('audio-finished');
+  });
+
+  const playPromise = audioPlayer.play();
+  if (playPromise !== undefined) {
+    playPromise
+      .then(_ => {
+        captains.log('audio playback started');
+      })
+      .catch((error: any) => {
+        throw error;
+      });
+  }
 
   if (audioQueue.length === 0) {
     audioQueue.push(audioPlayer);

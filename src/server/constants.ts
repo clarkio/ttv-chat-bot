@@ -19,8 +19,10 @@ export const azureBot = {
 };
 
 export const effectsManager = {
+  audioFinishedEvent: 'audio-finished',
   failedSoundEffectMessage: 'failed to play the sorry sound effect',
   heccSoundEffect: 'hecc',
+  playAudioEvent: 'play-audio',
   robertTablesHeccEmote: 'robert68hecc',
   sorrySoundEffect: 'sorry',
   stopAllAudioEvent: 'stop-all-audio',

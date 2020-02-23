@@ -8,6 +8,12 @@ import OverlayManager from './overlay';
 import { AppServer } from './server';
 import SoundFxManager, { SoundFxFile } from './sound-fx';
 
+enum EffectType {
+  Sound = 'sound',
+  Scene = 'scene',
+  Both = 'both'
+}
+
 export default class EffectsManager {
   public azureBot!: AzureBot;
   private allEffects: any | undefined;
@@ -22,11 +28,16 @@ export default class EffectsManager {
   private overlayManager!: OverlayManager;
   private joinSoundEffects: any[] | undefined;
   private playedUserJoinSounds: string[] = [];
+  private effectQueue: any[] = [];
 
   constructor(private appServer: AppServer) {
     this.loadEffects().then(this.initEffectControllers);
     this.startAzureBot();
     this.playedUserJoinSounds = [];
+    this.appServer.io.on(
+      constants.audioFinishedEvent,
+      this.audioFinishedHandler
+    );
   }
 
   public activateJoinEffectIfFound(username: string) {
@@ -40,7 +51,7 @@ export default class EffectsManager {
       !this.hasJoinSoundPlayed(username)
     ) {
       const userSoundEffect = userEffect[username];
-      this.activateSoundEffect(userSoundEffect);
+      this.activateSoundEffectByText(userSoundEffect);
       this.playedUserJoinSounds.push(username);
     }
   }
@@ -95,7 +106,7 @@ export default class EffectsManager {
       : this.determineAlertEffect(chatMessage);
   };
 
-  // TODO: abstract command check type work into a command manager class
+  // TODO: abstract command checking/parsing work into a command parser class (commander?)
   public async checkForCommand(message: string): Promise<string | undefined> {
     // Remove the command prefix from the message (example: '!')
     message = message.replace(config.chatCommandPrefix, '');
@@ -103,16 +114,27 @@ export default class EffectsManager {
       message === constants.robertTablesHeccEmote
         ? constants.heccSoundEffect
         : message;
+
+    // Is it a sound effect command?
     if (
       (await this.soundFxManager.isSoundEffect(message)) &&
       config.isSoundFxEnabled
     ) {
-      return await this.activateSoundEffect(message);
+      const soundEffect = await this.soundFxManager.determineSoundEffect(
+        message
+      );
+
+      this.addToEffectQueue({ type: EffectType.Sound, effect: soundEffect });
+      return 'Added sound effect to the queue';
+      // return await this.activateSoundEffect(message);
     }
+
+    // Is it a scene effect command?
     if (
       (await this.obsManager.isSceneEffect(message)) &&
       config.isSceneFxEnabled
     ) {
+      // TODO: add to effects queue instead
       const sceneEffect = await this.obsManager.determineSceneEffect(message);
       this.obsManager.applySceneEffect(sceneEffect);
       setTimeout(() => {
@@ -120,6 +142,7 @@ export default class EffectsManager {
       }, sceneEffect.duration || 15000);
     }
 
+    // Is it a scene control command?
     if (
       (await this.obsManager.isSceneCommand(message)) &&
       config.isSceneFxEnabled
@@ -127,6 +150,7 @@ export default class EffectsManager {
       this.obsManager.executeSceneCommand(message);
     }
 
+    // Is it an effect stop command?
     if (this.soundFxManager.isAStopSoundCommand(message)) {
       const stopCommandUsed = this.soundFxManager.getStopCommandUsed(message);
       switch (stopCommandUsed) {
@@ -166,6 +190,31 @@ export default class EffectsManager {
     return alertEffectKey && this.alertEffects[alertEffectKey];
   };
 
+  private addToEffectQueue(effect: any) {
+    if (this.effectQueue.length === 0) {
+      this.effectQueue.push(effect);
+      this.triggerNextEffect();
+    } else {
+      this.effectQueue.push(effect);
+    }
+  }
+
+  private triggerNextEffect() {
+    if (this.effectQueue.length === 0) return;
+
+    const effectToActivate = this.effectQueue.shift();
+    // TODO determine the type of the effect somehow
+    // Then call the corresponding function to trigger the effect
+    // When the effect is done, trigger the next effect
+    switch (effectToActivate.type) {
+      case EffectType.Sound:
+        this.activateSoundEffect(effectToActivate.effect);
+        break;
+      default:
+        return;
+    }
+  }
+
   private hasJoinSoundPlayed(username: string): boolean {
     return this.playedUserJoinSounds.includes(username);
   }
@@ -199,9 +248,26 @@ export default class EffectsManager {
   };
 
   private async activateSoundEffect(
-    message: string
+    soundEffect: SoundFxFile
   ): Promise<string | undefined> {
-    const soundEffect = await this.soundFxManager.determineSoundEffect(message);
+    if (soundEffect) {
+      if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
+        const sceneEffect = await this.obsManager.determineSceneEffectByName(
+          soundEffect.setting.sceneEffectName
+        );
+        if (sceneEffect) {
+          this.activateSceneEffectFromSoundEffect(sceneEffect, soundEffect);
+        }
+      }
+      this.appServer.io.emit(constants.playAudioEvent, soundEffect.fileName);
+    }
+    return;
+  }
+
+  private async activateSoundEffectByText(
+    text: string
+  ): Promise<string | undefined> {
+    const soundEffect = await this.soundFxManager.determineSoundEffect(text);
 
     if (soundEffect) {
       if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
@@ -212,10 +278,13 @@ export default class EffectsManager {
           this.activateSceneEffectFromSoundEffect(sceneEffect, soundEffect);
         }
       }
-
-      this.appServer.io.emit('play-audio', soundEffect.fileName);
+      this.appServer.io.emit(constants.playAudioEvent, soundEffect.fileName);
     }
     return;
+  }
+
+  private audioFinishedHandler() {
+    this.triggerNextEffect();
   }
 
   private activateSceneEffectFromSoundEffect(
