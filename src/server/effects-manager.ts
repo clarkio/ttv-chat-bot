@@ -8,12 +8,6 @@ import OverlayManager from './overlay';
 import { AppServer } from './server';
 import SoundFxManager, { SoundFxFile } from './sound-fx';
 
-enum EffectType {
-  Sound = 'sound',
-  Scene = 'scene',
-  Both = 'both'
-}
-
 export default class EffectsManager {
   public azureBot!: AzureBot;
   private allEffects: any | undefined;
@@ -28,16 +22,11 @@ export default class EffectsManager {
   private overlayManager!: OverlayManager;
   private joinSoundEffects: any[] | undefined;
   private playedUserJoinSounds: string[] = [];
-  private effectQueue: any[] = [];
 
   constructor(private appServer: AppServer) {
     this.loadEffects().then(this.initEffectControllers);
     this.startAzureBot();
     this.playedUserJoinSounds = [];
-    this.appServer.io.on(
-      constants.audioFinishedEvent,
-      this.audioFinishedHandler
-    );
   }
 
   public activateJoinEffectIfFound(username: string) {
@@ -123,10 +112,9 @@ export default class EffectsManager {
       const soundEffect = await this.soundFxManager.determineSoundEffect(
         message
       );
+      if (!soundEffect) return;
 
-      this.addToEffectQueue({ type: EffectType.Sound, effect: soundEffect });
-      return 'Added sound effect to the queue';
-      // return await this.activateSoundEffect(message);
+      return await this.activateSoundEffect(soundEffect);
     }
 
     // Is it a scene effect command?
@@ -155,15 +143,13 @@ export default class EffectsManager {
       const stopCommandUsed = this.soundFxManager.getStopCommandUsed(message);
       switch (stopCommandUsed) {
         // TODO: play a toilet flushing first when this one is used
+        // TODO: how do you stop all sounds playing with no queue now?
         case StopCommands.Flush:
         case StopCommands.StopAll:
           this.appServer.io.emit(constants.stopAllAudioEvent);
-          this.effectQueue = [];
           break;
         default:
           this.appServer.io.emit(constants.stopCurrentAudioEvent);
-          this.effectQueue.shift();
-          this.triggerNextEffect();
           break;
       }
 
@@ -192,31 +178,6 @@ export default class EffectsManager {
 
     return alertEffectKey && this.alertEffects[alertEffectKey];
   };
-
-  private addToEffectQueue(effect: any) {
-    if (this.effectQueue.length === 0) {
-      this.effectQueue.push(effect);
-      this.triggerNextEffect();
-    } else {
-      this.effectQueue.push(effect);
-    }
-  }
-
-  private triggerNextEffect() {
-    if (this.effectQueue.length === 0) return;
-
-    const effectToActivate = this.effectQueue[0];
-    // TODO determine the type of the effect somehow
-    // Then call the corresponding function to trigger the effect
-    // When the effect is done, trigger the next effect
-    switch (effectToActivate.type) {
-      case EffectType.Sound:
-        this.activateSoundEffect(effectToActivate.effect);
-        break;
-      default:
-        return;
-    }
-  }
 
   private hasJoinSoundPlayed(username: string): boolean {
     return this.playedUserJoinSounds.includes(username);
@@ -284,11 +245,6 @@ export default class EffectsManager {
       this.appServer.io.emit(constants.playAudioEvent, soundEffect.fileName);
     }
     return;
-  }
-
-  private audioFinishedHandler() {
-    this.effectQueue.shift();
-    this.triggerNextEffect();
   }
 
   private activateSceneEffectFromSoundEffect(

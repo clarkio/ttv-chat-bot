@@ -5,8 +5,7 @@ const audioPath = '/assets/sounds/';
 const playNext = new CustomEvent('playNext', {
   bubbles: true
 });
-let audioQueue: HTMLAudioElement[] = [];
-// let audioPlayer = null;
+let currentlyPlayingAudio: HTMLAudioElement[] = [];
 
 const socket = io();
 socket.on('color-effect', (effectColors: string[]) => {
@@ -19,46 +18,19 @@ socket.on('play-audio', (fileName: string) => {
 
 socket.on('stop-current-audio', () => {
   stopCurrentAudio();
-  // playAudioQueue();
 });
 
 socket.on('stop-all-audio', () => {
   stopAllAudio();
 });
 
-function playAudioQueue() {
-  if (audioQueue.length > 0) {
-    const audioPlayer = audioQueue[0];
-    audioPlayer.addEventListener('ended', () => {
-      captains.log('audio playback finished');
-      audioQueue.shift();
-      playAudioQueue();
-    });
-    const playPromise = audioPlayer.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(_ => {
-          captains.log('audio playback started');
-        })
-        .catch((error: any) => {
-          throw error;
-        });
-    }
-  }
-}
-
 function stopAllAudio() {
-  // !stop
-  // !stopall
   stopCurrentAudio();
-  audioQueue = [];
 }
 
 function stopCurrentAudio() {
-  if (audioQueue.length > 0) {
-    const currentAudio = audioQueue.shift();
-    currentAudio!.pause();
-  }
+  currentlyPlayingAudio.forEach(audio => audio.pause());
+  currentlyPlayingAudio = [];
 }
 
 function playAudio(fileName: string) {
@@ -71,7 +43,9 @@ function playAudio(fileName: string) {
     socket.emit('audio-finished');
   });
 
+  currentlyPlayingAudio.push(audioPlayer);
   const playPromise = audioPlayer.play();
+
   if (playPromise !== undefined) {
     playPromise
       .then(_ => {
@@ -80,13 +54,6 @@ function playAudio(fileName: string) {
       .catch((error: any) => {
         throw error;
       });
-  }
-
-  if (audioQueue.length === 0) {
-    audioQueue.push(audioPlayer);
-    playAudioQueue();
-  } else {
-    audioQueue.push(audioPlayer);
   }
 }
 
