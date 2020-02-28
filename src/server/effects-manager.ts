@@ -158,9 +158,12 @@ export default class EffectsManager {
         case StopCommands.Flush:
         case StopCommands.StopAll:
           this.appServer.io.emit(constants.stopAllAudioEvent);
+          this.effectQueue = [];
           break;
         default:
           this.appServer.io.emit(constants.stopCurrentAudioEvent);
+          this.effectQueue.shift();
+          this.triggerNextEffect();
           break;
       }
 
@@ -202,7 +205,7 @@ export default class EffectsManager {
   private triggerNextEffect() {
     if (this.effectQueue.length === 0) return;
 
-    const effectToActivate = this.effectQueue.shift();
+    const effectToActivate = this.effectQueue[0];
     // TODO determine the type of the effect somehow
     // Then call the corresponding function to trigger the effect
     // When the effect is done, trigger the next effect
@@ -284,6 +287,7 @@ export default class EffectsManager {
   }
 
   private audioFinishedHandler() {
+    this.effectQueue.shift();
     this.triggerNextEffect();
   }
 

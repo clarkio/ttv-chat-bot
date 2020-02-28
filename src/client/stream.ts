@@ -19,7 +19,7 @@ socket.on('play-audio', (fileName: string) => {
 
 socket.on('stop-current-audio', () => {
   stopCurrentAudio();
-  playAudioQueue();
+  // playAudioQueue();
 });
 
 socket.on('stop-all-audio', () => {
