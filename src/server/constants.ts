@@ -50,7 +50,7 @@ export const overlay = {
   colorChangeEvent: 'color-change',
   colorEffectEvent: 'color-effect',
   copColorName: 'cop',
-  defaultColor: 'deepskyblue',
+  defaultColor: 'deepskyblue', // [13:09] blendedsoftware: !bulb #54CAFF to match bulb and overlay
   defaultPort: 1337,
   minionSoundEffectFileName: 'beedoo.mp3'
 };
