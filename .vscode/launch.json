@@ -38,8 +38,10 @@
       "name": "Client Debug",
       "type": "chrome",
       "request": "launch",
-      "url": "http://localhost:1339/",
-      "webRoot": "${workspaceFolder}/dist/client"
+      "url": "http://localhost:1338/scenes?sceneName=brb",
+      "webRoot": "${workspaceFolder}/dist/client",
+      "sourceMaps": true,
+      "runtimeArgs": ["--autoplay-policy=no-user-gesture-required"]
     }
   ],
   "compounds": [

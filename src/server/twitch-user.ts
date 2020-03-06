@@ -18,12 +18,14 @@ export default class TwitchUser {
         userstate['display-name'] || userstate.username || mainUserName;
       this.isBroadcaster = '#' + userstate.username === channel;
       this.isMod = userstate.mod;
+      // @ts-ignore
       this.isFounder = userstate.badges && userstate.badges.founder === '0';
       this.isSubscriber =
         this.isFounder ||
         (userstate.badges &&
           typeof userstate.badges.subscriber !== 'undefined') ||
         userstate.subscriber;
+      // @ts-ignore
       this.isVIP = (userstate.badges && userstate.badges.vip === '1') || false;
       this.userId = userstate['user-id'];
       this.badges = userstate.badges;

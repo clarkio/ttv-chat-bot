@@ -3,13 +3,32 @@ Reorganizing as of 11/22/2019:
 ✔ Figure out the bug for the overlay getting stuck on a color after an alert is triggered @done(Sat 01/11/2020 - 05:07 PM)
 ✔ remove hard-coded strings to be constants (when appropriate) @created(Sat 12/14/2019 - 12:49 AM) @done(19-12-14 00:49)
 - play any sound files via the browser sources instead of via node.js directly
-  - steal code from the michael jolley for handling this (hahahahaha)
+  ✔ steal code from the michael jolley for handling this (hahahahaha) JK JK @done(Fri 02/21/2020 - 03:44 PM)
+  - As of 20-02-21 we have things mostly working. We need to figure out a way to get the timing of the visual effects to align with the sound effects now that we're queuing the sound effects and they won't necessarily play immediately when the command is received.
+    ✔ We most likely can accomplish this by moving the queue of the audio files to play from the client to the server so we can trigger both the audio and scene at the same time @created(Sun 02/23/2020 - 12:46 AM) @done(20-02-23 00:46)
+    ✘ After further exploration we'll need to create an overall "effect" queue of some sort to properly track and trigger sound and scene effects together @cancelled(Fri 03/06/2020 - 01:37 PM)
+      - Effect queue objects:
+        {
+          effecttype: audio, scene, both
+          audio:
+          sceneEffect:
+        }
+      ✔ NEXT TASK: Test this implementation @done(Fri 02/28/2020 - 02:35 PM)
+      - Chat voted and decided we don't prefer to queue any audio and/or visual effects because we enjoy the chaos @created(Fri 03/06/2020 - 01:40 PM)
+      ✔ Check if we need to cleanup previous audioplayer elements when stopping sounds @created(Fri 03/06/2020 - 02:30 PM) @done(Fri 03/06/2020 - 02:30 PM)
+           - I think we're ok here because when we stop the audio it's only stored in memory via the `currentlyPlayingAudio` array and we clear that out once the audio is paused @created(Fri 03/06/2020 - 02:23 PM)
+           - Confirmed on mozilla docs: https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement/Audio#Memory_usage_and_management @created(Fri 03/06/2020 - 02:30 PM)
+  ✔ Fix issue where bot thinks an incorrect command is used and plays a sound effect to indicate it @done(20-02-22 23:26)
+  - play a toilet flushing sound first when !flush is used to stop all audio (as suggested by ToeFrog)
+  - look into how to have a common constants file across two TS projects (client/server)?
+☐ !mute command that lets chat mute the music while I'm lip syncing and dancing @created(Fri 02/28/2020 - 02:35 PM)
 - instead of having code handle parsing the commands and having to know all the chat commands let's leverage the trained AI to determine if a message is a command and parse the arguments out of the message for us
 - speech to text
 - game idea (yet to be revealed on stream): viewers send commands in chat to participate in a game. if chat wins and solves the game then that triggers something to happen to clarkio otherwise.
 - Maybe refactor to this: [13:26] nallaj: @Clarkio why not use TS enums for this?
 - Refactor Manager file names: [13:27] roberttables: @Clarkio You know MPJ will harp on you for using "manager" in your names Kappa
 - Add tests (Kappa): [13:29] roberttables: Wait, do we have tests for this code @Clarkio ??
+- [13:36] MusicalBookworm: for your logging - append something to the message indicating file/where the error is coming from @created(Fri 03/06/2020 - 01:38 PM)
 
 
 

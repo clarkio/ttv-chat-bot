@@ -19,10 +19,14 @@ export const azureBot = {
 };
 
 export const effectsManager = {
-  heccSoundEffect: 'hecc',
+  audioFinishedEvent: 'audio-finished',
   failedSoundEffectMessage: 'failed to play the sorry sound effect',
+  heccSoundEffect: 'hecc',
+  playAudioEvent: 'play-audio',
   robertTablesHeccEmote: 'robert68hecc',
   sorrySoundEffect: 'sorry',
+  stopAllAudioEvent: 'stop-all-audio',
+  stopCurrentAudioEvent: 'stop-current-audio',
   unsupportedSoundEffectMessage:
     'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported'
 };
@@ -46,10 +50,16 @@ export const overlay = {
   colorChangeEvent: 'color-change',
   colorEffectEvent: 'color-effect',
   copColorName: 'cop',
-  defaultColor: 'deepskyblue',
+  defaultColor: 'deepskyblue', // [13:09] blendedsoftware: !bulb #54CAFF to match bulb and overlay
   defaultPort: 1337,
   minionSoundEffectFileName: 'beedoo.mp3'
 };
+
+export enum StopCommands {
+  Stop = 'stop',
+  StopAll = 'stopall',
+  Flush = 'flush'
+}
 
 export const soundEffects = {
   logs: {
@@ -67,7 +77,7 @@ export const soundEffects = {
     ]
   },
   soundsRelativeDirectory: '../../assets/sounds',
-  stopCommand: '!stop'
+  stopCommands: [StopCommands.Stop, StopCommands.StopAll, StopCommands.Flush]
 };
 
 export const twitchChat = {

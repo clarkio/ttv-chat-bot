@@ -21,7 +21,7 @@ export class AppServer {
   public app: express.Application;
   public io!: SocketIO.Server;
   public discordHook!: WebhookClient;
-  public effectsManager = new EffectsManager(this);
+  public effectsManager!: EffectsManager;
   private http!: Server;
 
   constructor() {
@@ -31,6 +31,7 @@ export class AppServer {
     this.startOverlay();
     this.defineRoutes();
     this.listen();
+    this.effectsManager = new EffectsManager(this);
   }
 
   /**
@@ -62,8 +63,14 @@ export class AppServer {
     this.app.use(bodyParser.json());
     this.app.set('view engine', 'pug');
     this.app.set('views', resolvePath(`${__dirname}`, '../../views'));
-    this.app.use('/assets',express.static(resolvePath(`${__dirname}`, '../../assets')));
-    this.app.use('/client',express.static(resolvePath(`${__dirname}`, '../../dist/client')));
+    this.app.use(
+      '/assets',
+      express.static(resolvePath(`${__dirname}`, '../../assets'))
+    );
+    this.app.use(
+      '/client',
+      express.static(resolvePath(`${__dirname}`, '../../dist/client'))
+    );
   }
 
   /**
