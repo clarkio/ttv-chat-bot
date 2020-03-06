@@ -2,7 +2,7 @@ Reorganizing as of 11/22/2019:
 
 ✔ Figure out the bug for the overlay getting stuck on a color after an alert is triggered @done(Sat 01/11/2020 - 05:07 PM)
 ✔ remove hard-coded strings to be constants (when appropriate) @created(Sat 12/14/2019 - 12:49 AM) @done(19-12-14 00:49)
-- play any sound files via the browser sources instead of via node.js directly
+✔ play any sound files via the browser sources instead of via node.js directly @done(Fri 03/06/2020 - 04:20 PM)
   ✔ steal code from the michael jolley for handling this (hahahahaha) JK JK @done(Fri 02/21/2020 - 03:44 PM)
   - As of 20-02-21 we have things mostly working. We need to figure out a way to get the timing of the visual effects to align with the sound effects now that we're queuing the sound effects and they won't necessarily play immediately when the command is received.
     ✔ We most likely can accomplish this by moving the queue of the audio files to play from the client to the server so we can trigger both the audio and scene at the same time @created(Sun 02/23/2020 - 12:46 AM) @done(20-02-23 00:46)
