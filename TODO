@@ -20,7 +20,7 @@ Reorganizing as of 11/22/2019:
            - Confirmed on mozilla docs: https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement/Audio#Memory_usage_and_management @created(Fri 03/06/2020 - 02:30 PM)
   ✔ Fix issue where bot thinks an incorrect command is used and plays a sound effect to indicate it @done(20-02-22 23:26)
   - play a toilet flushing sound first when !flush is used to stop all audio (as suggested by ToeFrog)
-  - look into how to have a common constants file across two TS projects (client/server)?
+☐ look into how to have a common constants file across two TS projects (client/server)?
 ☐ !mute command that lets chat mute the music while I'm lip syncing and dancing @created(Fri 02/28/2020 - 02:35 PM)
 - instead of having code handle parsing the commands and having to know all the chat commands let's leverage the trained AI to determine if a message is a command and parse the arguments out of the message for us
 - speech to text
@@ -28,7 +28,7 @@ Reorganizing as of 11/22/2019:
 - Maybe refactor to this: [13:26] nallaj: @Clarkio why not use TS enums for this?
 - Refactor Manager file names: [13:27] roberttables: @Clarkio You know MPJ will harp on you for using "manager" in your names Kappa
 - Add tests (Kappa): [13:29] roberttables: Wait, do we have tests for this code @Clarkio ??
-- [13:36] MusicalBookworm: for your logging - append something to the message indicating file/where the error is coming from @created(Fri 03/06/2020 - 01:38 PM)
+☐ [13:36] MusicalBookworm: for your logging - append something to the message indicating file/where the error is coming from @created(Fri 03/06/2020 - 01:38 PM)
 
 
 
