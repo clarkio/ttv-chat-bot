@@ -130,8 +130,6 @@ export class TwitchChat {
     const lowerCaseMessage = message.toLowerCase();
     const isHighlightedMessage = userState['msg-id'] === 'highlighted-message';
     const customRewardId = userState['custom-reward-id'] || null;
-    log('info', isHighlightedMessage.toString());
-    log('info', customRewardId);
 
     if (user.isMod && this.isLightControlCommand(message)) {
       const logMessage = `Moderator (${user.username}) sent a message`;

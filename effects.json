@@ -123,7 +123,7 @@
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "pbj-banana",
+          "name": "[FX] pbj-banana",
           "activeState": {
             "visible": true
           },
@@ -135,15 +135,11 @@
     },
     {
       "name": "smack",
-      "scenes": [
-        "Main Scene Green Screen",
-        "Zoom Face Main",
-        "Full Cam Overlay"
-      ],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "smack",
+          "name": "[FX] smack",
           "activeState": {
             "visible": true
           },
@@ -155,11 +151,11 @@
     },
     {
       "name": "highfive",
-      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "highfive",
+          "name": "[FX] highfive",
           "activeState": {
             "visible": true
           },
@@ -171,11 +167,11 @@
     },
     {
       "name": "headpat",
-      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "headpat",
+          "name": "[FX] headpat",
           "activeState": {
             "visible": true
           },
@@ -188,11 +184,11 @@
     },
     {
       "name": "water",
-      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "water",
+          "name": "[FX] water",
           "activeState": {
             "visible": true
           },
@@ -205,11 +201,11 @@
     },
     {
       "name": "backpat",
-      "scenes": ["Main Scene Green Screen", "Zoom Face Main"],
+      "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "backpat",
+          "name": "[FX] backpat",
           "activeState": {
             "visible": true
           },
@@ -226,7 +222,7 @@
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "tickle",
+          "name": "[FX] tickle",
           "activeState": {
             "visible": true
           },
@@ -243,7 +239,7 @@
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "unicorn-right",
+          "name": "[FX] unicorn-right",
           "activeState": {
             "visible": true
           },
@@ -252,7 +248,7 @@
           }
         },
         {
-          "name": "unicorn-left",
+          "name": "[FX] unicorn-left",
           "activeState": {
             "visible": true
           },
@@ -261,7 +257,7 @@
           }
         },
         {
-          "name": "rainbow",
+          "name": "[FX] rainbow",
           "activeState": {
             "visible": true
           },
@@ -277,7 +273,7 @@
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "fart",
+          "name": "[FX] fart",
           "activeState": {
             "visible": true
           },
@@ -294,7 +290,7 @@
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "xp-error",
+          "name": "[FX] xp-error",
           "activeState": {
             "visible": true
           },
@@ -310,7 +306,7 @@
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "raid-lights",
+          "name": "[FX] raid-lights",
           "activeState": {
             "visible": true
           },
@@ -326,7 +322,7 @@
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "doit",
+          "name": "[FX] doit",
           "activeState": {
             "visible": true
           },
@@ -342,7 +338,7 @@
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "whocares",
+          "name": "[FX] whocares",
           "activeState": {
             "visible": true
           },
@@ -358,7 +354,7 @@
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "epic-sax",
+          "name": "[FX] epic-sax",
           "activeState": {
             "visible": true
           },
@@ -374,7 +370,7 @@
       "effectType": "SetSceneItemProperties",
       "sources": [
         {
-          "name": "themoreyouknow",
+          "name": "[FX] themoreyouknow",
           "activeState": {
             "visible": true
           },
