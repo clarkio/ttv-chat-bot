@@ -128,7 +128,9 @@ export class TwitchChat {
   ) => {
     const user = new TwitchUser(userState, channel, ttvClientUsername);
     const lowerCaseMessage = message.toLowerCase();
+    // @ts-ignore
     const isHighlightedMessage = userState['msg-id'] === 'highlighted-message';
+    // @ts-ignore
     const customRewardId = userState['custom-reward-id'] || null;
 
     if (user.isMod && this.isLightControlCommand(message)) {
