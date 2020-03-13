@@ -142,9 +142,15 @@ export default class EffectsManager {
     if (this.soundFxManager.isAStopSoundCommand(message)) {
       const stopCommandUsed = this.soundFxManager.getStopCommandUsed(message);
       switch (stopCommandUsed) {
-        // TODO: play a toilet flushing first when this one is used
-        // TODO: how do you stop all sounds playing with no queue now?
         case StopCommands.Flush:
+          this.activateSoundEffectByText('flush').then(soundEffect => {
+            if (!soundEffect) return;
+
+            setTimeout(() => {
+              this.appServer.io.emit(constants.stopAllAudioEvent);
+            }, soundEffect!.duration);
+          });
+          break;
         case StopCommands.StopAll:
           this.appServer.io.emit(constants.stopAllAudioEvent);
           break;
@@ -230,7 +236,7 @@ export default class EffectsManager {
 
   private async activateSoundEffectByText(
     text: string
-  ): Promise<string | undefined> {
+  ): Promise<SoundFxFile | undefined> {
     const soundEffect = await this.soundFxManager.determineSoundEffect(text);
 
     if (soundEffect) {
@@ -242,8 +248,11 @@ export default class EffectsManager {
           this.activateSceneEffectFromSoundEffect(sceneEffect, soundEffect);
         }
       }
+
       this.appServer.io.emit(constants.playAudioEvent, soundEffect.fileName);
+      return soundEffect;
     }
+
     return;
   }
 
