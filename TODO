@@ -10,6 +10,7 @@ Reorganizing as of 11/22/2019:
 - Refactor Manager file names: [13:27] roberttables: @Clarkio You know MPJ will harp on you for using "manager" in your names Kappa
 - Add tests (Kappa): [13:29] roberttables: Wait, do we have tests for this code @Clarkio ??
 ☐ [13:36] MusicalBookworm: for your logging - append something to the message indicating file/where the error is coming from @created(Fri 03/06/2020 - 01:38 PM)
+☐ Add some kind of indication that the !highfive is coming prior to actually showing it on screen so that you can react in time @created(Sat 03/21/2020 - 08:11 PM)
 
 
 
@@ -24,6 +25,8 @@ Big Bright Future Plans 11/22/2019:
     - Facebook:
 
 DONE:
+
+✔ play a toilet flushing sound first when !flush is used to stop all audio (as suggested by ToeFrog) @created(Sat 03/21/2020 - 08:12 PM) @done(Sat 03/21/2020 - 08:12 PM)
 ✔ Figure out the bug for the overlay getting stuck on a color after an alert is triggered @done(Sat 01/11/2020 - 05:07 PM)
 ✔ remove hard-coded strings to be constants (when appropriate) @created(Sat 12/14/2019 - 12:49 AM) @done(19-12-14 00:49)
 ✔ play any sound files via the browser sources instead of via node.js directly @done(Fri 03/06/2020 - 04:20 PM)
@@ -43,7 +46,6 @@ DONE:
            - I think we're ok here because when we stop the audio it's only stored in memory via the `currentlyPlayingAudio` array and we clear that out once the audio is paused @created(Fri 03/06/2020 - 02:23 PM)
            - Confirmed on mozilla docs: https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement/Audio#Memory_usage_and_management @created(Fri 03/06/2020 - 02:30 PM)
   ✔ Fix issue where bot thinks an incorrect command is used and plays a sound effect to indicate it @done(20-02-22 23:26)
-  - play a toilet flushing sound first when !flush is used to stop all audio (as suggested by ToeFrog)
 
 
 Old Todo:
