@@ -104,6 +104,26 @@ export default class EffectsManager {
         ? constants.heccSoundEffect
         : message;
 
+    // Is it an effect stop command?
+    if (this.soundFxManager.isAStopSoundCommand(message)) {
+      const stopCommandUsed = this.soundFxManager.getStopCommandUsed(message);
+      // TODO: do we really need !stopall event anymore since we're not queuing audio?
+      switch (stopCommandUsed) {
+        case StopCommands.Flush:
+          this.appServer.io.emit(constants.stopAllAudioEvent);
+          this.activateSoundEffectByText('flush');
+          break;
+        case StopCommands.StopAll:
+          this.appServer.io.emit(constants.stopAllAudioEvent);
+          break;
+        default:
+          this.appServer.io.emit(constants.stopCurrentAudioEvent);
+          break;
+      }
+
+      this.obsManager.deactivateAllSceneEffects();
+    }
+
     // Is it a sound effect command?
     if (
       (await this.soundFxManager.isSoundEffect(message)) &&
@@ -136,24 +156,6 @@ export default class EffectsManager {
       config.isSceneFxEnabled
     ) {
       this.obsManager.executeSceneCommand(message);
-    }
-
-    // Is it an effect stop command?
-    if (this.soundFxManager.isAStopSoundCommand(message)) {
-      const stopCommandUsed = this.soundFxManager.getStopCommandUsed(message);
-      switch (stopCommandUsed) {
-        // TODO: play a toilet flushing first when this one is used
-        // TODO: how do you stop all sounds playing with no queue now?
-        case StopCommands.Flush:
-        case StopCommands.StopAll:
-          this.appServer.io.emit(constants.stopAllAudioEvent);
-          break;
-        default:
-          this.appServer.io.emit(constants.stopCurrentAudioEvent);
-          break;
-      }
-
-      this.obsManager.deactivateAllSceneEffects();
     }
 
     // This return is a last resort
@@ -230,7 +232,7 @@ export default class EffectsManager {
 
   private async activateSoundEffectByText(
     text: string
-  ): Promise<string | undefined> {
+  ): Promise<SoundFxFile | undefined> {
     const soundEffect = await this.soundFxManager.determineSoundEffect(text);
 
     if (soundEffect) {
@@ -242,8 +244,11 @@ export default class EffectsManager {
           this.activateSceneEffectFromSoundEffect(sceneEffect, soundEffect);
         }
       }
+
       this.appServer.io.emit(constants.playAudioEvent, soundEffect.fileName);
+      return soundEffect;
     }
+
     return;
   }
 
