@@ -6,6 +6,24 @@ Reorganizing as of 11/22/2019:
 
 ☐ via Piq9117's suggestion: add ability to update title when Chair takes over the stream @created(Sat 03/21/2020 - 08:32 PM)
 
+☐ [15:23] Junicus: could you set a fs.watch to reload it if changed? @created(Fri 03/27/2020 - 03:29 PM)
+
+☐ Finish implementation of the warning that the highfive animation is coming @created(Sat 03/28/2020 - 07:17 PM)
+
+☐ [15:16] Brookzerker: What do you think about creating a simple queue that takes an array of effects, which will then loop over and play them one after the other? That way you can create chains of effects pretty easily @created(Fri 03/27/2020 - 03:37 PM)
+
+☐ Need to do this too ==> [20:11] nallaj: @Clarkio I mean my sound only applied when I sent a message @created(Sat 03/28/2020 - 08:12 PM)
+
+☐ Add this sound effect plz [20:33] FBoucheros: !begoodbrian @created(Sat 03/28/2020 - 08:34 PM)
+
+☐ [20:50] roberttables: A Dr Phil scene would be great. "I want you to get excited about your programming language! And stop stealing money from. your mother-in-law to buy meth" @created(Sat 03/28/2020 - 08:52 PM)
+
+
+
+check out GitHub app and Brandon Minnick's GitTrends app
+
+fix latest alert in main scene on streamelements
+
 
 
 

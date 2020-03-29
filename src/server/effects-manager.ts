@@ -134,6 +134,20 @@ export default class EffectsManager {
       );
       if (!soundEffect) return;
 
+      if (soundEffect.name === 'highfive') {
+        const threeTwoOne = await this.soundFxManager.determineSoundEffect(
+          'threetwoone'
+        );
+        if (threeTwoOne) {
+          this.activateSoundEffectByText('threetwoone').then(() => {
+            setTimeout(() => {
+              this.activateSoundEffect(soundEffect);
+            }, threeTwoOne.duration * 1000);
+          });
+        }
+        return;
+      }
+
       return await this.activateSoundEffect(soundEffect);
     }
 

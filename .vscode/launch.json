@@ -38,7 +38,7 @@
       "name": "Client Debug",
       "type": "chrome",
       "request": "launch",
-      "url": "http://localhost:1338/scenes?sceneName=brb",
+      "url": "http://localhost:1338/scenes?sceneName=alerts",
       "webRoot": "${workspaceFolder}/dist/client",
       "sourceMaps": true,
       "runtimeArgs": ["--autoplay-policy=no-user-gesture-required"]
