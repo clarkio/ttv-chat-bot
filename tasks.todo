@@ -1,14 +1,12 @@
-Reorganizing as of 11/22/2019:
 
 ☐ Refactor Manager file names: [13:27] roberttables: @Clarkio You know MPJ will harp on you for using "manager" in your names Kappa @created(Sat 03/21/2020 - 08:27 PM)
-☐ @created(Sat 03/21/2020 - 08:28 PM)
+
 ☐ look into how to have a common constants file across two TS projects (client/server)?
 
 ☐ via Piq9117's suggestion: add ability to update title when Chair takes over the stream @created(Sat 03/21/2020 - 08:32 PM)
 
 ☐ [15:23] Junicus: could you set a fs.watch to reload it if changed? @created(Fri 03/27/2020 - 03:29 PM)
 
-☐ Finish implementation of the warning that the highfive animation is coming @created(Sat 03/28/2020 - 07:17 PM)
 
 ☐ [15:16] Brookzerker: What do you think about creating a simple queue that takes an array of effects, which will then loop over and play them one after the other? That way you can create chains of effects pretty easily @created(Fri 03/27/2020 - 03:37 PM)
 
@@ -18,19 +16,9 @@ Reorganizing as of 11/22/2019:
 
 ☐ [20:50] roberttables: A Dr Phil scene would be great. "I want you to get excited about your programming language! And stop stealing money from. your mother-in-law to buy meth" @created(Sat 03/28/2020 - 08:52 PM)
 
-
-
 check out GitHub app and Brandon Minnick's GitTrends app
 
 fix latest alert in main scene on streamelements
-
-
-
-
-
-
-
-
 
 ☐ !mute command that lets chat mute the music while I'm lip syncing and dancing @created(Fri 02/28/2020 - 02:35 PM)
     - potentially lowering/muting the background music (pretzel.rocks)
@@ -50,9 +38,6 @@ fix latest alert in main scene on streamelements
   - make sure to only allow mods or people with permission to do that though
 
 
-
-Big Bright Future Plans 11/22/2019:
-
 *** Make the bot more platform agnostic ***
 - Something that will actively listen for channel events in a stream.
   Figure out all the alerts/events per platform to see where there are overlaps that can be included in a core package
@@ -61,31 +46,16 @@ Big Bright Future Plans 11/22/2019:
     - YouTube:
     - Facebook:
 
-DONE:
 
-✔ play a toilet flushing sound first when !flush is used to stop all audio (as suggested by ToeFrog) @created(Sat 03/21/2020 - 08:12 PM) @done(Sat 03/21/2020 - 08:12 PM)
-✔ Figure out the bug for the overlay getting stuck on a color after an alert is triggered @done(Sat 01/11/2020 - 05:07 PM)
-✔ remove hard-coded strings to be constants (when appropriate) @created(Sat 12/14/2019 - 12:49 AM) @done(19-12-14 00:49)
-✔ play any sound files via the browser sources instead of via node.js directly @done(Fri 03/06/2020 - 04:20 PM)
-  ✔ steal code from the michael jolley for handling this (hahahahaha) JK JK @done(Fri 02/21/2020 - 03:44 PM)
   - As of 20-02-21 we have things mostly working. We need to figure out a way to get the timing of the visual effects to align with the sound effects now that we're queuing the sound effects and they won't necessarily play immediately when the command is received.
-    ✔ We most likely can accomplish this by moving the queue of the audio files to play from the client to the server so we can trigger both the audio and scene at the same time @created(Sun 02/23/2020 - 12:46 AM) @done(20-02-23 00:46)
-    ✘ After further exploration we'll need to create an overall "effect" queue of some sort to properly track and trigger sound and scene effects together @cancelled(Fri 03/06/2020 - 01:37 PM)
       - Effect queue objects:
         {
           effecttype: audio, scene, both
-          audio:
-          sceneEffect:
         }
-      ✔ NEXT TASK: Test this implementation @done(Fri 02/28/2020 - 02:35 PM)
       - Chat voted and decided we don't prefer to queue any audio and/or visual effects because we enjoy the chaos @created(Fri 03/06/2020 - 01:40 PM)
-      ✔ Check if we need to cleanup previous audioplayer elements when stopping sounds @created(Fri 03/06/2020 - 02:30 PM) @done(Fri 03/06/2020 - 02:30 PM)
            - I think we're ok here because when we stop the audio it's only stored in memory via the `currentlyPlayingAudio` array and we clear that out once the audio is paused @created(Fri 03/06/2020 - 02:23 PM)
            - Confirmed on mozilla docs: https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement/Audio#Memory_usage_and_management @created(Fri 03/06/2020 - 02:30 PM)
-  ✔ Fix issue where bot thinks an incorrect command is used and plays a sound effect to indicate it @done(20-02-22 23:26)
 
-
-Old Todo:
   ☐ Add code to limit permissions for !scene commands @created(19-03-22 20:27)
   ☐ Determine a way to automatically stop any scene effects that correspond to this sound effect when the sound effect is done
   Problem: Audio file is long and the effect is overplayed
@@ -98,8 +68,6 @@ Old Todo:
       - It will determine if the alert or chat trigger maps to a supported command and therefore has some associated effect to apply
       - Once an effect is found to be applied the effects manager will handle starting all the various effects that go with it (such as sound, light, scene, overlay)
 
-
-Other:
 // tslint:ignore
 J
 robert68Hecc
@@ -121,3 +89,14 @@ maybe !sfx <filename>?
 3. Apply input/data to command (execute the command using the input provide from the chat message)
 
 Archive:
+  ✔ Finish implementation of the warning that the highfive animation is coming @created(Sat 03/28/2020 - 07:17 PM) @done(Sat 03/28/2020 - 09:12 PM)
+  ✔ play a toilet flushing sound first when !flush is used to stop all audio (as suggested by ToeFrog) @created(Sat 03/21/2020 - 08:12 PM) @done(Sat 03/21/2020 - 08:12 PM)
+  ✔ Figure out the bug for the overlay getting stuck on a color after an alert is triggered @done(Sat 01/11/2020 - 05:07 PM)
+  ✔ remove hard-coded strings to be constants (when appropriate) @created(Sat 12/14/2019 - 12:49 AM) @done(19-12-14 00:49)
+  ✔ play any sound files via the browser sources instead of via node.js directly @done(Fri 03/06/2020 - 04:20 PM)
+  ✔ steal code from the michael jolley for handling this (hahahahaha) JK JK @done(Fri 02/21/2020 - 03:44 PM)
+  ✔ We most likely can accomplish this by moving the queue of the audio files to play from the client to the server so we can trigger both the audio and scene at the same time @created(Sun 02/23/2020 - 12:46 AM) @done(20-02-23 00:46)
+  ✘ After further exploration we'll need to create an overall "effect" queue of some sort to properly track and trigger sound and scene effects together @cancelled(Fri 03/06/2020 - 01:37 PM)
+  ✔ NEXT TASK: Test this implementation @done(Fri 02/28/2020 - 02:35 PM)
+  ✔ Check if we need to cleanup previous audioplayer elements when stopping sounds @created(Fri 03/06/2020 - 02:30 PM) @done(Fri 03/06/2020 - 02:30 PM)
+  ✔ Fix issue where bot thinks an incorrect command is used and plays a sound effect to indicate it @done(20-02-22 23:26)
