@@ -4,9 +4,9 @@ import { log } from './log';
 import * as config from './config';
 import EffectsManager from './effects-manager';
 import { TwitchChat } from './twitch-chat';
-import { alertsManager as alertsConstants } from './constants';
+import { alertsListener as alertsConstants } from './constants';
 
-export class AlertsManager {
+export class AlertsListener {
   public socket!: SocketIOClient.Socket;
 
   constructor(

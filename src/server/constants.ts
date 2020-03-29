@@ -1,4 +1,4 @@
-export const alertsManager = {
+export const alertsListener = {
   authenticateMethod: 'jwt',
   connectionType: 'websocket',
   eventTypes: {

@@ -1,6 +1,6 @@
 import { AppServer } from './server';
 import { TwitchChat } from './twitch-chat';
-import { AlertsManager } from './alerts-manager';
+import { AlertsListener } from './alerts-listener';
 import * as config from './config';
 import { log, setHook } from './log';
 import { index as indexConstants } from './constants';
@@ -22,7 +22,7 @@ setHook(message => {
 const twitchChat = new TwitchChat(appServer.effectsManager);
 twitchChat.connect();
 
-const alertManager = new AlertsManager(
+const alertManager = new AlertsListener(
   config.streamElementsJwt,
   appServer.effectsManager,
   twitchChat
