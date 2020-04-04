@@ -131,6 +131,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "wwsean08",
+      "name": "Sean Smith",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/839261?v=4",
+      "profile": "https://wwsean08.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
