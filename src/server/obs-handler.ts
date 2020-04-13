@@ -47,7 +47,7 @@ export class SceneEffectSource {
 /**
  * A class to control initializing a websocket connection to the plugin within OBS as well as managing any effects to be applied within it.
  */
-export default class ObsManager {
+export default class ObsHandler {
   public sceneList: any;
   public sceneEffects: SceneEffect[] = new Array<SceneEffect>();
   private obs: ObsWebSocket;

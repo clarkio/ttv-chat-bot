@@ -3,7 +3,7 @@ import * as config from './config';
 import { effectsManager as constants, StopCommands } from './constants';
 import { readEffects } from './file-manager';
 import { log } from './log';
-import ObsManager, { SceneEffect } from './obs-manager';
+import ObsHandler, { SceneEffect } from './obs-handler';
 import OverlayManager from './overlay';
 import { AppServer } from './server';
 import SoundFxManager, { SoundFxFile } from './sound-fx';
@@ -18,7 +18,7 @@ export default class EffectsManager {
   private permittedScenesForCommand: any | undefined;
   private sceneAliases: any | undefined;
   private soundFxManager!: SoundFxManager;
-  private obsManager!: ObsManager;
+  private obsManager!: ObsHandler;
   private overlayManager!: OverlayManager;
   private joinSoundEffects: any[] | undefined;
   private playedUserJoinSounds: string[] = [];
@@ -291,7 +291,7 @@ export default class EffectsManager {
    */
   private initEffectControllers = (): void => {
     // All effects will have been read from the file system at this point
-    this.obsManager = new ObsManager(
+    this.obsManager = new ObsHandler(
       this.sceneEffects,
       this.permittedScenesForCommand,
       this.sceneAliases

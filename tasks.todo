@@ -8,6 +8,9 @@
 ☐ [15:23] Junicus: could you set a fs.watch to reload it if changed? @created(Fri 03/27/2020 - 03:29 PM)
 
 
+☐ [21:44] HobartJenkins: are you usin dependency injection there? Could split up lot of big classes. @created(Sat 03/28/2020 - 09:45 PM)
+  [21:46] HobartJenkins: Good framework to use: inversify. Super dynamic and could solve your problem with the effectsmanager using @multiInject
+
 ☐ [15:16] Brookzerker: What do you think about creating a simple queue that takes an array of effects, which will then loop over and play them one after the other? That way you can create chains of effects pretty easily @created(Fri 03/27/2020 - 03:37 PM)
 
 ☐ Need to do this too ==> [20:11] nallaj: @Clarkio I mean my sound only applied when I sent a message @created(Sat 03/28/2020 - 08:12 PM)
