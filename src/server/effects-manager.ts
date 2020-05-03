@@ -1,7 +1,7 @@
 import { AzureBot } from './azure-bot';
 import * as config from './config';
 import { effectsManager as constants, StopCommands } from './constants';
-import { readEffects } from './file-manager';
+import { readEffects } from './file-handler';
 import { log } from './log';
 import ObsHandler, { SceneEffect } from './obs-handler';
 import OverlayManager from './overlay';

@@ -1,6 +1,6 @@
 import { resolve as resolvePath } from 'path';
 import { soundEffects as constants } from './constants';
-import { getSoundEffectsFiles } from './file-manager';
+import { getSoundEffectsFiles } from './file-handler';
 import { log } from './log';
 
 // tslint:disable: no-var-requires
