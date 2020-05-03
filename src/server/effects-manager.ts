@@ -4,7 +4,7 @@ import { effectsManager as constants, StopCommands } from './constants';
 import { readEffects } from './file-handler';
 import { log } from './log';
 import ObsHandler, { SceneEffect } from './obs-handler';
-import OverlayManager from './overlay';
+import Overlay from './overlay';
 import { AppServer } from './server';
 import SoundFxManager, { SoundFxFile } from './sound-fx';
 
@@ -18,8 +18,8 @@ export default class EffectsManager {
   private permittedScenesForCommand: any | undefined;
   private sceneAliases: any | undefined;
   private soundFxManager!: SoundFxManager;
-  private obsManager!: ObsHandler;
-  private overlayManager!: OverlayManager;
+  private obsHandler!: ObsHandler;
+  private overlay!: Overlay;
   private joinSoundEffects: any[] | undefined;
   private playedUserJoinSounds: string[] = [];
 
@@ -32,7 +32,7 @@ export default class EffectsManager {
   public activateJoinEffectIfFound(username: string) {
     const userEffect =
       this.joinSoundEffects &&
-      this.joinSoundEffects.find(joinEffect => joinEffect[username]);
+      this.joinSoundEffects.find((joinEffect) => joinEffect[username]);
 
     if (
       userEffect &&
@@ -56,7 +56,7 @@ export default class EffectsManager {
    * @param commandMessage the text command received from chat that should be used to update the overlay for effects
    */
   public updateOverlay(commandMessage: string) {
-    this.overlayManager.updateOverlay(commandMessage);
+    this.overlay.updateOverlay(commandMessage);
   }
 
   /**
@@ -64,14 +64,14 @@ export default class EffectsManager {
    * @param colors an array of strings describing the written names of colors to use for the triggered effect
    */
   public triggerSpecialEffect(colors: string[]) {
-    return this.overlayManager.triggerSpecialEffect(colors);
+    return this.overlay.triggerSpecialEffect(colors);
   }
 
   /**
    * Gets the current color being used in the overlay for the active scene
    */
   public getCurrentOverlayColor(): string {
-    return this.overlayManager.getCurrentColor();
+    return this.overlay.getCurrentColor();
   }
 
   /**
@@ -121,7 +121,7 @@ export default class EffectsManager {
           break;
       }
 
-      this.obsManager.deactivateAllSceneEffects();
+      this.obsHandler.deactivateAllSceneEffects();
     }
 
     // Is it a sound effect command?
@@ -153,23 +153,23 @@ export default class EffectsManager {
 
     // Is it a scene effect command?
     if (
-      (await this.obsManager.isSceneEffect(message)) &&
+      (await this.obsHandler.isSceneEffect(message)) &&
       config.isSceneFxEnabled
     ) {
       // TODO: add to effects queue instead
-      const sceneEffect = await this.obsManager.determineSceneEffect(message);
-      this.obsManager.applySceneEffect(sceneEffect);
+      const sceneEffect = await this.obsHandler.determineSceneEffect(message);
+      this.obsHandler.applySceneEffect(sceneEffect);
       setTimeout(() => {
-        this.obsManager.deactivateSceneEffect(sceneEffect);
+        this.obsHandler.deactivateSceneEffect(sceneEffect);
       }, sceneEffect.duration || 15000);
     }
 
     // Is it a scene control command?
     if (
-      (await this.obsManager.isSceneCommand(message)) &&
+      (await this.obsHandler.isSceneCommand(message)) &&
       config.isSceneFxEnabled
     ) {
-      this.obsManager.executeSceneCommand(message);
+      this.obsHandler.executeSceneCommand(message);
     }
 
     // This return is a last resort
@@ -232,7 +232,7 @@ export default class EffectsManager {
   ): Promise<string | undefined> {
     if (soundEffect) {
       if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
-        const sceneEffect = await this.obsManager.determineSceneEffectByName(
+        const sceneEffect = await this.obsHandler.determineSceneEffectByName(
           soundEffect.setting.sceneEffectName
         );
         if (sceneEffect) {
@@ -251,7 +251,7 @@ export default class EffectsManager {
 
     if (soundEffect) {
       if (soundEffect.setting && soundEffect.setting.sceneEffectName) {
-        const sceneEffect = await this.obsManager.determineSceneEffectByName(
+        const sceneEffect = await this.obsHandler.determineSceneEffectByName(
           soundEffect.setting.sceneEffectName
         );
         if (sceneEffect) {
@@ -270,7 +270,7 @@ export default class EffectsManager {
     sceneEffect: SceneEffect,
     soundEffect: SoundFxFile
   ) {
-    this.obsManager.activateSceneEffect(sceneEffect);
+    this.obsHandler.activateSceneEffect(sceneEffect);
     // automatically deactivate the scene effect based on the duration of the corresponding sound effect that triggered it
     const duration = sceneEffect.duration || soundEffect.duration * 1000;
     if (!duration || duration < 400) {
@@ -282,7 +282,7 @@ export default class EffectsManager {
     }
 
     setTimeout(() => {
-      this.obsManager.deactivateSceneEffect(sceneEffect);
+      this.obsHandler.deactivateSceneEffect(sceneEffect);
     }, duration);
   }
 
@@ -291,14 +291,12 @@ export default class EffectsManager {
    */
   private initEffectControllers = (): void => {
     // All effects will have been read from the file system at this point
-    this.obsManager = new ObsHandler(
+    this.obsHandler = new ObsHandler(
       this.sceneEffects,
       this.permittedScenesForCommand,
       this.sceneAliases
     );
     this.soundFxManager = new SoundFxManager(this.soundEffects);
-    this.overlayManager = new OverlayManager(
-      this.appServer.io
-    );
+    this.overlay = new Overlay(this.appServer.io);
   };
 }

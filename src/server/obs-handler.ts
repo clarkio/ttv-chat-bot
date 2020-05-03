@@ -1,6 +1,6 @@
 import ObsWebSocket from 'obs-websocket-js';
 import * as config from './config';
-import { obsManager as constants } from './constants';
+import { obsHandler as constants } from './constants';
 import { log } from './log';
 
 enum ObsRequests {
