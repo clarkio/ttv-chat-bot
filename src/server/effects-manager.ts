@@ -32,7 +32,7 @@ export default class EffectsManager {
   public activateJoinEffectIfFound(username: string) {
     const userEffect =
       this.joinSoundEffects &&
-      this.joinSoundEffects.find((joinEffect) => joinEffect[username]);
+      this.joinSoundEffects.find(joinEffect => joinEffect[username]);
 
     if (
       userEffect &&
