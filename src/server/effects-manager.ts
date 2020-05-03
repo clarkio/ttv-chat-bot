@@ -298,7 +298,6 @@ export default class EffectsManager {
     );
     this.soundFxManager = new SoundFxManager(this.soundEffects);
     this.overlayManager = new OverlayManager(
-      this.soundFxManager,
       this.appServer.io
     );
   };

@@ -119,6 +119,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Wingysam"><img src="https://avatars3.githubusercontent.com/u/18403742?v=4" width="100px;" alt=""/><br /><sub><b>Wingysam</b></sub></a><br /><a href="#ideas-Wingysam" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/LuckyNoS7evin"><img src="https://avatars2.githubusercontent.com/u/30657709?v=4" width="100px;" alt=""/><br /><sub><b>LuckyNoS7evin</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=LuckyNoS7evin" title="Code">💻</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://wwsean08.com"><img src="https://avatars1.githubusercontent.com/u/839261?v=4" width="100px;" alt=""/><br /><sub><b>Sean Smith</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=wwsean08" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-enable -->

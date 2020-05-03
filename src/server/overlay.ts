@@ -1,11 +1,10 @@
-import SoundFxManager from './sound-fx';
 import { overlay as constants } from './constants';
 
 export default class OverlayManager {
   public static readonly PORT: number = constants.defaultPort;
   public currentBulbColor: string = constants.defaultColor;
 
-  constructor(private soundFx: SoundFxManager, private io: SocketIO.Server) {}
+  constructor(private io: SocketIO.Server) { }
 
   /**
    * @returns The current Bulb Color
@@ -20,11 +19,7 @@ export default class OverlayManager {
   public triggerSpecialEffect = (colors: string[]): void => {
     if (colors) {
       this.io.emit(constants.colorEffectEvent, colors);
-      if (colors[0].includes(constants.copColorName)) {
-        this.soundFx.playSoundEffect(
-          `${this.soundFx.SOUND_FX_DIRECTORY}/${constants.minionSoundEffectFileName}`
-        );
-      }
+      this.io.emit(constants.playAudioEvent, constants.minionSoundEffectFileName);
     }
   };
 

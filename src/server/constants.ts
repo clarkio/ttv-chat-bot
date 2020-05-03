@@ -52,7 +52,8 @@ export const overlay = {
   copColorName: 'cop',
   defaultColor: 'deepskyblue', // [13:09] blendedsoftware: !bulb #54CAFF to match bulb and overlay
   defaultPort: 1337,
-  minionSoundEffectFileName: 'beedoo.mp3'
+  minionSoundEffectFileName: 'beedoo.mp3',
+  playAudioEvent: 'play-audio'
 };
 
 export enum StopCommands {

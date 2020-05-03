@@ -21,8 +21,6 @@
   "author": "Brian Clark",
   "license": "MIT",
   "dependencies": {
-    "audio-loader": "^1.0.3",
-    "audio-play": "^2.2.1",
     "bindings": "^1.4.0",
     "body-parser": "^1.18.3",
     "discord.js": "^11.3.2",
@@ -33,7 +31,6 @@
     "isomorphic-fetch": "^2.2.1",
     "mp3-duration": "^1.1.0",
     "obs-websocket-js": "^2.0.1",
-    "play-sound": "^1.1.3",
     "pug": "^2.0.3",
     "request-promise-native": "^1.0.5",
     "socket.io": "^2.1.0",
