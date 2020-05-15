@@ -1,14 +1,9 @@
 const captains = console;
 const STORE_OVERLAY_COLOR_NAME = 'streamOverlayColor';
-const beeDooAudio = new Audio('/assets/sounds/beedoo.mp3');
 
 socket.on('color-effect', (effectColors: string[]) => {
   startOverlayEffect(effectColors);
 });
-
-function triggerCopModeEffect() {
-  startCopModeAudio();
-}
 
 function startOverlayEffect(colors: string[]) {
   const originalColor = String(localStorage.getItem(STORE_OVERLAY_COLOR_NAME));
@@ -26,18 +21,6 @@ function startOverlayEffect(colors: string[]) {
       effectColor = colors[colorIndex];
     }
   }, 1000);
-}
-
-function startCopModeAudio() {
-  const minionDiv = $('#minion-bee-doo');
-  minionDiv.toggleClass('copmode');
-  beeDooAudio.loop = true;
-  beeDooAudio.play();
-
-  window.setTimeout(() => {
-    minionDiv.toggleClass('copmode');
-    beeDooAudio.pause();
-  }, 10000);
 }
 
 socket.on('color-change', (color: string) => {
