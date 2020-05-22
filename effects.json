@@ -118,7 +118,7 @@
   ],
   "sceneEffects": [
     {
-      "name": "pbjtime-banana-dance",
+      "name": "pbj1time-banana-dance",
       "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
@@ -234,7 +234,7 @@
       "duration": 10000
     },
     {
-      "name": "pinkfluffyunicorns-dance",
+      "name": "pink1fluffyunicorns-dance",
       "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
@@ -333,7 +333,7 @@
       ]
     },
     {
-      "name": "who-cares",
+      "name": "wh1o-cares",
       "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [
@@ -365,7 +365,7 @@
       ]
     },
     {
-      "name": "themoreyouknow",
+      "name": "the1moreyouknow",
       "scenes": ["*"],
       "effectType": "SetSceneItemProperties",
       "sources": [

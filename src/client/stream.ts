@@ -2,7 +2,7 @@ const captains = console;
 const STORE_OVERLAY_COLOR_NAME = 'streamOverlayColor';
 
 socket.on('color-effect', (effectColors: string[]) => {
-  startOverlayEffect(effectColors);
+  // startOverlayEffect(effectColors);
 });
 
 function startOverlayEffect(colors: string[]) {
