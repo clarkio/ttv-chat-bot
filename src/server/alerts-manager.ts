@@ -59,17 +59,18 @@ export class AlertsManager {
     const alert = this.effectsManager.determineAlertEffect(event.type);
     if (alert) {
       this.startAlertEffect(alert, event.data.username);
-      if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.raid) {
-        // this.effectsManager.checkForCommand('sandstorm');
-      }
     } else {
       log('info', alertsConstants.unhandledAlertTypeLog + event.type);
     }
     if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.follow) {
-      this.twitchChat.sendChatMessage(`!followthx ${event.data.username}`);
+      this.twitchChat.sendChatMessage(
+        `Thanks for the follow ${event.data.username}! Here's a quick welcome message for you :) https://clips.twitch.tv/SillyElatedClipsmomSeemsGood `
+      );
     }
     if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.raid) {
-      this.twitchChat.sendChatMessage('!new');
+      this.twitchChat.sendChatMessage(
+        "Welcome to the channel raiders! Check out this clip for some background on what you'll see here 👇  https://clips.twitch.tv/SmokyFlirtyStarRiPepperonis"
+      );
     }
   };
 
@@ -80,7 +81,7 @@ export class AlertsManager {
    * @param userName user triggered the alert
    */
   private startAlertEffect = (alertEffect: any, userName: string) => {
-    this.effectsManager.triggerSpecialEffect(alertEffect.colors);
+    // this.effectsManager.triggerSpecialEffect(alertEffect.colors);
     this.effectsManager.triggerAzureBotEffect(alertEffect, userName);
   };
 }
