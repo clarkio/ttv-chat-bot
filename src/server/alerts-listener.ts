@@ -1,11 +1,11 @@
 import io from 'socket.io-client';
 import * as config from './config';
-import { alertsManager as alertsConstants } from './constants';
+import { alertsListener as alertsConstants } from './constants';
 import EffectsManager from './effects-manager';
 import { log } from './log';
 import { TwitchChat } from './twitch-chat';
 
-export class AlertsManager {
+export class AlertsListener {
   public socket!: SocketIOClient.Socket;
 
   constructor(

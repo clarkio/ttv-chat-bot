@@ -1,9 +1,9 @@
+import { AlertsListener } from './alerts-listener';
+import * as config from './config';
+import { index as indexConstants } from './constants';
+import { log, setHook } from './log';
 import { AppServer } from './server';
 import { TwitchChat } from './twitch-chat';
-import { AlertsManager } from './alerts-manager';
-import * as config from './config';
-import { log, setHook } from './log';
-import { index as indexConstants } from './constants';
 
 if (!config.hasLoadedConfigJSON) {
   log('log', indexConstants.logs.configFileReadWarningMessage);
@@ -22,11 +22,12 @@ setHook(message => {
 const twitchChat = new TwitchChat(appServer.effectsManager);
 twitchChat.connect();
 
-const alertManager = new AlertsManager(
+const alertsListener = new AlertsListener(
   config.streamElementsJwt,
   appServer.effectsManager,
   twitchChat
 );
-alertManager.listenToEvents();
+alertsListener.listenToEvents();
 
 export { appServer };
+

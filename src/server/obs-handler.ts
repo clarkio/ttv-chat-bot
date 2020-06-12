@@ -1,6 +1,6 @@
 import ObsWebSocket from 'obs-websocket-js';
 import * as config from './config';
-import { obsManager as constants } from './constants';
+import { obsHandler as constants } from './constants';
 import { log } from './log';
 
 enum ObsRequests {
@@ -47,7 +47,7 @@ export class SceneEffectSource {
 /**
  * A class to control initializing a websocket connection to the plugin within OBS as well as managing any effects to be applied within it.
  */
-export default class ObsManager {
+export default class ObsHandler {
   public sceneList: any;
   public sceneEffects: SceneEffect[] = new Array<SceneEffect>();
   private obs: ObsWebSocket;
