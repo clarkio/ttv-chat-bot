@@ -1,6 +1,6 @@
 import { overlay as constants } from './constants';
 
-export default class OverlayManager {
+export default class Overlay {
   public static readonly PORT: number = constants.defaultPort;
   public currentBulbColor: string = constants.defaultColor;
 
