@@ -2,7 +2,7 @@
   "specialEffects": {
     "cop mode": {
       "type": "pulse",
-      "colors": ["cop-red", "cop-blue"]
+      "colors": ["red", "blue"]
     },
     "party mode": {
       "type": "pulse",

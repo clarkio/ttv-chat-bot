@@ -6,13 +6,14 @@ socket.on('color-effect', (effectColors: string[]) => {
 });
 
 function startOverlayEffect(colors: string[]) {
+  // TODO: as suggested by codinggarden avoid having to setintervals running in the background by implementing a queue and setTimeout to check if there is anything in the queue to trigger
   const originalColor = String(localStorage.getItem(STORE_OVERLAY_COLOR_NAME));
   let counter = 0;
   let colorIndex = 0;
   let effectColor = colors[colorIndex];
   const overlayEffectInterval = setInterval(() => {
     counter += 1;
-    if (counter === 10) {
+    if (counter >= 10) {
       setOverlayColor(originalColor);
       clearInterval(overlayEffectInterval);
     } else {
@@ -20,7 +21,7 @@ function startOverlayEffect(colors: string[]) {
       colorIndex = colorIndex === colors.length - 1 ? 0 : ++colorIndex;
       effectColor = colors[colorIndex];
     }
-  }, 1000);
+  }, 2000);
 }
 
 socket.on('color-change', (color: string) => {
