@@ -19,10 +19,6 @@ export default class Overlay {
   public triggerSpecialEffect = (colors: string[]): void => {
     if (colors) {
       this.io.emit(constants.colorEffectEvent, colors);
-      this.io.emit(
-        constants.playAudioEvent,
-        constants.minionSoundEffectFileName
-      );
     }
   };
 

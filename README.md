@@ -5,6 +5,8 @@ Twitch TV chat reader to change the color of overlays loaded from streamelements
 
 > Join Clarkio live on Wednesdays at 10 AM ET and Fridays at 12:30 PM ET for the coding streams. https://twitch.tv/clarkio
 
+This is working!
+
 ## Getting Started
 
 1. Clone with: `git clone git@github.com:clarkio/ttv-chat-bot.git`
