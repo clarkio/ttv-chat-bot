@@ -1,10 +1,9 @@
 import io from 'socket.io-client';
-
-import { log } from './log';
 import * as config from './config';
-import EffectsManager from './effects-manager';
-import { TwitchChat } from './twitch-chat';
 import { alertsManager as alertsConstants } from './constants';
+import EffectsManager from './effects-manager';
+import { log } from './log';
+import { TwitchChat } from './twitch-chat';
 
 export class AlertsManager {
   public socket!: SocketIOClient.Socket;
@@ -15,7 +14,7 @@ export class AlertsManager {
     private twitchChat: TwitchChat
   ) {
     this.socket = io(config.streamElementsWebsocketsUrl, {
-      transports: [alertsConstants.connectionType]
+      transports: [alertsConstants.connectionType],
     });
   }
 
@@ -37,7 +36,7 @@ export class AlertsManager {
 
     this.socket.emit('authenticate', {
       method: alertsConstants.authenticateMethod,
-      token: this.accessToken
+      token: this.accessToken,
     });
   };
 
@@ -60,9 +59,6 @@ export class AlertsManager {
     const alert = this.effectsManager.determineAlertEffect(event.type);
     if (alert) {
       this.startAlertEffect(alert, event.data.username);
-      if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.raid) {
-        this.effectsManager.checkForCommand('sandstorm');
-      }
     } else {
       log('info', alertsConstants.unhandledAlertTypeLog + event.type);
     }
