@@ -1,13 +1,10 @@
 
 
-☐ Refactor Manager file names: [13:27] roberttables: @Clarkio You know MPJ will harp on you for using "manager" in your names Kappa @created(Sat 03/21/2020 - 08:27 PM)
-
 ☐ look into how to have a common constants file across two TS projects (client/server)?
 
 ☐ via Piq9117's suggestion: add ability to update title when Chair takes over the stream @created(Sat 03/21/2020 - 08:32 PM)
 
-☐ [15:23] Junicus: could you set a fs.watch to reload it if changed? @created(Fri 03/27/2020 - 03:29 PM)
-
+☐ [15:23] Junicus: could you set a fs.watch to reload it if [the config] changed? @created(Fri 03/27/2020 - 03:29 PM)
 
 ☐ [15:16] Brookzerker: What do you think about creating a simple queue that takes an array of effects, which will then loop over and play them one after the other? That way you can create chains of effects pretty easily @created(Fri 03/27/2020 - 03:37 PM)
 
@@ -16,10 +13,6 @@
 ☐ Add this sound effect plz [20:33] FBoucheros: !begoodbrian @created(Sat 03/28/2020 - 08:34 PM)
 
 ☐ [20:50] roberttables: A Dr Phil scene would be great. "I want you to get excited about your programming language! And stop stealing money from. your mother-in-law to buy meth" @created(Sat 03/28/2020 - 08:52 PM)
-
-check out GitHub app and Brandon Minnick's GitTrends app
-
-fix latest alert in main scene on streamelements
 
 ☐ !mute command that lets chat mute the music while I'm lip syncing and dancing @created(Fri 02/28/2020 - 02:35 PM)
     - potentially lowering/muting the background music (pretzel.rocks)
@@ -38,7 +31,6 @@ fix latest alert in main scene on streamelements
 - Allow !mark to update part of the stream title (e.g. BuildUpDevs - <mark message>)
   - make sure to only allow mods or people with permission to do that though
 
-
 *** Make the bot more platform agnostic ***
 - Something that will actively listen for channel events in a stream.
   Figure out all the alerts/events per platform to see where there are overlaps that can be included in a core package
@@ -46,7 +38,6 @@ fix latest alert in main scene on streamelements
     - Mixer: Follows, Subscriptsion, Embers, Sparks
     - YouTube:
     - Facebook:
-
 
   - As of 20-02-21 we have things mostly working. We need to figure out a way to get the timing of the visual effects to align with the sound effects now that we're queuing the sound effects and they won't necessarily play immediately when the command is received.
       - Effect queue objects:
@@ -90,6 +81,7 @@ maybe !sfx <filename>?
 3. Apply input/data to command (execute the command using the input provide from the chat message)
 
 Archive:
+  ✔ Refactor Manager file names: [13:27] roberttables: @Clarkio You know MPJ will harp on you for using "manager" in your names Kappa @created(Sat 03/21/2020 - 08:27 PM) @done(Fri 06/12/2020 - 02:11 PM)
   ✔ Finish implementation of the warning that the highfive animation is coming @created(Sat 03/28/2020 - 07:17 PM) @done(Sat 03/28/2020 - 09:12 PM)
   ✔ play a toilet flushing sound first when !flush is used to stop all audio (as suggested by ToeFrog) @created(Sat 03/21/2020 - 08:12 PM) @done(Sat 03/21/2020 - 08:12 PM)
   ✔ Figure out the bug for the overlay getting stuck on a color after an alert is triggered @done(Sat 01/11/2020 - 05:07 PM)
