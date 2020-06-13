@@ -4,7 +4,7 @@ import {
   ttvChannels,
   ttvClientId,
   ttvClientToken,
-  ttvClientUsername
+  ttvClientUsername,
 } from './config';
 import { twitchChat as constants } from './constants';
 import EffectsManager from './effects-manager';
@@ -17,7 +17,7 @@ export class TwitchChat {
   private clientUsername: string = ttvClientUsername.toString();
   private moderators: string[] = [this.clientUsername];
   private lightControlCommands: string[] = [
-    constants.defaultLightControlCommand
+    constants.defaultLightControlCommand,
   ];
   private isChatClientEnabled: boolean = true;
 
@@ -38,7 +38,7 @@ export class TwitchChat {
       .then(() => {
         log('info', constants.logs.twitchConnectionSuccessMessage);
       })
-      .catch(error => {
+      .catch((error) => {
         log('error', constants.logs.twitchConnectionFailMessage);
         log('error', error);
       });
@@ -69,16 +69,16 @@ export class TwitchChat {
       channels,
       connection: {
         reconnect: true,
-        secure: false
+        secure: false,
       },
       identity: {
         password: ttvClientToken,
-        username: this.clientUsername
+        username: this.clientUsername,
       },
       options: {
         clientId: ttvClientId,
-        debug: true
-      }
+        debug: true,
+      },
     };
   };
 
@@ -154,7 +154,7 @@ export class TwitchChat {
     }
 
     if (this.isChatClientEnabled) {
-      this.parseChat(lowerCaseMessage, user.username);
+      this.parseChat(lowerCaseMessage, user);
     } else {
       log('info', constants.logs.ignoredCommandMessage);
       this.sendChatMessage('Bot is not enabled');
@@ -187,7 +187,13 @@ export class TwitchChat {
    * @param message the message sent by a user
    * @param userName the user who sent the message
    */
-  private parseChat = (message: string, userName: string) => {
+  private parseChat = (message: string, user: TwitchUser) => {
+    const userName = user.username;
+    if (message.startsWith('!tts')) {
+      const textToSpeak = message.slice('!tts'.length);
+      this.effectsManager.appServer.io.emit('tts', textToSpeak);
+    }
+
     if (this.isLightControlCommand(message)) {
       // viewer attempting to control the overlay/lights
       const commandMessage = message.slice(this.lightCommandUsed.length).trim();
@@ -243,7 +249,7 @@ export class TwitchChat {
     if (this.effectsManager.azureBot) {
       return this.effectsManager.azureBot
         .triggerEffect(specialEffect, userName)
-        .then(result => {
+        .then((result) => {
           setTimeout(
             this.checkForBotResponse,
             config.azureBotResponseCheckDelay
@@ -292,7 +298,7 @@ export class TwitchChat {
         log('info', `Bot response: ${lastMessage}`);
         this.ttvChatClient.say('clarkio', lastMessage);
       })
-      .catch(error => log('error', error));
+      .catch((error) => log('error', error));
   };
   /**
    * USER OUR BOT TO SEE OTHER BOTS
