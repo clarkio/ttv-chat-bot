@@ -23,7 +23,7 @@ export default class EffectsManager {
   private joinSoundEffects: any[] | undefined;
   private playedUserJoinSounds: string[] = [];
 
-  constructor(private appServer: AppServer) {
+  constructor(public appServer: AppServer) {
     this.loadEffects().then(this.initEffectControllers);
     this.startAzureBot();
     this.playedUserJoinSounds = [];
@@ -32,7 +32,7 @@ export default class EffectsManager {
   public activateJoinEffectIfFound(username: string) {
     const userEffect =
       this.joinSoundEffects &&
-      this.joinSoundEffects.find(joinEffect => joinEffect[username]);
+      this.joinSoundEffects.find((joinEffect) => joinEffect[username]);
 
     if (
       userEffect &&
