@@ -154,7 +154,7 @@ export class TwitchChat {
     }
 
     if (this.isChatClientEnabled) {
-      this.parseChat(lowerCaseMessage, user);
+      this.parseChat(lowerCaseMessage, user, customRewardId);
     } else {
       log('info', constants.logs.ignoredCommandMessage);
       this.sendChatMessage('Bot is not enabled');
@@ -187,11 +187,24 @@ export class TwitchChat {
    * @param message the message sent by a user
    * @param userName the user who sent the message
    */
-  private parseChat = (message: string, user: TwitchUser) => {
+  private parseChat = (
+    message: string,
+    user: TwitchUser,
+    customRewardId: string
+  ) => {
     const userName = user.username;
-    if (message.startsWith('!tts')) {
-      const textToSpeak = message.slice('!tts'.length);
-      this.effectsManager.appServer.io.emit('tts', textToSpeak);
+    if (
+      customRewardId &&
+      customRewardId === '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb'
+    ) {
+      const ttsMessage = this.isTrustedUser(user)
+        ? `${userName} says ${message}`
+        : message;
+      this.effectsManager.appServer.io.emit('tts', ttsMessage);
+    }
+
+    if ((user.isBroadcaster || user.isMod) && message.startsWith('!skip')) {
+      this.effectsManager.appServer.io.emit('tts-skip');
     }
 
     if (this.isLightControlCommand(message)) {
@@ -220,6 +233,10 @@ export class TwitchChat {
 
     return Promise.resolve(constants.logs.nothingToParseMessage);
   };
+
+  private isTrustedUser(user: TwitchUser): boolean {
+    return user.isBroadcaster || user.isMod || user.isSubscriber || user.isVIP;
+  }
 
   /**
    * Checks if the chat message received is intended for other commands by validating the command prefix character is present (such as '!')
