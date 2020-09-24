@@ -77,7 +77,7 @@ export class AlertsListener {
    * @param userName user triggered the alert
    */
   private startAlertEffect = (alertEffect: any, userName: string) => {
-    this.effectsManager.triggerSpecialEffect(alertEffect.colors);
+    // this.effectsManager.triggerSpecialEffect(alertEffect.colors);
     this.effectsManager.triggerAzureBotEffect(alertEffect, userName);
   };
 }
