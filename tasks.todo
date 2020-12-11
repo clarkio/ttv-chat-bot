@@ -1,5 +1,4 @@
 
-
 ☐ look into how to have a common constants file across two TS projects (client/server)?
 
 ☐ via Piq9117's suggestion: add ability to update title when Chair takes over the stream @created(Sat 03/21/2020 - 08:32 PM)
@@ -28,7 +27,6 @@
 - Maybe refactor to this: [13:26] nallaj: @Clarkio why not use TS enums for this?
 - Add tests (Kappa): [13:29] roberttables: Wait, do we have tests for this code @Clarkio ??
 ☐ [13:36] MusicalBookworm: for your logging - append something to the message indicating file/where the error is coming from @created(Fri 03/06/2020 - 01:38 PM)
-☐ Add some kind of indication that the !highfive is coming prior to actually showing it on screen so that you can react in time @created(Sat 03/21/2020 - 08:11 PM)
 
 // TODO for stream note taker tool
 - Allow !mark to update part of the stream title (e.g. BuildUpDevs - <mark message>)
@@ -84,6 +82,7 @@ maybe !sfx <filename>?
 3. Apply input/data to command (execute the command using the input provide from the chat message)
 
 Archive:
+  ✔ Add some kind of indication that the !highfive is coming prior to actually showing it on screen so that you can react in time @created(Sat 03/21/2020 - 08:11 PM) @done(Thu 11/19/2020 - 04:40 PM)
   ✔ Refactor Manager file names: [13:27] roberttables: @Clarkio You know MPJ will harp on you for using "manager" in your names Kappa @created(Sat 03/21/2020 - 08:27 PM) @done(Fri 06/12/2020 - 02:11 PM)
   ✔ Finish implementation of the warning that the highfive animation is coming @created(Sat 03/28/2020 - 07:17 PM) @done(Sat 03/28/2020 - 09:12 PM)
   ✔ play a toilet flushing sound first when !flush is used to stop all audio (as suggested by ToeFrog) @created(Sat 03/21/2020 - 08:12 PM) @done(Sat 03/21/2020 - 08:12 PM)
