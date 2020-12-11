@@ -11,6 +11,7 @@ import { log } from './log';
 import { lightsRouter } from './routes/lights';
 import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
+import { tokensRoute } from './routes/tokens';
 import EffectsManager from './effects-manager';
 
 /**
@@ -81,7 +82,7 @@ export class AppServer {
     const { changeLightColor, sendLightEffect } = lightsRouter(this);
 
     router.get('/scenes', scenesRoute);
-
+    router.get('/tokens', tokensRoute);
     router.post('/save', saveCssRoute);
 
     router.get('/overlay-colors', (req, res) => {
