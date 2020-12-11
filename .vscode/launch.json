@@ -36,7 +36,7 @@
     },
     {
       "name": "Client Debug",
-      "type": "chrome",
+      "type": "edge",
       "request": "launch",
       "url": "http://localhost:1338/scenes?sceneName=alerts",
       "webRoot": "${workspaceFolder}/dist/client",
