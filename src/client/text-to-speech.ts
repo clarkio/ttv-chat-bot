@@ -1,10 +1,7 @@
-// const synth = window.speechSynthesis;
-// const utterance = new SpeechSynthesisUtterance();
-
 // @ts-ignore
 
-// tslint:disable-next-line
 const SpeechSDK = window.SpeechSDK;
+import { SpeechSynthesisResult } from 'microsoft-cognitiveservices-speech-sdk';
 SpeechSDK.Recognizer.enableTelemetry(false);
 let speechConfig: any;
 let synthesizer: any;
@@ -48,31 +45,42 @@ function startUtterance() {
 
 function speak() {
   if (speechQueue.length > 0 && !isSpeaking) {
-    let speechConfig = SpeechSDK.SpeechConfig.fromSubscription(azureSpeechToken, "westus2");
     startUtterance();
+    let speechConfig = SpeechSDK.SpeechConfig.fromSubscription(azureSpeechToken, "westus2");
     speechConfig.speechSynthesisVoiceName = 'en-IE-EmilyNeural';
     synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig);
-    synthesizer.speakTextAsync(
-        speechQueue.shift() as string,
-        (result:any) => {
-            if (result) {
-                console.log(JSON.stringify(result));
-            }
-            synthesizer.close();
-            synthesizer = undefined;
-        },
-        (error:any) => {
-            console.error(error);
-            synthesizer.close();
-            synthesizer = undefined;
-        });
+    const textToSpeak = speechQueue.shift() as String;
+    synthesizer.speakTextAsync(textToSpeak, synthesizerCompleted.bind(null, textToSpeak) as any, synthesizerFailed);
   }
+}
+
+function synthesizerCompleted (textToSpeak: String, result: SpeechSynthesisResult) {
+  let logMessage = 'Speaking has completed: '
+  if (result.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
+    logMessage += "synthesis finished for [" + textToSpeak + "].\n";
+    resetSpeaking();
+  } else if (result.reason === SpeechSDK.ResultReason.Canceled) {
+    logMessage += "synthesis failed. Error detail: " + result.errorDetails + "\n";
+    resetSpeaking();
+  }
+  console.log(logMessage);
+}
+
+function synthesizerFailed (error: any) {
+  console.error(error);
+  resetSpeaking();
 }
 
 function stopSpeaking() {
   synthesizer.close();
   synthesizer = undefined;
   isSpeaking = false;
+}
+
+function resetSpeaking() {
+  synthesizer.close();
+  synthesizer = undefined;
+  finishUtterance();
 }
 
 function request(requestOptions: any) {

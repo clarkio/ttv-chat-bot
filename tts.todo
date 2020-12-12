@@ -1,0 +1,10 @@
+text-to-speech todo
+
+☐ fix queue to only play one tts at a time @created(Fri 12/11/2020 - 10:35 PM)
+☐ figure out a way to stop/skip a tts @created(Fri 12/11/2020 - 10:35 PM)
+
+Note:
+synthesizerCompleted may actually just mean completed processing the text but not completed playing the audio from the result of it
+
+  look into IPlayer
+  https://docs.microsoft.com/en-us/javascript/api/microsoft-cognitiveservices-speech-sdk/iplayer?view=azure-node-latest#onAudioEnd
