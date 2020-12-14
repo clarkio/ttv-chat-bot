@@ -3,6 +3,10 @@ text-to-speech todo
 ☐ fix queue to only play one tts at a time @created(Fri 12/11/2020 - 10:35 PM)
 ☐ figure out a way to stop/skip a tts @created(Fri 12/11/2020 - 10:35 PM)
 
+- Note: as of 12/13/2020 figured out how to get the audio to work via the text-to-speech REST API in Azure
+  - Need to send the HTTP request with an option of 'requestType' and its value set to 'arraybuffer'
+  - Also make sure the request header for 'X-Microsoft-OutputFormat' is set to 'audio-16khz-64kbitrate-mono-mp3'
+
 Note:
 synthesizerCompleted may actually just mean completed processing the text but not completed playing the audio from the result of it
 
