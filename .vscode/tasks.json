@@ -11,6 +11,14 @@
         "$tsc-watch"
       ],
       "isBackground": true
+    },
+    {
+      "label": "compile client",
+      "type": "npm",
+      "script": "compile-client",
+      "problemMatcher": [
+        "$tsc"
+      ]
     }
   ]
 }

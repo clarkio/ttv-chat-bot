@@ -16,7 +16,8 @@
     "build": "echo build... && npm run compile",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect",
-    "compile": "tsc -p ./src/client && tsc -p ./src/server"
+    "compile": "tsc -p ./src/client && tsc -p ./src/server",
+    "compile-client": "tsc -p ./src/client"
   },
   "author": "Brian Clark",
   "license": "MIT",
@@ -29,6 +30,7 @@
     "express": "^4.16.3",
     "hoek": "^5.0.3",
     "isomorphic-fetch": "^3.0.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.14.1",
     "mp3-duration": "^1.1.0",
     "obs-websocket-js": "^2.0.1",
     "pug": "^2.0.3",
