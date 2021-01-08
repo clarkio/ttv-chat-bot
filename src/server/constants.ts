@@ -34,7 +34,7 @@ export const effectsManager = {
 export const index = {
   logs: {
     configFileReadWarningMessage:
-      'Unable to retrieve configuration from a file. Falling back to environment variables',
+      'Did not find a configuration file. Falling back to environment variables',
   },
 };
 

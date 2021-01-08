@@ -1,4 +1,5 @@
 import { ChatUserstate, Client } from 'tmi.js';
+import { inject, injectable } from 'inversify';
 import * as config from './config';
 import {
   ttvChannels,
@@ -10,8 +11,11 @@ import { twitchChat as constants } from './constants';
 import EffectsManager from './effects-manager';
 import { log } from './log';
 import TwitchUser from './twitch-user';
+import { TYPES } from './types';
+import TextToSpeech from './text-to-speech';
 
-export class TwitchChat {
+@injectable()
+export default class TwitchChat {
   public ttvChatClient: Client;
   private lightCommandUsed: string = '';
   private clientUsername: string = ttvClientUsername.toString();
@@ -21,7 +25,7 @@ export class TwitchChat {
   ];
   private isChatClientEnabled: boolean = true;
 
-  constructor(private effectsManager: EffectsManager) {
+  constructor(@inject(TYPES.EffectsManager) private effectsManager: EffectsManager, @inject(TYPES.TextToSpeech) private textToSpeech: TextToSpeech) {
     this.ttvChatClient = Client(this.setTwitchChatOptions());
     this.ttvChatClient.on('join', this.ttvJoin);
     this.ttvChatClient.on('part', this.ttvPart);
@@ -180,6 +184,14 @@ export class TwitchChat {
     return { hours, minutes };
   };
 
+  private determineCustomRewardRedemption (customRewardId: string): string {
+    let redemptionType = '';
+    if(customRewardId === '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb') {
+      redemptionType = 'tts';
+    }
+    return redemptionType;
+  }
+
   /**
    * This weeds through the trolls and deciphers if the message is something that we want to do
    * something about
@@ -194,13 +206,19 @@ export class TwitchChat {
   ) => {
     const userName = user.username;
     if (
-      customRewardId &&
-      customRewardId === '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb'
+      customRewardId
     ) {
-      const ttsMessage = this.isTrustedUser(user)
-        ? `${userName} says ${message}`
-        : message;
-      this.effectsManager.appServer.io.emit('tts', ttsMessage);
+      const redemptionType = this.determineCustomRewardRedemption(customRewardId);
+      if(redemptionType === 'tts') {
+
+        this.textToSpeech.emitTextToSpeech(user, message, this.isTrustedUser(user));
+        // TODO: move to separate class to handle this
+        // const ttsMessage = this.isTrustedUser(user)
+        //   ? `${userName} says ${message}`
+        //   : message;
+        // // determine voice to use
+        // this.effectsManager.appServer.io.emit('tts', ttsMessage);
+      }
     }
 
     if ((user.isBroadcaster || user.isMod) && message.startsWith('!skip')) {
@@ -234,7 +252,7 @@ export class TwitchChat {
     return Promise.resolve(constants.logs.nothingToParseMessage);
   };
 
-  private isTrustedUser(user: TwitchUser): boolean {
+  public isTrustedUser(user: TwitchUser): boolean {
     return user.isBroadcaster || user.isMod || user.isSubscriber || user.isVIP;
   }
 

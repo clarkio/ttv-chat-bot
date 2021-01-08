@@ -1,3 +1,4 @@
+import { inject, injectable } from 'inversify';
 import { AzureBot } from './azure-bot';
 import * as config from './config';
 import { effectsManager as constants, StopCommands } from './constants';
@@ -5,9 +6,11 @@ import { readEffects } from './file-handler';
 import { log } from './log';
 import ObsHandler, { SceneEffect } from './obs-handler';
 import Overlay from './overlay';
-import { AppServer } from './server';
+import AppServer from './server';
 import SoundFxManager, { SoundFxFile } from './sound-fx';
+import { TYPES } from './types';
 
+@injectable()
 export default class EffectsManager {
   public azureBot!: AzureBot;
   private allEffects: any | undefined;
@@ -23,7 +26,7 @@ export default class EffectsManager {
   private joinSoundEffects: any[] | undefined;
   private playedUserJoinSounds: string[] = [];
 
-  constructor(public appServer: AppServer) {
+  constructor(@inject(TYPES.AppServer) public appServer: AppServer) {
     this.loadEffects().then(this.initEffectControllers);
     this.startAzureBot();
     this.playedUserJoinSounds = [];

@@ -12,17 +12,17 @@ import { lightsRouter } from './routes/lights';
 import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
 import { tokensRoute } from './routes/tokens';
-import EffectsManager from './effects-manager';
+import { injectable } from 'inversify';
 
 /**
  * The base Express Application. This is where most of the other parts of the application
  * will live. This allows for easy enabling and disabling of features within the application
  */
-export class AppServer {
+@injectable()
+export default class AppServer {
   public app: express.Application;
   public io!: SocketIO.Server;
   public discordHook!: WebhookClient;
-  public effectsManager!: EffectsManager;
   private http!: Server;
 
   constructor() {
@@ -32,7 +32,6 @@ export class AppServer {
     this.startOverlay();
     this.defineRoutes();
     this.listen();
-    this.effectsManager = new EffectsManager(this);
   }
 
   /**
@@ -92,8 +91,10 @@ export class AppServer {
     router.get('/lights/:color', changeLightColor);
     router.get('/lights/effects/:effect', sendLightEffect);
 
+    // TODO: after refactoring for IoC and DI, make sure to restore the ability to determine the current overlay color
     router.get('/bulb/color', (req, res) => {
-      res.json({ color: this.effectsManager.getCurrentOverlayColor() });
+      // res.json({ color: this.effectsManager.getCurrentOverlayColor() });
+      res.json({ color: 'deepskyblue' });
     });
 
     this.app.use('/', router);

@@ -3,7 +3,7 @@ import * as config from './config';
 import { alertsListener as alertsConstants } from './constants';
 import EffectsManager from './effects-manager';
 import { log } from './log';
-import { TwitchChat } from './twitch-chat';
+import TwitchChat from './twitch-chat';
 
 export class AlertsListener {
   public socket!: SocketIOClient.Socket;

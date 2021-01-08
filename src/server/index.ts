@@ -2,29 +2,33 @@ import { AlertsListener } from './alerts-listener';
 import * as config from './config';
 import { index as indexConstants } from './constants';
 import { log, setHook } from './log';
-import { AppServer } from './server';
-import { TwitchChat } from './twitch-chat';
+import AppServer from './server';
+import TwitchChat from './twitch-chat';
+import { container } from './container';
+import { TYPES } from './types';
+import EffectsManager from './effects-manager';
 
 if (!config.hasLoadedConfigJSON) {
   log('log', indexConstants.logs.configFileReadWarningMessage);
 }
 
-const appServer = new AppServer();
+const appServer = container.get<AppServer>(TYPES.AppServer);
+const effectsManager = container.get<EffectsManager>(TYPES.EffectsManager);
 
 setHook(message => {
   if (config.discordHookEnabled) {
     appServer.discordHook
       .send(message)
-      .catch(error => log('error', `Discord: ${error}`));
+      .catch((error: any) => log('error', `Discord: ${error}`));
   }
 });
 
-const twitchChat = new TwitchChat(appServer.effectsManager);
+const twitchChat = container.get<TwitchChat>(TYPES.TwitchChat);
 twitchChat.connect();
 
 const alertsListener = new AlertsListener(
   config.streamElementsJwt,
-  appServer.effectsManager,
+  effectsManager,
   twitchChat
 );
 alertsListener.listenToEvents();

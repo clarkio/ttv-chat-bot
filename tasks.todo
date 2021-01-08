@@ -1,4 +1,49 @@
 
+Current Structure:
+  Index
+    AppServer
+      EffectsManager
+        AppServer -> SocketIO.Server
+        AzureBot
+        ObsHandler
+        SoundFxManager
+        Overlay
+          SocketIO.Server
+------
+    TwitchChat
+      EffectsManager
+        AppServer
+      TextToSpeech
+    AlertsListener
+      EffectsManager
+        AppServer
+      TwitchChat
+
+Another Possible Structure:
+  Index
+    AppServer
+    EffectsManager
+      AppServer -> SocketIO.Server
+      AzureBot
+      ObsHandler
+      SoundFxManager
+      Overlay
+        SocketIO.Server
+    TwitchChat
+      EffectsManager
+      TextToSpeech
+        TwitchChat?
+    AlertsListener
+      TwitchChat
+
+
+Last Working Item:
+Trying to determine architecture needed for better dependency injection. Currently there's a circular dependency between app server and effects manager. DI container will create a new AppServer which has a dependency on the effects manager. When it tries to create a new effects manager on start up it sees that the effectsmanager depends on App Server (for socket io server to emit events)
+  * I think this means I need to pull out the socket io code into its own module which can be injected into the app server and/or the effects manager class
+
+☐ After refactoring for IoC and DI, make sure to restore the ability to determine the current overlay color in the AppServer route for /bulb/color @created(Fri 01/08/2021 - 03:46 PM)
+
+☐ abstract away text-to-speech operations/functionality @created(Fri 12/18/2020 - 03:14 PM)
 
 ☐ look into how to have a common constants file across two TS projects (client/server)?
 
@@ -84,6 +129,7 @@ maybe !sfx <filename>?
 3. Apply input/data to command (execute the command using the input provide from the chat message)
 
 Archive:
+  ✔ create function to use for the determination of custom reward types (aka channel point redemptions) @created(Fri 12/18/2020 - 03:13 PM) @done(Fri 12/18/2020 - 03:22 PM)
   ✔ Refactor Manager file names: [13:27] roberttables: @Clarkio You know MPJ will harp on you for using "manager" in your names Kappa @created(Sat 03/21/2020 - 08:27 PM) @done(Fri 06/12/2020 - 02:11 PM)
   ✔ Finish implementation of the warning that the highfive animation is coming @created(Sat 03/28/2020 - 07:17 PM) @done(Sat 03/28/2020 - 09:12 PM)
   ✔ play a toilet flushing sound first when !flush is used to stop all audio (as suggested by ToeFrog) @created(Sat 03/21/2020 - 08:12 PM) @done(Sat 03/21/2020 - 08:12 PM)

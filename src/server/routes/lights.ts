@@ -1,5 +1,5 @@
 import express from 'express';
-import { AppServer } from '../server';
+import AppServer from '../server';
 
 export function lightsRouter(appServer: AppServer) {
   const changeLightColor = (req: express.Request, res: express.Response) => {
