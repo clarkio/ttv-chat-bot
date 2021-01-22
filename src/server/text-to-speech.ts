@@ -16,6 +16,6 @@ export default class TextToSpeech {
           : message;
         // determine voice to use
         // TODO: get rid of this BS you knuckle-headed baboon
-        this.effectsManager.appServer.io.emit('tts', ttsMessage);
+        this.effectsManager.socketServer.emit('tts', ttsMessage);
   }
 }

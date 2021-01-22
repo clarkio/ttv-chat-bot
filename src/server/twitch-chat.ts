@@ -222,7 +222,7 @@ export default class TwitchChat {
     }
 
     if ((user.isBroadcaster || user.isMod) && message.startsWith('!skip')) {
-      this.effectsManager.appServer.io.emit('tts-skip');
+      this.effectsManager.emitEvent('tts-skip');
     }
 
     if (this.isLightControlCommand(message)) {

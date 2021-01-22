@@ -1,18 +1,20 @@
-import { inject, injectable } from 'inversify';
+import io from 'socket.io';
+
+import { injectable } from 'inversify';
 import { AzureBot } from './azure-bot';
 import * as config from './config';
 import { effectsManager as constants, StopCommands } from './constants';
-import { readEffects } from './file-handler';
+import { readEffectsSync } from './file-handler';
 import { log } from './log';
 import ObsHandler, { SceneEffect } from './obs-handler';
 import Overlay from './overlay';
-import AppServer from './server';
 import SoundFxManager, { SoundFxFile } from './sound-fx';
-import { TYPES } from './types';
 
 @injectable()
 export default class EffectsManager {
   public azureBot!: AzureBot;
+  public socketServer!: io.Server;
+
   private allEffects: any | undefined;
   private specialEffects: any | undefined;
   private alertEffects: any | undefined;
@@ -26,10 +28,18 @@ export default class EffectsManager {
   private joinSoundEffects: any[] | undefined;
   private playedUserJoinSounds: string[] = [];
 
-  constructor(@inject(TYPES.AppServer) public appServer: AppServer) {
-    this.loadEffects().then(this.initEffectControllers);
+  constructor() {
+    this.loadEffects();
     this.startAzureBot();
     this.playedUserJoinSounds = [];
+  }
+
+  public setSocketServer(socket: io.Server) {
+    this.socketServer = socket;
+  }
+
+  public emitEvent(event: string, args?: any) {
+    this.socketServer.emit(event, args);
   }
 
   public activateJoinEffectIfFound(username: string) {
@@ -113,14 +123,14 @@ export default class EffectsManager {
       // TODO: do we really need !stopall event anymore since we're not queuing audio?
       switch (stopCommandUsed) {
         case StopCommands.Flush:
-          this.appServer.io.emit(constants.stopAllAudioEvent);
+          this.socketServer!.emit(constants.stopAllAudioEvent);
           this.activateSoundEffectByText('flush');
           break;
         case StopCommands.StopAll:
-          this.appServer.io.emit(constants.stopAllAudioEvent);
+          this.socketServer!.emit(constants.stopAllAudioEvent);
           break;
         default:
-          this.appServer.io.emit(constants.stopCurrentAudioEvent);
+          this.socketServer!.emit(constants.stopCurrentAudioEvent);
           break;
       }
 
@@ -202,22 +212,17 @@ export default class EffectsManager {
     return this.playedUserJoinSounds.includes(username);
   }
 
-  private loadEffects = async (): Promise<any> => {
-    try {
-      const result = await readEffects();
-      this.allEffects = JSON.parse(result);
-      this.specialEffects = this.allEffects.specialEffects;
-      this.alertEffects = this.allEffects.alertEffects;
-      this.sceneEffects = this.allEffects.sceneEffects;
-      this.soundEffects = this.allEffects.soundEffects;
-      this.permittedScenesForCommand = this.allEffects.permittedScenesForCommand;
-      this.sceneAliases = this.allEffects.sceneAliases;
-      this.joinSoundEffects = this.allEffects.joinSoundEffects;
-      return;
-    } catch (error) {
-      log('error', error);
-      return;
-    }
+  private loadEffects = (): any => {
+    const result = readEffectsSync();
+    this.allEffects = JSON.parse(result);
+    this.specialEffects = this.allEffects.specialEffects;
+    this.alertEffects = this.allEffects.alertEffects;
+    this.sceneEffects = this.allEffects.sceneEffects;
+    this.soundEffects = this.allEffects.soundEffects;
+    this.permittedScenesForCommand = this.allEffects.permittedScenesForCommand;
+    this.sceneAliases = this.allEffects.sceneAliases;
+    this.joinSoundEffects = this.allEffects.joinSoundEffects;
+    return;
   };
 
   /**
@@ -242,7 +247,7 @@ export default class EffectsManager {
           this.activateSceneEffectFromSoundEffect(sceneEffect, soundEffect);
         }
       }
-      this.appServer.io.emit(constants.playAudioEvent, soundEffect.fileName);
+      this.socketServer!.emit(constants.playAudioEvent, soundEffect.fileName);
     }
     return;
   }
@@ -262,7 +267,7 @@ export default class EffectsManager {
         }
       }
 
-      this.appServer.io.emit(constants.playAudioEvent, soundEffect.fileName);
+      this.socketServer!.emit(constants.playAudioEvent, soundEffect.fileName);
       return soundEffect;
     }
 
@@ -292,7 +297,7 @@ export default class EffectsManager {
   /**
    * Initialize classes that assist in controlling effects
    */
-  private initEffectControllers = (): void => {
+  public initEffectControllers = (): void => {
     // All effects will have been read from the file system at this point
     this.obsHandler = new ObsHandler(
       this.sceneEffects,
@@ -300,6 +305,6 @@ export default class EffectsManager {
       this.sceneAliases
     );
     this.soundFxManager = new SoundFxManager(this.soundEffects);
-    this.overlay = new Overlay(this.appServer.io);
+    this.overlay = new Overlay(this.socketServer!);
   };
 }

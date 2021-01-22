@@ -8,6 +8,7 @@ import AppServer from './server';
 import TwitchChat from './twitch-chat';
 import { container } from './container';
 import { TYPES } from './types';
+import EffectsManager from './effects-manager';
 
 if (!config.hasLoadedConfigJSON) {
   log('log', indexConstants.logs.configFileReadWarningMessage);
@@ -15,7 +16,13 @@ if (!config.hasLoadedConfigJSON) {
 
 const appServer = container.get<AppServer>(TYPES.AppServer);
 const httpServer = appServer.startServer();
+
 const socketServer = io(httpServer);
+appServer.setSocket(socketServer);
+
+const effectsManager = container.get<EffectsManager>(TYPES.EffectsManager);
+effectsManager.setSocketServer(socketServer);
+effectsManager.initEffectControllers();
 
 const twitchChat = container.get<TwitchChat>(TYPES.TwitchChat);
 twitchChat.connect();

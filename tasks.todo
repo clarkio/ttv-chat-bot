@@ -3,7 +3,7 @@ Current Structure:
   Index
     AppServer
       EffectsManager
-        AppServer -> SocketIO.Server
+        SocketIO.Server
         AzureBot
         ObsHandler
         SoundFxManager
@@ -22,6 +22,9 @@ Current Structure:
 Another Possible Structure:
   Index
     AppServer
+    SocketServer
+      AppServer
+      Socket.IO
     EffectsManager
       AppServer -> SocketIO.Server
       AzureBot

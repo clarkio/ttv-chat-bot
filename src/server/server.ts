@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import io from 'socket.io';
 import express = require('express');
 import { Server } from 'http';
 import { resolve as resolvePath } from 'path';
@@ -24,6 +25,13 @@ export default class AppServer {
     this.app = express();
     this.configApp();
     this.defineRoutes();
+  }
+
+  public setSocket(socketServer: io.Server) {
+    this.app.use((req, res, next) => {
+      req.socketServer = socketServer;
+      return next();
+    })
   }
 
   /**
@@ -62,7 +70,7 @@ export default class AppServer {
    */
   private defineRoutes(): void {
     const router: express.Router = express.Router();
-    const { changeLightColor, sendLightEffect } = lightsRouter(this);
+    const { changeLightColor, sendLightEffect } = lightsRouter();
 
     router.get('/scenes', scenesRoute);
     router.get('/tokens', tokensRoute);

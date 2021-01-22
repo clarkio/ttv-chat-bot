@@ -9,10 +9,10 @@ import StreamElementsAlerts from './streamelements-alerts';
 
 
 const container = new Container({ defaultScope: "Singleton" });
-container.bind<AppServer>(TYPES.AppServer).toSelf();
-container.bind<EffectsManager>(TYPES.EffectsManager).toSelf();
-container.bind<StreamElementsAlerts>(TYPES.StreamElementsAlerts).toSelf();
-container.bind<TwitchChat>(TYPES.TwitchChat).toSelf();
-container.bind<TextToSpeech>(TYPES.TextToSpeech).toSelf();
+container.bind<AppServer>(TYPES.AppServer).to(AppServer);
+container.bind<EffectsManager>(TYPES.EffectsManager).to(EffectsManager);
+container.bind<StreamElementsAlerts>(TYPES.StreamElementsAlerts).to(StreamElementsAlerts);
+container.bind<TwitchChat>(TYPES.TwitchChat).to(TwitchChat);
+container.bind<TextToSpeech>(TYPES.TextToSpeech).to(TextToSpeech);
 
 export { container };
