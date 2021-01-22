@@ -1,12 +1,9 @@
 import bodyParser from 'body-parser';
-import { WebhookClient } from 'discord.js';
 import express = require('express');
 import { Server } from 'http';
 import { resolve as resolvePath } from 'path';
-import io from 'socket.io';
 
 import * as config from './config';
-import { DiscordBot } from './discord-bot';
 import { log } from './log';
 import { lightsRouter } from './routes/lights';
 import { saveCssRoute } from './routes/save-css';
@@ -21,17 +18,12 @@ import { injectable } from 'inversify';
 @injectable()
 export default class AppServer {
   public app: express.Application;
-  public io!: SocketIO.Server;
-  public discordHook!: WebhookClient;
-  private http!: Server;
+  private http?: Server;
 
   constructor() {
     this.app = express();
     this.configApp();
-    this.startDiscordHook();
-    this.startOverlay();
     this.defineRoutes();
-    this.listen();
   }
 
   /**
@@ -42,22 +34,14 @@ export default class AppServer {
   /**
    * Create a socket.io server to use for overlay effects
    */
-  private startOverlay = () => {
+  public startServer = () => {
     this.http = new Server(this.app);
-    this.io = io(this.http);
+    this.listen();
+    return this.http;
   };
 
   /**
-   * Start the Discord Hook used for logging purposes right now
-   */
-  private startDiscordHook = () => {
-    if (config.discordHookEnabled) {
-      this.discordHook = new DiscordBot().createDiscordHook();
-    }
-  };
-
-  /**
-   * Configure Express to parse json, setup pug as our html view engine for generating html pages and host the resources
+   * Configure Express to parse json, setup pug as our html view engine for generating html pages and host the client resources
    */
   private configApp(): void {
     this.app.use(bodyParser.json());
@@ -104,8 +88,12 @@ export default class AppServer {
    * Start the Node.js server
    */
   private listen = (): void => {
-    const runningMessage = `Overlay server is running on port http://localhost:${config.port}`;
-    this.http.listen(config.port, () => {
+    if(!this.http) {
+      log('warn', 'The http server has not been set up');
+    };
+
+    const runningMessage = `App server is running on port http://localhost:${config.port}`;
+    this.http!.listen(config.port, () => {
       log('info', runningMessage);
     });
   };

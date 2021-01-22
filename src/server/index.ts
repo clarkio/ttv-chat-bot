@@ -1,7 +1,9 @@
+import io from 'socket.io';
+
 import StreamElementsAlerts from './streamelements-alerts';
 import * as config from './config';
 import { index as indexConstants } from './constants';
-import { log, setHook } from './log';
+import { log } from './log';
 import AppServer from './server';
 import TwitchChat from './twitch-chat';
 import { container } from './container';
@@ -12,14 +14,8 @@ if (!config.hasLoadedConfigJSON) {
 }
 
 const appServer = container.get<AppServer>(TYPES.AppServer);
-
-setHook(message => {
-  if (config.discordHookEnabled) {
-    appServer.discordHook
-      .send(message)
-      .catch((error: any) => log('error', `Discord: ${error}`));
-  }
-});
+const httpServer = appServer.startServer();
+const socketServer = io(httpServer);
 
 const twitchChat = container.get<TwitchChat>(TYPES.TwitchChat);
 twitchChat.connect();
