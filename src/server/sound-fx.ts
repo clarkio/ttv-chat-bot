@@ -1,3 +1,4 @@
+import { injectable } from 'inversify';
 import { resolve as resolvePath } from 'path';
 import { soundEffects as constants } from './constants';
 import { getSoundEffectsFiles } from './file-handler';
@@ -30,15 +31,17 @@ export class SoundFxSetting {
     public volume: number | 1
   ) { }
 }
-
+@injectable()
 export default class SoundFxManager {
   public SOUND_FX_DIRECTORY = resolvePath(
     `${__dirname}`,
     constants.soundsRelativeDirectory
   );
   private availableSoundEffects: SoundFxFile[] = new Array<SoundFxFile>();
+  private soundEffectSettings?: any;
 
-  constructor(private soundEffectSettings: any | undefined) {
+  public init (soundEffectSettings: any) {
+    this.soundEffectSettings = soundEffectSettings;
     getSoundEffectsFiles()
       .then(this.mapFiles)
       .catch(error => {

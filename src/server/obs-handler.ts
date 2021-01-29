@@ -1,3 +1,4 @@
+import { injectable } from 'inversify';
 import ObsWebSocket from 'obs-websocket-js';
 import * as config from './config';
 import { obsHandler as constants } from './constants';
@@ -47,20 +48,27 @@ export class SceneEffectSource {
 /**
  * A class to control initializing a websocket connection to the plugin within OBS as well as managing any effects to be applied within it.
  */
-export default class ObsHandler {
+@injectable()
+ export default class ObsHandler {
   public sceneList: any;
   public sceneEffects: SceneEffect[] = new Array<SceneEffect>();
-  private obs: ObsWebSocket;
+  private obs?: ObsWebSocket;
   private activeSceneEffects: SceneEffect[] = new Array<SceneEffect>();
+  private sceneEffectSettings?: any;
+  private permittedScenesForCommand?: any;
+  private sceneAliases?: any;
 
-  constructor(
-    private sceneEffectSettings: any | undefined,
-    private permittedScenesForCommand: any | undefined,
-    private sceneAliases: any | undefined
+  public init (sceneEffectSettings: any,
+    permittedScenesForCommand: any,
+    sceneAliases: any
   ) {
+    this.sceneEffectSettings = sceneEffectSettings;
+    this.permittedScenesForCommand = permittedScenesForCommand;
+    this.sceneAliases = sceneAliases;
+
     this.initSceneEffects();
-    this.obs = new ObsWebSocket();
-    this.obs
+    this.obs! = new ObsWebSocket();
+    this.obs!
       .connect({
         address: config.obsSocketsServer,
         password: config.obsSocketsKey
@@ -71,7 +79,7 @@ export default class ObsHandler {
       })
       .catch(this.handleError);
 
-    this.obs.on('error', this.handleError);
+    this.obs!.on('error', this.handleError);
   }
 
   /**
@@ -88,7 +96,7 @@ export default class ObsHandler {
     const sceneToActivate = this.determineSceneFromMessage(message);
     if (sceneToActivate) {
       // tell OBS via websockets to activate the scene
-      this.obs
+      this.obs!
         .send(ObsRequests.SetCurrentScene, {
           'scene-name': sceneToActivate.name
         })
@@ -145,7 +153,7 @@ export default class ObsHandler {
    * Returns the currently active scene that's visible in OBS via websockets
    */
   public async getCurrentScene(): Promise<string> {
-    return this.obs.send(ObsRequests.GetCurrentScene);
+    return this.obs!.send(ObsRequests.GetCurrentScene);
   }
 
   public async activateSceneEffect(sceneEffect: SceneEffect): Promise<any> {
@@ -161,7 +169,7 @@ export default class ObsHandler {
     sceneEffect.scenes.forEach((scene: string | undefined) => {
       scene = isForAllScenes ? currentScene : scene;
       sceneEffect.sources.forEach((source: SceneEffectSource) => {
-        this.obs
+        this.obs!
           .send(
             sceneEffect.effectType,
             Object.assign(
@@ -193,7 +201,7 @@ export default class ObsHandler {
       scene = isForAllScenes ? currentScene : scene;
       sceneEffect.sources.forEach((source: SceneEffectSource) => {
         // Note: using Object.assign to merge the JSON objects together and allow for flexibility in applying the effect simply from the object found in the effects.json file
-        this.obs
+        this.obs!
           .send(
             sceneEffect.effectType,
             Object.assign(
@@ -219,7 +227,7 @@ export default class ObsHandler {
         }
         sceneEffect.sources.forEach((source: SceneEffectSource) => {
           // Note: using Object.assign to merge the JSON objects together and allow for flexibility in applying the effect simply from the object found in the effects.json file
-          this.obs
+          this.obs!
             .send(
               sceneEffect.effectType,
               Object.assign(
@@ -249,7 +257,7 @@ export default class ObsHandler {
   }
 
   private getSceneList() {
-    this.obs.send(ObsRequests.GetSceneList).then((data: any) => {
+    this.obs!!.send(ObsRequests.GetSceneList).then((data: any) => {
       this.sceneList = data.scenes;
     });
   }

@@ -13,6 +13,7 @@ import { log } from './log';
 import TwitchUser from './twitch-user';
 import { TYPES } from './types';
 import TextToSpeech from './text-to-speech';
+import { container } from './container';
 
 @injectable()
 export default class TwitchChat {
@@ -130,7 +131,9 @@ export default class TwitchChat {
     userState: ChatUserstate,
     message: string
   ) => {
-    const user = new TwitchUser(userState, channel, ttvClientUsername);
+    const user = container.get<TwitchUser>(TYPES.TwitchUser);
+    user.init(userState, channel, ttvClientUsername);
+
     const lowerCaseMessage = message.toLowerCase();
     // @ts-ignore
     const isHighlightedMessage = userState['msg-id'] === 'highlighted-message';

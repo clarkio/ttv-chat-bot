@@ -1,5 +1,7 @@
 import io from 'socket.io';
 
+import { container } from './container';
+import { TYPES } from './types';
 import { injectable } from 'inversify';
 import { AzureBot } from './azure-bot';
 import * as config from './config';
@@ -19,7 +21,7 @@ export default class EffectsManager {
   private specialEffects: any | undefined;
   private alertEffects: any | undefined;
   private sceneEffects: any | undefined;
-  private soundEffects: any | undefined;
+  private soundEffectSettings: any | undefined;
   private permittedScenesForCommand: any | undefined;
   private sceneAliases: any | undefined;
   private soundFxManager!: SoundFxManager;
@@ -218,7 +220,7 @@ export default class EffectsManager {
     this.specialEffects = this.allEffects.specialEffects;
     this.alertEffects = this.allEffects.alertEffects;
     this.sceneEffects = this.allEffects.sceneEffects;
-    this.soundEffects = this.allEffects.soundEffects;
+    this.soundEffectSettings = this.allEffects.soundEffects;
     this.permittedScenesForCommand = this.allEffects.permittedScenesForCommand;
     this.sceneAliases = this.allEffects.sceneAliases;
     this.joinSoundEffects = this.allEffects.joinSoundEffects;
@@ -230,7 +232,7 @@ export default class EffectsManager {
    */
   private startAzureBot = () => {
     if (config.azureBotEnabled) {
-      this.azureBot = new AzureBot();
+      this.azureBot = container.get<AzureBot>(TYPES.AzureBot);;
       this.azureBot.createNewBotConversation();
     }
   };
@@ -299,12 +301,17 @@ export default class EffectsManager {
    */
   public initEffectControllers = (): void => {
     // All effects will have been read from the file system at this point
-    this.obsHandler = new ObsHandler(
+    this.obsHandler = container.get<ObsHandler>(TYPES.ObsHandler);
+    this.obsHandler.init(
       this.sceneEffects,
       this.permittedScenesForCommand,
       this.sceneAliases
     );
-    this.soundFxManager = new SoundFxManager(this.soundEffects);
-    this.overlay = new Overlay(this.socketServer!);
+
+    this.soundFxManager = container.get<SoundFxManager>(TYPES.SoundFxManager);
+    this.soundFxManager.init(this.soundEffectSettings);
+
+    this.overlay = container.get<Overlay>(TYPES.Overlay);
+    this.overlay.init(this.socketServer!);
   };
 }

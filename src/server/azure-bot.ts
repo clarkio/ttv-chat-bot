@@ -3,10 +3,12 @@ import fetch from 'isomorphic-fetch';
 import * as config from './config';
 import { log } from './log';
 import { azureBot as azureBotConstants } from './constants';
+import { injectable } from 'inversify';
 
 /**
  * A Plugin of sorts to deal with the AzureBot if the user has decided to configure it
  */
+@injectable()
 export class AzureBot {
   private azureBotToken = config.azureBotToken;
 

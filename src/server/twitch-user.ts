@@ -1,6 +1,8 @@
+import { injectable } from 'inversify';
 import { Userstate } from 'tmi.js';
 import { log } from './log';
 
+@injectable()
 export default class TwitchUser {
   public username!: string;
   public userId?: string;
@@ -12,7 +14,7 @@ export default class TwitchUser {
   public userColor?: string;
   public badges: any = {};
 
-  constructor(userstate: Userstate, channel: string, mainUserName: string) {
+  public init (userstate: Userstate, channel: string, mainUserName: string) {
     try {
       this.username =
         userstate['display-name'] || userstate.username || mainUserName;
