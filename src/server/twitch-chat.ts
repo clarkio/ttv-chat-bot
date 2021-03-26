@@ -11,6 +11,7 @@ import EffectsManager from './effects-manager';
 import { log } from './log';
 import TwitchUser from './twitch-user';
 
+
 export class TwitchChat {
   public ttvChatClient: Client;
   private lightCommandUsed: string = '';
@@ -264,16 +265,19 @@ export class TwitchChat {
   private startSpecialEffects = (specialEffect: any, userName: string) => {
     this.effectsManager.triggerSpecialEffect(specialEffect.colors);
     if (this.effectsManager.azureBot) {
-      return this.effectsManager.azureBot
+      this.effectsManager.azureBot
         .triggerEffect(specialEffect, userName)
-        .then((result) => {
+        .then(() => {
           setTimeout(
             this.checkForBotResponse,
             config.azureBotResponseCheckDelay
           );
-          return result;
+        })
+        .catch((error) => {
+          log('error', error);
         });
     }
+    return;
   };
 
   /**
