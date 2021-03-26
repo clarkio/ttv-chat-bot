@@ -138,6 +138,12 @@
       "fileName": "themoreyouknow",
       "sceneEffectName": "themoreyouknow",
       "volume": 1
+    },
+    {
+      "name": "applause",
+      "fileName": "applause",
+      "sceneEffectName": "crowdapplause",
+      "volume": 1
     }
   ],
   "sceneEffects": [
@@ -426,6 +432,24 @@
       "sources": [
         {
           "name": "[FX] themoreyouknow",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "crowdapplause",
+      "scenes": [
+        "*"
+      ],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "[FX] crowdsapplause",
           "activeState": {
             "visible": true
           },

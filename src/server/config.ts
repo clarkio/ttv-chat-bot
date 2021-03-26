@@ -28,6 +28,7 @@ const {
   SPECIAL_EFFECTS_CHAT_COMMANDS,
   AZURE_BOT_TOKEN,
   AZURE_BOT_RESPONSE_CHECK_DELAY,
+  AZURE_SPEECH_TOKEN,
   DISCORD_HOOK_ENABLED,
   DISCORD_HOOK_ID,
   DISCORD_HOOK_TOKEN,
@@ -96,6 +97,14 @@ export const azureBotResponseCheckDelay: number =
   AZURE_BOT_RESPONSE_CHECK_DELAY ||
   fileConfig.azureBotResponseCheckDelay ||
   4000;
+
+  export const azureSpeechToken: string =
+  AZURE_SPEECH_TOKEN || fileConfig.azureSpeechToken || requireConfigMessage;
+
+export const tokens:any = {
+  azureBotToken,
+  azureSpeechToken
+}
 
 /*****************************************************************************
  * Discord

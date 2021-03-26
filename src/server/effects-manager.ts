@@ -158,7 +158,8 @@ export default class EffectsManager {
     ) {
       // TODO: add to effects queue instead
       const sceneEffect = await this.obsHandler.determineSceneEffect(message);
-      this.obsHandler.applySceneEffect(sceneEffect);
+      this.obsHandler.applySceneEffect(sceneEffect)
+        .catch((error) => log('error', error));
       setTimeout(() => {
         this.obsHandler.deactivateSceneEffect(sceneEffect);
       }, sceneEffect.duration || 15000);
@@ -270,7 +271,8 @@ export default class EffectsManager {
     sceneEffect: SceneEffect,
     soundEffect: SoundFxFile
   ) {
-    this.obsHandler.activateSceneEffect(sceneEffect);
+    this.obsHandler.activateSceneEffect(sceneEffect)
+      .catch((error) => log('error', error));
     // automatically deactivate the scene effect based on the duration of the corresponding sound effect that triggered it
     const duration = sceneEffect.duration || soundEffect.duration * 1000;
     if (!duration || duration < 400) {

@@ -138,14 +138,22 @@ export default class ObsHandler {
    * @param sceneEffect the scene effect to apply within OBS
    */
   public async applySceneEffect(sceneEffect: SceneEffect) {
-    this.activateSceneEffect(sceneEffect);
+    this.activateSceneEffect(sceneEffect)
+      .catch((error) => log('error', error));
   }
 
   /**
    * Returns the currently active scene that's visible in OBS via websockets
    */
   public async getCurrentScene(): Promise<string> {
-    return this.obs.send(ObsRequests.GetCurrentScene);
+    return this.obs.send(ObsRequests.GetCurrentScene)
+      .then((result: any) => {
+        return result
+      })
+      .catch((error: any) => {
+        log('error', error);
+        return;
+      });
   }
 
   public async activateSceneEffect(sceneEffect: SceneEffect): Promise<any> {
