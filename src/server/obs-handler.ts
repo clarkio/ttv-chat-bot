@@ -18,6 +18,10 @@ enum EffectType {
   SetSceneItemProperties = 'SetSceneItemProperties'
 }
 
+enum ObsErrors {
+  ConnectionError = 'CONNECTION_ERROR'
+}
+
 type EffectTypeStrings = keyof typeof EffectType;
 
 /**
@@ -52,6 +56,9 @@ export default class ObsHandler {
   public sceneEffects: SceneEffect[] = new Array<SceneEffect>();
   private obs: ObsWebSocket;
   private activeSceneEffects: SceneEffect[] = new Array<SceneEffect>();
+  private retryConnectionCount: number = 0;
+  private retryConnectionLimit: number = 5;
+  private retryConnectionWaitTime: number = 60000; // in milliseconds
 
   constructor(
     private sceneEffectSettings: any | undefined,
@@ -60,18 +67,8 @@ export default class ObsHandler {
   ) {
     this.initSceneEffects();
     this.obs = new ObsWebSocket();
-    this.obs
-      .connect({
-        address: config.obsSocketsServer,
-        password: config.obsSocketsKey
-      })
-      .then(() => {
-        log('log', constants.logs.obsConnectionSuccessfulMessage);
-        this.getSceneList();
-      })
-      .catch(this.handleError);
-
     this.obs.on('error', this.handleError);
+    this.connectToObs();
   }
 
   /**
@@ -252,11 +249,37 @@ export default class ObsHandler {
     );
   }
 
+  private connectToObs(): void {
+    this.obs
+      .connect({
+        address: config.obsSocketsServer,
+        password: config.obsSocketsKey
+      })
+      .then(() => {
+        log('log', constants.logs.obsConnectionSuccessfulMessage);
+        return this.getSceneList();
+      })
+      .catch((error: any) => {
+        return this.handleObsConnectErrors(error);
+      });
+  }
+
+  private handleObsConnectErrors (error: any): void {
+    if(error.code === ObsErrors.ConnectionError) {
+      log('info', `OBS Websocket Connection Failed: Retrying connection in ${this.retryConnectionWaitTime / 1000} seconds`);
+
+      this.retryConnectionCount++;
+      if(this.retryConnectionCount >= this.retryConnectionLimit) return;
+
+      setTimeout(this.connectToObs.bind(this), this.retryConnectionWaitTime);
+    }
+  }
+
   private handleError(error: any): any {
     log('error', error);
   }
 
-  private getSceneList() {
+  private getSceneList(): void  {
     this.obs.send(ObsRequests.GetSceneList).then((data: any) => {
       this.sceneList = data.scenes;
     });
