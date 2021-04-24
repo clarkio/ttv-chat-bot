@@ -11,6 +11,11 @@ import EffectsManager from './effects-manager';
 import { log } from './log';
 import TwitchUser from './twitch-user';
 
+enum ChannelRewards {
+  TextToSpeech = '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb',
+  ColorWave = 'b690c37e-5cec-4771-a463-8b492ad6107c'
+}
+
 
 export class TwitchChat {
   public ttvChatClient: Client;
@@ -196,12 +201,17 @@ export class TwitchChat {
     const userName = user.username;
     if (
       customRewardId &&
-      customRewardId === '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb'
+      customRewardId === ChannelRewards.TextToSpeech
     ) {
       const ttsMessage = this.isTrustedUser(user)
         ? `${userName} says ${message}`
         : message;
       this.effectsManager.appServer.io.emit('tts', ttsMessage);
+    }
+
+    if (customRewardId && customRewardId === ChannelRewards.ColorWave) {
+      const options = { Color: message };
+      this.effectsManager.activateSceneEffectByName('colorwave', options);
     }
 
     if ((user.isBroadcaster || user.isMod) && message.startsWith('!skip')) {

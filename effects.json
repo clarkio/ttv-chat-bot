@@ -166,6 +166,24 @@
       ]
     },
     {
+      "name": "colorwave",
+      "scenes": [
+        "*"
+      ],
+      "effectType": "SetSceneItemProperties",
+      "sources": [
+        {
+          "name": "colorwave",
+          "activeState": {
+            "visible": true
+          },
+          "inactiveState": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
       "name": "smack",
       "scenes": [
         "*"

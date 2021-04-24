@@ -196,6 +196,18 @@ export default class EffectsManager {
     return alertEffectKey && this.alertEffects[alertEffectKey];
   };
 
+  public activateSceneEffectByName(effectName: string, options: any) {
+    const effectToActivate = this.obsHandler.determineSceneEffectByName(effectName);
+    if (effectToActivate) {
+      if (effectToActivate.name === 'colorwave') {
+        // const color = options.Color || '#00FF00';
+        this.obsHandler.setSourceFilterSettings('cam-mirror-blue', 'blue', { color: 0xff0000 });
+      }
+      this.obsHandler.activateSceneEffect(effectToActivate);
+    }
+    return;
+  }
+
   private hasJoinSoundPlayed(username: string): boolean {
     return this.playedUserJoinSounds.includes(username);
   }

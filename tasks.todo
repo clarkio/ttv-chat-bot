@@ -1,4 +1,14 @@
 
+// Current limitation is that I required channel point redemptions with text only in order to capture when they are redeemed
+
+☐ Change bot to listen to TAU for events @created(Fri 04/23/2021 - 03:56 PM)
+  ☐ Make sure to listen for channel point redemptions too @created(Fri 04/23/2021 - 03:57 PM)
+
+☐ For shadow color effect allow chat to choose a color @created(Fri 04/23/2021 - 04:00 PM)
+  ☐ Update OBS Handler to change source filter settings @created(Fri 04/23/2021 - 04:00 PM)
+    - https://github.com/Palakis/obs-websocket/blob/4.x-current/docs/generated/protocol.md#setsourcefiltersettings
+    - Need to determine the specific setting for the color correction filter that sets the color value
+
 ☐ look into how to have a common constants file across two TS projects (client/server)?
 
 ☐ via Piq9117's suggestion: add ability to update title when Chair takes over the stream @created(Sat 03/21/2020 - 08:32 PM)

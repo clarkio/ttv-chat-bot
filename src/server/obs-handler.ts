@@ -34,7 +34,7 @@ export class SceneEffect {
     public scenes: string[],
     public sources: SceneEffectSource[],
     public duration: number
-  ) {}
+  ) { }
 }
 
 /**
@@ -45,7 +45,7 @@ export class SceneEffectSource {
     public name: string,
     public activeState: any,
     public inactiveState: any
-  ) {}
+  ) { }
 }
 
 /**
@@ -183,6 +183,32 @@ export default class ObsHandler {
     });
   }
 
+
+  public async setSourceFilterSettings(sourceName: string, filterName: string, filterSettings: any) {
+
+    this.obs.send('GetSourceFilterInfo', Object.assign({}, { sourceName: 'cam-mirror-blue', filterName: 'blue' })
+    ).then((result: any) => {
+      log('info', result);
+      this.obs.send('SetSourceFilterSettings', Object.assign({},
+        {
+          sourceName: 'cam-mirror-blue',
+          filterName: 'blue',
+          filterSettings: JSON.stringify(filterSettings)
+        }))
+        .then((result: any) => {
+          log('info', result);
+        })
+        .catch((error: any) => {
+          log('error', error);
+        });
+    })
+      .catch((error: any) => {
+        log('error', error);
+      });
+    // {sourceName: 'source name', filterName: 'Color Correction?', filterSettings: {Color: 'New Color'} }
+
+  }
+
   public async deactivateSceneEffect(sceneEffect: SceneEffect): Promise<any> {
     const index = this.activeSceneEffects.indexOf(sceneEffect);
     this.activeSceneEffects.splice(index, 1);
@@ -264,12 +290,12 @@ export default class ObsHandler {
       });
   }
 
-  private handleObsConnectErrors (error: any): void {
-    if(error.code === ObsErrors.ConnectionError) {
+  private handleObsConnectErrors(error: any): void {
+    if (error.code === ObsErrors.ConnectionError) {
       log('info', `OBS Websocket Connection Failed: Retrying connection in ${this.retryConnectionWaitTime / 1000} seconds`);
 
       this.retryConnectionCount++;
-      if(this.retryConnectionCount >= this.retryConnectionLimit) return;
+      if (this.retryConnectionCount >= this.retryConnectionLimit) return;
 
       setTimeout(this.connectToObs.bind(this), this.retryConnectionWaitTime);
     }
@@ -279,7 +305,7 @@ export default class ObsHandler {
     log('error', error);
   }
 
-  private getSceneList(): void  {
+  private getSceneList(): void {
     this.obs.send(ObsRequests.GetSceneList).then((data: any) => {
       this.sceneList = data.scenes;
     });
