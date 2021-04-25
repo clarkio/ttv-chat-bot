@@ -65,7 +65,7 @@
     "nodemon": "^2.0.6",
     "obs-websocket-js-types": "^4.4.0",
     "reflect-metadata": "^0.1.13",
-    "snyk": "^1.156.0",
+    "snyk": "^1.564.0",
     "tslint": "^5.20.0",
     "tslint-config-airbnb-base": "^0.2.0",
     "tslint-config-prettier": "^1.18.0",
