@@ -35,10 +35,20 @@ const {
   OBS_SOCKETS_KEY,
   OBS_SOCKETS_SERVER,
   STREAMELEMENTS_JWT,
-  STREAMELEMENTS_WEBSOCKET_URL
+  STREAMELEMENTS_WEBSOCKET_URL,
+  TAU_TOKEN,
+  TAU_URL
 } = process.env;
 
 const requireConfigMessage = 'REQUIRED CONFIGURATION WAS NOT PROVIDED';
+
+export const tauToken: string =
+  TAU_TOKEN || fileConfig.tauToken || requireConfigMessage;
+
+export const tauURL: string =
+  TAU_URL ||
+  fileConfig.tauURL ||
+  requireConfigMessage;
 
 /*****************************************************************************
  * App
@@ -98,10 +108,10 @@ export const azureBotResponseCheckDelay: number =
   fileConfig.azureBotResponseCheckDelay ||
   4000;
 
-  export const azureSpeechToken: string =
+export const azureSpeechToken: string =
   AZURE_SPEECH_TOKEN || fileConfig.azureSpeechToken || requireConfigMessage;
 
-export const tokens:any = {
+export const tokens: any = {
   azureBotToken,
   azureSpeechToken
 }

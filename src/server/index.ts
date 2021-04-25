@@ -9,6 +9,7 @@ import TwitchChat from './twitch-chat';
 import { container } from './container';
 import { TYPES } from './types';
 import EffectsManager from './effects-manager';
+import TauAlerts from './tau-alerts';
 
 if (!config.hasLoadedConfigJSON) {
   log('log', indexConstants.logs.configFileReadWarningMessage);
@@ -29,6 +30,9 @@ twitchChat.connect();
 
 const streamElementsAlerts = container.get<StreamElementsAlerts>(TYPES.StreamElementsAlerts);
 streamElementsAlerts.startListening();
+
+const tauAlerts = container.get<TauAlerts>(TYPES.TauAlerts);
+tauAlerts.startListening();
 
 export { appServer };
 
