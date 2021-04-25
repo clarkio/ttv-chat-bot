@@ -8,6 +8,7 @@
   ☐ Update OBS Handler to change source filter settings @created(Fri 04/23/2021 - 04:00 PM)
     - https://github.com/Palakis/obs-websocket/blob/4.x-current/docs/generated/protocol.md#setsourcefiltersettings
     - Need to determine the specific setting for the color correction filter that sets the color value
+    - Need to prepend hex color with alpha (default to FF) and then convert to an integer value (thanks to FiniteSingularity for digging into this and determining the correct value type needed)
 
 ☐ look into how to have a common constants file across two TS projects (client/server)?
 
