@@ -22,11 +22,11 @@ const resetTokenTimeInMinutes = 9
 let resetTokenInterval;
 
 axios.get('/tokens?name=azureSpeechToken')
-  .then((result:any) => {
+  .then((result: any) => {
     azureSpeechToken = result.data;
     getAzureSpeechApiToken();
   })
-  .catch((error:any) => {
+  .catch((error: any) => {
     console.error(error);
   })
 
@@ -39,13 +39,13 @@ function getAzureSpeechApiToken() {
       'Ocp-Apim-Subscription-Key': azureSpeechToken
     }
   })
-  .then((result:any) => {
-    azureSpeechApiAccessToken = result.data;
-    resetTokenInterval = setInterval(getAzureSpeechApiToken, resetTokenTimeInMinutes * 60 * 1000);
-  })
-  .catch((error: any) => {
-    console.error(error);
-  });
+    .then((result: any) => {
+      azureSpeechApiAccessToken = result.data;
+      resetTokenInterval = setInterval(getAzureSpeechApiToken, resetTokenTimeInMinutes * 60 * 1000);
+    })
+    .catch((error: any) => {
+      console.error(error);
+    });
 }
 
 socket.on('tts', (textToSpeak: string) => {
@@ -79,7 +79,7 @@ function loadText() {
 
     const body = `
     <speak version='1.0' xml:lang='en-US'>
-      <voice xml:lang='en-US' name='en-AU-NatashaNeural'>
+      <voice xml:lang='en-US' xml:gender='Female' name='en-US-AriaRUS'>
         ${textToSpeak}
       </voice>
     </speak>`;
@@ -92,21 +92,21 @@ function loadText() {
       },
       responseType: 'arraybuffer'
     })
-    .then(async (result: any) => {
-      const audioBuffer = await audioCtx.decodeAudioData(result.data);
-      const audioSource = audioCtx.createBufferSource();
-      audioSource.buffer = audioBuffer;
-      audioSource.connect(audioCtx.destination);
-      currentAudio = audioSource;
-      audioSource.start(0);
-      audioSource.onended = function finishedPlayingAudio (ev: Event) {
-        finishSpeaking();
-      };
-    })
-    .catch((error:any) => {
-      console.error(error);
-      isSpeaking = false;
-    });
+      .then(async (result: any) => {
+        const audioBuffer = await audioCtx.decodeAudioData(result.data);
+        const audioSource = audioCtx.createBufferSource();
+        audioSource.buffer = audioBuffer;
+        audioSource.connect(audioCtx.destination);
+        currentAudio = audioSource;
+        audioSource.start(0);
+        audioSource.onended = function finishedPlayingAudio(ev: Event) {
+          finishSpeaking();
+        };
+      })
+      .catch((error: any) => {
+        console.error(error);
+        isSpeaking = false;
+      });
   }
 }
 

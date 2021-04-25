@@ -19,6 +19,10 @@ enum EffectType {
   SetSceneItemProperties = 'SetSceneItemProperties'
 }
 
+enum ObsErrors {
+  ConnectionError = 'CONNECTION_ERROR'
+}
+
 type EffectTypeStrings = keyof typeof EffectType;
 
 /**
@@ -31,7 +35,7 @@ export class SceneEffect {
     public scenes: string[],
     public sources: SceneEffectSource[],
     public duration: number
-  ) {}
+  ) { }
 }
 
 /**
@@ -42,14 +46,14 @@ export class SceneEffectSource {
     public name: string,
     public activeState: any,
     public inactiveState: any
-  ) {}
+  ) { }
 }
 
 /**
  * A class to control initializing a websocket connection to the plugin within OBS as well as managing any effects to be applied within it.
  */
 @injectable()
- export default class ObsHandler {
+export default class ObsHandler {
   public sceneList: any;
   public sceneEffects: SceneEffect[] = new Array<SceneEffect>();
   private obs?: ObsWebSocket;
@@ -57,8 +61,11 @@ export class SceneEffectSource {
   private sceneEffectSettings?: any;
   private permittedScenesForCommand?: any;
   private sceneAliases?: any;
+  private retryConnectionCount: number = 0;
+  private retryConnectionLimit: number = 5;
+  private retryConnectionWaitTime: number = 60000; // in milliseconds
 
-  public init (sceneEffectSettings: any,
+  public init(sceneEffectSettings: any,
     permittedScenesForCommand: any,
     sceneAliases: any
   ) {
@@ -68,17 +75,7 @@ export class SceneEffectSource {
 
     this.initSceneEffects();
     this.obs! = new ObsWebSocket();
-    this.obs!
-      .connect({
-        address: config.obsSocketsServer,
-        password: config.obsSocketsKey
-      })
-      .then(() => {
-        log('log', constants.logs.obsConnectionSuccessfulMessage);
-        this.getSceneList();
-      })
-      .catch(this.handleError);
-
+    this.connectToObs();
     this.obs!.on('error', this.handleError);
   }
 
@@ -146,14 +143,22 @@ export class SceneEffectSource {
    * @param sceneEffect the scene effect to apply within OBS
    */
   public async applySceneEffect(sceneEffect: SceneEffect) {
-    this.activateSceneEffect(sceneEffect);
+    this.activateSceneEffect(sceneEffect)
+      .catch((error) => log('error', error));
   }
 
   /**
    * Returns the currently active scene that's visible in OBS via websockets
    */
   public async getCurrentScene(): Promise<string> {
-    return this.obs!.send(ObsRequests.GetCurrentScene);
+    return this.obs!.send(ObsRequests.GetCurrentScene)
+      .then((result: any) => {
+        return result
+      })
+      .catch((error: any) => {
+        log('error', error);
+        return;
+      });
   }
 
   public async activateSceneEffect(sceneEffect: SceneEffect): Promise<any> {
@@ -250,6 +255,32 @@ export class SceneEffectSource {
     return this.sceneEffects.find(
       (sceneEffect: SceneEffect) => sceneEffect.name === sceneEffectName
     );
+  }
+
+  private connectToObs(): void {
+    this.obs!
+      .connect({
+        address: config.obsSocketsServer,
+        password: config.obsSocketsKey
+      })
+      .then(() => {
+        log('log', constants.logs.obsConnectionSuccessfulMessage);
+        return this.getSceneList();
+      })
+      .catch((error: any) => {
+        return this.handleObsConnectErrors(error);
+      });
+  }
+
+  private handleObsConnectErrors(error: any): void {
+    if (error.code === ObsErrors.ConnectionError) {
+      log('info', `OBS Websocket Connection Failed: Retrying connection in ${this.retryConnectionWaitTime / 1000} seconds`);
+
+      this.retryConnectionCount++;
+      if (this.retryConnectionCount >= this.retryConnectionLimit) return;
+
+      setTimeout(this.connectToObs.bind(this), this.retryConnectionWaitTime);
+    }
   }
 
   private handleError(error: any): any {
