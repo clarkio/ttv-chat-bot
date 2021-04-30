@@ -44,9 +44,20 @@ export default class TauAlerts {
    */
   private onConnect = (event: { target: WebSocket }) => {
     log('info', 'Successfully connected to TAU');
+    log('info', 'Attempting to authenticate with TAU');
 
-    this.socket!.send(`{ "token": "${this.accessToken}"`);
+    const message = `{ "token": "${this.accessToken}" }`;
+    this.socket!.send(message, this.socketMessageResult);
   };
+
+  private socketMessageResult = (error?: Error) => {
+    if (error) {
+      log('error', 'There was an issue authenticating with TAU');
+    } else {
+      log('info', 'Successfully authenticated with TAU and listening for events...');
+    }
+  }
+
   //@ts-ignore
   private onDisconnect = (ev: Event) => {
     log('info', alertsConstants.logs.disconnected);
@@ -54,6 +65,7 @@ export default class TauAlerts {
   };
 
   private onError = (event: { error: any, message: any, type: string, target: WebSocket }) => {
+    log('error', 'There was an issue connecting to TAU');
     log('error', event.message);
   }
 
