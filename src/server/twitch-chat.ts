@@ -210,7 +210,7 @@ export class TwitchChat {
     }
 
     if (customRewardId && customRewardId === ChannelRewards.ColorWave) {
-      const options = { Color: message };
+      const options = { color: message };
       this.effectsManager.activateSceneEffectByName('colorwave', options);
     }
 

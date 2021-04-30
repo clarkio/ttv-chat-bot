@@ -4,8 +4,11 @@
 ☐ Change bot to listen to TAU for events @created(Fri 04/23/2021 - 03:56 PM)
   ☐ Make sure to listen for channel point redemptions too @created(Fri 04/23/2021 - 03:57 PM)
 
-☐ For shadow color effect allow chat to choose a color @created(Fri 04/23/2021 - 04:00 PM)
-  ☐ Update OBS Handler to change source filter settings @created(Fri 04/23/2021 - 04:00 PM)
+
+☐ Actually toggle scenesource for cam-mirror instead of the filter @created(Fri 04/30/2021 - 05:05 PM)
+
+✔ For shadow color effect allow chat to choose a color @created(Fri 04/23/2021 - 04:00 PM) @done(21-04-30 17:05)
+  ✔ Update OBS Handler to change source filter settings @created(Fri 04/23/2021 - 04:00 PM) @done(21-04-30 17:05)
     - https://github.com/Palakis/obs-websocket/blob/4.x-current/docs/generated/protocol.md#setsourcefiltersettings
     - Need to determine the specific setting for the color correction filter that sets the color value
     - Need to prepend hex color with alpha (default to FF) and then convert to an integer value (thanks to FiniteSingularity for digging into this and determining the correct value type needed)

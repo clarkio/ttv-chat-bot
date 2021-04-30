@@ -170,10 +170,12 @@
       "scenes": [
         "*"
       ],
-      "effectType": "SetSceneItemProperties",
+      "effectType": "SetSourceFilterSettings",
       "sources": [
         {
           "name": "colorwave",
+          "sourceName": "cam-mirror",
+          "filterName": "shadow2",
           "activeState": {
             "visible": true
           },

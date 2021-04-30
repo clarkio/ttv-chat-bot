@@ -44,7 +44,9 @@ export class SceneEffectSource {
   constructor(
     public name: string,
     public activeState: any,
-    public inactiveState: any
+    public inactiveState: any,
+    public filterName?: string,
+    public sourceName?: string
   ) { }
 }
 
@@ -185,28 +187,33 @@ export default class ObsHandler {
 
 
   public async setSourceFilterSettings(sourceName: string, filterName: string, filterSettings: any) {
-
-    this.obs.send('GetSourceFilterInfo', Object.assign({}, { sourceName: 'cam-mirror-blue', filterName: 'blue' })
-    ).then((result: any) => {
-      log('info', result);
-      this.obs.send('SetSourceFilterSettings', Object.assign({},
-        {
-          sourceName: 'cam-mirror-blue',
-          filterName: 'blue',
-          filterSettings: JSON.stringify(filterSettings)
-        }))
-        .then((result: any) => {
-          log('info', result);
-        })
-        .catch((error: any) => {
-          log('error', error);
-        });
-    })
+    return this.obs.send('SetSourceFilterSettings', Object.assign({},
+      {
+        sourceName,
+        filterName,
+        filterSettings
+      }))
+      .then((result: any) => {
+        log('info', result);
+      })
       .catch((error: any) => {
         log('error', error);
       });
-    // {sourceName: 'source name', filterName: 'Color Correction?', filterSettings: {Color: 'New Color'} }
+  }
 
+  public async resetSourceFilterSettings(sourceName: string, filterName: string, filterSettings: any) {
+    this.obs.send('SetSourceFilterSettings', Object.assign({},
+      {
+        sourceName,
+        filterName,
+        filterSettings
+      }))
+      .then((result: any) => {
+        log('info', result);
+      })
+      .catch((error: any) => {
+        log('error', error);
+      });
   }
 
   public async deactivateSceneEffect(sceneEffect: SceneEffect): Promise<any> {
@@ -239,6 +246,22 @@ export default class ObsHandler {
           .catch((error: any) => log('error', error));
       });
     });
+  }
+
+  public async toggleSceneSource(sourceName: string, filterName: string, filterEnabled: boolean) {
+    return this.obs
+      .send(
+        'SetSourceFilterVisibility',
+        Object.assign(
+          {},
+          {
+            sourceName,
+            filterName,
+            filterEnabled
+          }
+        )
+      )
+      .catch((error: any) => log('error', error));
   }
 
   public async deactivateAllSceneEffects(): Promise<any> {
@@ -339,7 +362,9 @@ export default class ObsHandler {
         new SceneEffectSource(
           source.name,
           source.activeState,
-          source.inactiveState
+          source.inactiveState,
+          source.filterName,
+          source.sourceName
         )
     );
   }

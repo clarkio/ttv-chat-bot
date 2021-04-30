@@ -196,12 +196,25 @@ export default class EffectsManager {
     return alertEffectKey && this.alertEffects[alertEffectKey];
   };
 
-  public activateSceneEffectByName(effectName: string, options: any) {
+  public async activateSceneEffectByName(effectName: string, options: any) {
     const effectToActivate = this.obsHandler.determineSceneEffectByName(effectName);
     if (effectToActivate) {
       if (effectToActivate.name === 'colorwave') {
-        // const color = options.Color || '#00FF00';
-        this.obsHandler.setSourceFilterSettings('cam-mirror-blue', 'blue', { color: 0xff0000 });
+        const red = options.color.substr(0, 2);
+        const blue = options.color.substr(2, 2);
+        const green = options.color.substr(4, 2);
+        const color = parseInt(`FF${green}${blue}${red}`, 16);
+        const source = effectToActivate.sources[0];
+
+        await this.obsHandler.setSourceFilterSettings(source.sourceName, source.filterName, { color: color });
+
+        await this.obsHandler.toggleSceneSource(source.sourceName, source.filterName, true);
+
+
+        setTimeout(() => {
+          this.obsHandler.toggleSceneSource(source.sourceName, source.filterName, false);
+        }, 30000);
+
       }
       this.obsHandler.activateSceneEffect(effectToActivate);
     }
