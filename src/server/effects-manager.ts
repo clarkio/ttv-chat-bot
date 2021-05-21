@@ -208,12 +208,12 @@ export default class EffectsManager {
 
         await this.obsHandler.setSourceFilterSettings(source.sourceName, source.filterName, { color: color });
 
-        await this.obsHandler.toggleSceneSource(source.sourceName, source.filterName, true);
+        await this.obsHandler.toggleSceneSource(source.sourceName, true);
 
 
         setTimeout(() => {
-          this.obsHandler.toggleSceneSource(source.sourceName, source.filterName, false);
-        }, 30000);
+          this.obsHandler.toggleSceneSource(source.sourceName, false);
+        }, 10000);
 
       }
       this.obsHandler.activateSceneEffect(effectToActivate);

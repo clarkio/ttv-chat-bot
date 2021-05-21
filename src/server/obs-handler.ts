@@ -248,20 +248,24 @@ export default class ObsHandler {
     });
   }
 
-  public async toggleSceneSource(sourceName: string, filterName: string, filterEnabled: boolean) {
+  public async toggleSceneSource(sourceName: string, sourceEnabled: boolean) {
+    const currentScene = await this.getCurrentScene();
+
     return this.obs
       .send(
-        'SetSourceFilterVisibility',
+        'SetSceneItemProperties',
         Object.assign(
           {},
           {
-            sourceName,
-            filterName,
-            filterEnabled
+            'scene-name': currentScene,
+            'item': sourceName,
+            'visible': sourceEnabled
           }
         )
       )
-      .catch((error: any) => log('error', error));
+      .catch((error: any) => {
+        log('error', error)
+      });
   }
 
   public async deactivateAllSceneEffects(): Promise<any> {
