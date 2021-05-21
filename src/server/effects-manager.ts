@@ -1,3 +1,4 @@
+import chroma from 'chroma-js';
 import { AzureBot } from './azure-bot';
 import * as config from './config';
 import { effectsManager as constants, StopCommands } from './constants';
@@ -203,21 +204,22 @@ export default class EffectsManager {
     if (effectToActivate) {
       // TODO: don't hard code colorwave effect name
       if (effectToActivate.name === 'colorwave') {
+        const hexColor = chroma(options.color).hex().substr(1);
+
         // calculate color for obs websocket plugin format
         // default to FF alpha because it seems to act unusually for certain colors anyway
         // Example: 00AD9F
-        const red = options.color.substr(0, 2);
-        const blue = options.color.substr(2, 2);
-        const green = options.color.substr(4, 2);
+        const red = hexColor.substr(0, 2);
+        const blue = hexColor.substr(2, 2);
+        const green = hexColor.substr(4, 2);
         const color = parseInt(`FF${green}${blue}${red}`, 16);
         const source = effectToActivate.sources[0];
 
-        // add to queue
         this.colorWaveEffectQueue.push({ color, source });
 
-        // trigger effect
         this.triggerColorWaveEffect();
       }
+
       this.obsHandler.activateSceneEffect(effectToActivate);
     }
     return;

@@ -8,8 +8,9 @@
 ✔ Actually toggle scenesource for cam-mirror instead of the filter @created(Fri 04/30/2021 - 05:05 PM) @done(21-05-21 14:37)
 ✔ Add queuing for color wave effect so folks don't override each other after redeeming the channel point @created(Fri 05/21/2021 - 02:37 PM) @done(21-05-21 15:21)
 ☐ Feature request by ayushsharma: Show hex color code on screen that is active @created(Fri 05/21/2021 - 02:41 PM)
-☐ As mentioned by ElliottBrand: support other color formats and not just hex @created(Fri 05/21/2021 - 02:43 PM)
+✔ As mentioned by ElliottBrand: support other color formats and not just hex @created(Fri 05/21/2021 - 02:43 PM) @done(21-05-21 15:40)
   - look into using chroma-js to accomplish this just like we do for the overlay colors
+☐ As suggested by Whittypants: have some indication to the viewer when a color is not recognized or supported @created(Fri 05/21/2021 - 03:40 PM)
 
 ✔ For shadow color effect allow chat to choose a color @created(Fri 04/23/2021 - 04:00 PM) @done(21-04-30 17:05)
   ✔ Update OBS Handler to change source filter settings @created(Fri 04/23/2021 - 04:00 PM) @done(21-04-30 17:05)
