@@ -22,6 +22,8 @@ export default class EffectsManager {
   private overlay!: Overlay;
   private joinSoundEffects: any[] | undefined;
   private playedUserJoinSounds: string[] = [];
+  private colorWaveEffectQueue: any[] = [];
+  private isColorWaveActive: boolean = false;
 
   constructor(public appServer: AppServer) {
     this.loadEffects().then(this.initEffectControllers);
@@ -199,26 +201,43 @@ export default class EffectsManager {
   public async activateSceneEffectByName(effectName: string, options: any) {
     const effectToActivate = this.obsHandler.determineSceneEffectByName(effectName);
     if (effectToActivate) {
+      // TODO: don't hard code colorwave effect name
       if (effectToActivate.name === 'colorwave') {
+        // calculate color for obs websocket plugin format
+        // default to FF alpha because it seems to act unusually for certain colors anyway
+        // Example: 00AD9F
         const red = options.color.substr(0, 2);
         const blue = options.color.substr(2, 2);
         const green = options.color.substr(4, 2);
         const color = parseInt(`FF${green}${blue}${red}`, 16);
         const source = effectToActivate.sources[0];
 
-        await this.obsHandler.setSourceFilterSettings(source.sourceName, source.filterName, { color: color });
+        // add to queue
+        this.colorWaveEffectQueue.push({ color, source });
 
-        await this.obsHandler.toggleSceneSource(source.sourceName, true);
-
-
-        setTimeout(() => {
-          this.obsHandler.toggleSceneSource(source.sourceName, false);
-        }, 10000);
-
+        // trigger effect
+        this.triggerColorWaveEffect();
       }
       this.obsHandler.activateSceneEffect(effectToActivate);
     }
     return;
+  }
+
+  private async triggerColorWaveEffect() {
+    if (this.colorWaveEffectQueue.length > 0 && !this.isColorWaveActive) {
+      this.isColorWaveActive = true;
+
+      let { source, color } = this.colorWaveEffectQueue.shift() as any;
+      await this.obsHandler.setSourceFilterSettings(source.sourceName, source.filterName, { color: color });
+
+      await this.obsHandler.toggleSceneSource(source.sourceName, true);
+
+      setTimeout(() => {
+        this.obsHandler.toggleSceneSource(source.sourceName, false);
+        this.isColorWaveActive = false;
+        this.triggerColorWaveEffect();
+      }, 10000);
+    }
   }
 
   private hasJoinSoundPlayed(username: string): boolean {
