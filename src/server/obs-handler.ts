@@ -147,7 +147,7 @@ export default class ObsHandler {
   public async getCurrentScene(): Promise<string> {
     return this.obs.send(ObsRequests.GetCurrentScene)
       .then((result: any) => {
-        return result
+        return result;
       })
       .catch((error: any) => {
         log('error', error);
@@ -264,7 +264,7 @@ export default class ObsHandler {
         )
       )
       .catch((error: any) => {
-        log('error', error)
+        log('error', error);
       });
   }
 

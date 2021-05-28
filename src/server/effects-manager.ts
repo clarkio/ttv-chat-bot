@@ -219,8 +219,6 @@ export default class EffectsManager {
 
         this.triggerColorWaveEffect();
       }
-
-      this.obsHandler.activateSceneEffect(effectToActivate);
     }
     return;
   }
@@ -239,6 +237,8 @@ export default class EffectsManager {
         this.isColorWaveActive = false;
         this.triggerColorWaveEffect();
       }, 10000);
+
+      return;
     }
   }
 
