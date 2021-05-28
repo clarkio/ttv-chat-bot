@@ -204,6 +204,7 @@ export default class EffectsManager {
     if (effectToActivate) {
       // TODO: don't hard code colorwave effect name
       if (effectToActivate.name === 'colorwave') {
+
         const hexColor = chroma(options.color).hex().substr(1);
 
         // calculate color for obs websocket plugin format
@@ -228,15 +229,34 @@ export default class EffectsManager {
       this.isColorWaveActive = true;
 
       let { source, color } = this.colorWaveEffectQueue.shift() as any;
-      await this.obsHandler.setSourceFilterSettings(source.sourceName, source.filterName, { color: color });
+      // start with 0 opacity and work up to 100
+      let opacity: number = 0;
+      await this.obsHandler.setSourceFilterSettings(source.sourceName, source.filterName, { color, opacity });
 
       await this.obsHandler.toggleSceneSource(source.sourceName, true);
 
-      setTimeout(() => {
-        this.obsHandler.toggleSceneSource(source.sourceName, false);
-        this.isColorWaveActive = false;
-        this.triggerColorWaveEffect();
-      }, 10000);
+      const fadeIntervalDelay = 1000;
+      let fadeInterval = setInterval(async () => {
+        opacity += 10;
+        await this.obsHandler.setSourceFilterSettings(source.sourceName, source.filterName, { opacity });
+
+        if (opacity === 100) {
+          clearInterval(fadeInterval);
+        }
+      }, fadeIntervalDelay);
+
+      setTimeout(async () => {
+        let fadeOutIntveral = setInterval(async () => {
+          opacity -= 10;
+          await this.obsHandler.setSourceFilterSettings(source.sourceName, source.filterName, { opacity });
+          if (opacity <= 0) {
+            clearInterval(fadeOutIntveral);
+            this.obsHandler.toggleSceneSource(source.sourceName, false);
+            this.isColorWaveActive = false;
+            this.triggerColorWaveEffect();
+          }
+        }, 1000);
+      }, 30000);
 
       return;
     }

@@ -7,7 +7,6 @@
 ☐ Feature request by ayushsharma: Show hex color code on screen that is active @created(Fri 05/21/2021 - 02:41 PM)
   - look into using chroma-js to accomplish this just like we do for the overlay colors
 ☐ As suggested by Whittypants: have some indication to the viewer when a color is not recognized or supported @created(Fri 05/21/2021 - 03:40 PM)
-☐ Suggestion by wwsean08: it would be cool if it had a fade out@created(Fri 05/28/2021 - 04:30 PM)
 
     - https://github.com/Palakis/obs-websocket/blob/4.x-current/docs/generated/protocol.md#setsourcefiltersettings
     - Need to determine the specific setting for the color correction filter that sets the color value
@@ -96,6 +95,7 @@ maybe !sfx <filename>?
 3. Apply input/data to command (execute the command using the input provide from the chat message)
 
 Archive:
+  ✔ Suggestion by wwsean08: it would be cool if it had a fade out @created(Fri 05/28/2021 - 04:30 PM) @done(21-05-28 17:21)
   ✔ Actually toggle scenesource for cam-mirror instead of the filter @created(Fri 04/30/2021 - 05:05 PM) @done(21-05-21 14:37)
   ✔ Add queuing for color wave effect so folks don't override each other after redeeming the channel point @created(Fri 05/21/2021 - 02:37 PM) @done(21-05-21 15:21)
   ✔ As mentioned by ElliottBrand: support other color formats and not just hex @created(Fri 05/21/2021 - 02:43 PM) @done(21-05-21 15:40)
