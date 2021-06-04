@@ -161,7 +161,8 @@ export default class EffectsManager {
     ) {
       // TODO: add to effects queue instead
       const sceneEffect = await this.obsHandler.determineSceneEffect(message);
-      this.obsHandler.applySceneEffect(sceneEffect)
+      this.obsHandler
+        .applySceneEffect(sceneEffect)
         .catch((error) => log('error', error));
       setTimeout(() => {
         this.obsHandler.deactivateSceneEffect(sceneEffect);
@@ -200,25 +201,29 @@ export default class EffectsManager {
   };
 
   public async activateSceneEffectByName(effectName: string, options: any) {
-    const effectToActivate = this.obsHandler.determineSceneEffectByName(effectName);
+    const effectToActivate =
+      this.obsHandler.determineSceneEffectByName(effectName);
     if (effectToActivate) {
       // TODO: don't hard code colorwave effect name
-      if (effectToActivate.name === 'colorwave') {
+      if (effectToActivate.name === 'colorwave' && options) {
+        if (chroma.valid(options.color)) {
+          const hexColor = chroma(options.color).hex().substr(1);
 
-        const hexColor = chroma(options.color).hex().substr(1);
+          // calculate color for obs websocket plugin format
+          // default to FF alpha because it seems to act unusually for certain colors anyway
+          // Example: 00AD9F
+          const red = hexColor.substr(0, 2);
+          const blue = hexColor.substr(2, 2);
+          const green = hexColor.substr(4, 2);
+          const color = parseInt(`FF${green}${blue}${red}`, 16);
+          const source = effectToActivate.sources[0];
 
-        // calculate color for obs websocket plugin format
-        // default to FF alpha because it seems to act unusually for certain colors anyway
-        // Example: 00AD9F
-        const red = hexColor.substr(0, 2);
-        const blue = hexColor.substr(2, 2);
-        const green = hexColor.substr(4, 2);
-        const color = parseInt(`FF${green}${blue}${red}`, 16);
-        const source = effectToActivate.sources[0];
+          this.colorWaveEffectQueue.push({ color, source });
 
-        this.colorWaveEffectQueue.push({ color, source });
-
-        this.triggerColorWaveEffect();
+          this.triggerColorWaveEffect();
+        } else {
+          throw Error(`${options.color} is not a valid color`);
+        }
       }
     }
     return;
@@ -231,14 +236,22 @@ export default class EffectsManager {
       let { source, color } = this.colorWaveEffectQueue.shift() as any;
       // start with 0 opacity and work up to 100
       let opacity: number = 0;
-      await this.obsHandler.setSourceFilterSettings(source.sourceName, source.filterName, { color, opacity });
+      await this.obsHandler.setSourceFilterSettings(
+        source.sourceName,
+        source.filterName,
+        { color, opacity }
+      );
 
       await this.obsHandler.toggleSceneSource(source.sourceName, true);
 
       const fadeIntervalDelay = 1000;
       let fadeInterval = setInterval(async () => {
         opacity += 10;
-        await this.obsHandler.setSourceFilterSettings(source.sourceName, source.filterName, { opacity });
+        await this.obsHandler.setSourceFilterSettings(
+          source.sourceName,
+          source.filterName,
+          { opacity }
+        );
 
         if (opacity === 100) {
           clearInterval(fadeInterval);
@@ -248,7 +261,11 @@ export default class EffectsManager {
       setTimeout(async () => {
         let fadeOutIntveral = setInterval(async () => {
           opacity -= 10;
-          await this.obsHandler.setSourceFilterSettings(source.sourceName, source.filterName, { opacity });
+          await this.obsHandler.setSourceFilterSettings(
+            source.sourceName,
+            source.filterName,
+            { opacity }
+          );
           if (opacity <= 0) {
             clearInterval(fadeOutIntveral);
             this.obsHandler.toggleSceneSource(source.sourceName, false);
@@ -274,7 +291,8 @@ export default class EffectsManager {
       this.alertEffects = this.allEffects.alertEffects;
       this.sceneEffects = this.allEffects.sceneEffects;
       this.soundEffects = this.allEffects.soundEffects;
-      this.permittedScenesForCommand = this.allEffects.permittedScenesForCommand;
+      this.permittedScenesForCommand =
+        this.allEffects.permittedScenesForCommand;
       this.sceneAliases = this.allEffects.sceneAliases;
       this.joinSoundEffects = this.allEffects.joinSoundEffects;
       return;
@@ -337,7 +355,8 @@ export default class EffectsManager {
     sceneEffect: SceneEffect,
     soundEffect: SoundFxFile
   ) {
-    this.obsHandler.activateSceneEffect(sceneEffect)
+    this.obsHandler
+      .activateSceneEffect(sceneEffect)
       .catch((error) => log('error', error));
     // automatically deactivate the scene effect based on the duration of the corresponding sound effect that triggered it
     const duration = sceneEffect.duration || soundEffect.duration * 1000;

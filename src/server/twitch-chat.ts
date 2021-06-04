@@ -13,9 +13,8 @@ import TwitchUser from './twitch-user';
 
 enum ChannelRewards {
   TextToSpeech = '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb',
-  ColorWave = 'b690c37e-5cec-4771-a463-8b492ad6107c'
+  ColorWave = 'b690c37e-5cec-4771-a463-8b492ad6107c',
 }
-
 
 export class TwitchChat {
   public ttvChatClient: Client;
@@ -193,16 +192,13 @@ export class TwitchChat {
    * @param message the message sent by a user
    * @param userName the user who sent the message
    */
-  private parseChat = (
+  private parseChat = async (
     message: string,
     user: TwitchUser,
     customRewardId: string
   ) => {
     const userName = user.username;
-    if (
-      customRewardId &&
-      customRewardId === ChannelRewards.TextToSpeech
-    ) {
+    if (customRewardId && customRewardId === ChannelRewards.TextToSpeech) {
       const ttsMessage = this.isTrustedUser(user)
         ? `${userName} says ${message}`
         : message;
@@ -211,7 +207,18 @@ export class TwitchChat {
 
     if (customRewardId && customRewardId === ChannelRewards.ColorWave) {
       const options = { color: message };
-      this.effectsManager.activateSceneEffectByName('colorwave', options);
+      // get result of activating and if it fails send a response in chat
+      try {
+        await this.effectsManager.activateSceneEffectByName(
+          'colorwave',
+          options
+        );
+      } catch (error) {
+        log('error', error.message);
+        this.sendChatMessage(
+          `Hey @${userName} ${error.message}! Are you trolling?`
+        );
+      }
     }
 
     if ((user.isBroadcaster || user.isMod) && message.startsWith('!skip')) {
