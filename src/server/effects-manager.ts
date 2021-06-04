@@ -205,7 +205,7 @@ export default class EffectsManager {
       this.obsHandler.determineSceneEffectByName(effectName);
     if (effectToActivate) {
       // TODO: don't hard code colorwave effect name
-      if (effectToActivate.name === 'colorwave' && options) {
+      if (effectToActivate.name === constants.cameraColorShadowEffectName && options) {
         if (chroma.valid(options.color)) {
           const hexColor = chroma(options.color).hex().substr(1);
 

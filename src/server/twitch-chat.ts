@@ -6,11 +6,16 @@ import {
   ttvClientToken,
   ttvClientUsername,
 } from './config';
-import { twitchChat as constants } from './constants';
+import {
+  twitchChat as constants,
+  effectsManager as emConstants,
+} from './constants';
 import EffectsManager from './effects-manager';
 import { log } from './log';
 import TwitchUser from './twitch-user';
 
+// TODO: after moving to TAU for events we can
+// key off redemptions by name instead of reward-id
 enum ChannelRewards {
   TextToSpeech = '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb',
   ColorWave = 'b690c37e-5cec-4771-a463-8b492ad6107c',
@@ -210,13 +215,13 @@ export class TwitchChat {
       // get result of activating and if it fails send a response in chat
       try {
         await this.effectsManager.activateSceneEffectByName(
-          'colorwave',
+          emConstants.cameraColorShadowEffectName,
           options
         );
       } catch (error) {
         log('error', error.message);
         this.sendChatMessage(
-          `Hey @${userName} ${error.message}! Are you trolling?`
+          `Hey @${userName}, "${error.message}"! Are you trolling?`
         );
       }
     }

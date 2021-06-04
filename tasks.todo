@@ -3,10 +3,10 @@
 
 ☐ Change bot to listen to TAU for events @created(Fri 04/23/2021 - 03:56 PM)
   ☐ Make sure to listen for channel point redemptions too @created(Fri 04/23/2021 - 03:57 PM)
+  ☐ Make sure to update channel point enum to use redemption name instead of reward-id @created(Fri 06/04/2021 - 03:46 PM)
 
 ☐ Feature request by ayushsharma: Show hex color code on screen that is active @created(Fri 05/21/2021 - 02:41 PM)
   - look into using chroma-js to accomplish this just like we do for the overlay colors
-☐ As suggested by Whittypants: have some indication to the viewer when a color is not recognized or supported @created(Fri 05/21/2021 - 03:40 PM)
 ☐ Suggestion by codephobia: are you able to hide the cam and only show the silhouette? @created(Fri 05/28/2021 - 05:25 PM)
 
 ☐ look into how to have a common constants file across two TS projects (client/server)?
@@ -92,6 +92,7 @@ maybe !sfx <filename>?
 3. Apply input/data to command (execute the command using the input provide from the chat message)
 
 Archive:
+  ✔ As suggested by Whittypants: have some indication to the viewer when a color is not recognized or supported @created(Fri 05/21/2021 - 03:40 PM) @done(21-06-04 15:30)
   ✔ Suggestion by wwsean08: it would be cool if it had a fade out @created(Fri 05/28/2021 - 04:30 PM) @done(21-05-28 17:21)
   ✔ Actually toggle scenesource for cam-mirror instead of the filter @created(Fri 04/30/2021 - 05:05 PM) @done(21-05-21 14:37)
     - https://github.com/Palakis/obs-websocket/blob/4.x-current/docs/generated/protocol.md#setsourcefiltersettings
