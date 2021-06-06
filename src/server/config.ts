@@ -35,10 +35,30 @@ const {
   OBS_SOCKETS_KEY,
   OBS_SOCKETS_SERVER,
   STREAMELEMENTS_JWT,
-  STREAMELEMENTS_WEBSOCKET_URL
+  STREAMELEMENTS_WEBSOCKET_URL,
+  CAMERA_SHADOW_DURATION_MILLISECONDS,
+  CAMERA_SHADOW_FADE_MILLISECONDS,
+  CAMERA_SHADOW_OPACITY_MODIFIER,
 } = process.env;
 
 const requireConfigMessage = 'REQUIRED CONFIGURATION WAS NOT PROVIDED';
+
+/*****************************************************************************
+ * Other
+ *****************************************************************************/
+
+export const cameraShadowDurationInMilliseconds: number =
+  CAMERA_SHADOW_DURATION_MILLISECONDS ||
+  fileConfig.cameraShadowDurationInMilliseconds ||
+  30000;
+
+export const cameraShadowFadeDelayInMilliseconds: number =
+  CAMERA_SHADOW_FADE_MILLISECONDS ||
+  fileConfig.cameraShadowFadeDelayInMilliseconds ||
+  500;
+
+export const cameraShadowOpacityModifier: number =
+  CAMERA_SHADOW_OPACITY_MODIFIER || fileConfig.cameraShadowOpacityModifier || 2;
 
 /*****************************************************************************
  * App
@@ -98,13 +118,13 @@ export const azureBotResponseCheckDelay: number =
   fileConfig.azureBotResponseCheckDelay ||
   4000;
 
-  export const azureSpeechToken: string =
+export const azureSpeechToken: string =
   AZURE_SPEECH_TOKEN || fileConfig.azureSpeechToken || requireConfigMessage;
 
-export const tokens:any = {
+export const tokens: any = {
   azureBotToken,
-  azureSpeechToken
-}
+  azureSpeechToken,
+};
 
 /*****************************************************************************
  * Discord

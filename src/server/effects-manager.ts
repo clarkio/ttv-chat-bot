@@ -205,7 +205,10 @@ export default class EffectsManager {
       this.obsHandler.determineSceneEffectByName(effectName);
     if (effectToActivate) {
       // TODO: don't hard code colorwave effect name
-      if (effectToActivate.name === constants.cameraColorShadowEffectName && options) {
+      if (
+        effectToActivate.name === constants.cameraColorShadowEffectName &&
+        options
+      ) {
         if (chroma.valid(options.color)) {
           const hexColor = chroma(options.color).hex().substr(1);
 
@@ -244,9 +247,8 @@ export default class EffectsManager {
 
       await this.obsHandler.toggleSceneSource(source.sourceName, true);
 
-      const fadeIntervalDelay = 1000;
       let fadeInterval = setInterval(async () => {
-        opacity += 10;
+        opacity += config.cameraShadowOpacityModifier;
         await this.obsHandler.setSourceFilterSettings(
           source.sourceName,
           source.filterName,
@@ -256,11 +258,11 @@ export default class EffectsManager {
         if (opacity === 100) {
           clearInterval(fadeInterval);
         }
-      }, fadeIntervalDelay);
+      }, config.cameraShadowFadeDelayInMilliseconds);
 
       setTimeout(async () => {
         let fadeOutIntveral = setInterval(async () => {
-          opacity -= 10;
+          opacity -= config.cameraShadowOpacityModifier;
           await this.obsHandler.setSourceFilterSettings(
             source.sourceName,
             source.filterName,
@@ -272,8 +274,8 @@ export default class EffectsManager {
             this.isColorWaveActive = false;
             this.triggerColorWaveEffect();
           }
-        }, 1000);
-      }, 30000);
+        }, config.cameraShadowFadeDelayInMilliseconds);
+      }, config.cameraShadowDurationInMilliseconds);
 
       return;
     }
