@@ -211,7 +211,7 @@ export class TwitchChat {
     }
 
     if (customRewardId && customRewardId === ChannelRewards.ColorWave) {
-      const options = { color: message };
+      const options = { color: message, chatUser: userName };
       // get result of activating and if it fails send a response in chat
       try {
         await this.effectsManager.activateSceneEffectByName(

@@ -5,6 +5,9 @@
   ☐ Make sure to listen for channel point redemptions too @created(Fri 04/23/2021 - 03:57 PM)
   ☐ Make sure to update channel point enum to use redemption name instead of reward-id @created(Fri 06/04/2021 - 03:46 PM)
 
+☐ Shadow Color effect: automatically set channel point redemption as complete @created(Sun 06/06/2021 - 02:05 PM)
+  - Might have to use this approach? https://github.com/twitchdev/channel-points-node-sample/blob/main/index.js#L145
+
 ☐ Feature request by ayushsharma: Show hex color code on screen that is active @created(Fri 05/21/2021 - 02:41 PM)
   - look into using chroma-js to accomplish this just like we do for the overlay colors
 ☐ Suggestion by codephobia: are you able to hide the cam and only show the silhouette? @created(Fri 05/28/2021 - 05:25 PM)

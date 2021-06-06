@@ -203,33 +203,36 @@ export default class EffectsManager {
   public async activateSceneEffectByName(effectName: string, options: any) {
     const effectToActivate =
       this.obsHandler.determineSceneEffectByName(effectName);
-    if (effectToActivate) {
-      // TODO: don't hard code colorwave effect name
-      if (
-        effectToActivate.name === constants.cameraColorShadowEffectName &&
-        options
-      ) {
-        if (chroma.valid(options.color)) {
-          const hexColor = chroma(options.color).hex().substr(1);
+    if (
+      effectToActivate &&
+      effectToActivate.name === constants.cameraColorShadowEffectName &&
+      options
+    ) {
+      if (chroma.valid(options.color)) {
+        const hexColor = chroma(options.color).hex().substr(1);
 
-          // calculate color for obs websocket plugin format
-          // default to FF alpha because it seems to act unusually for certain colors anyway
-          // Example: 00AD9F
-          const red = hexColor.substr(0, 2);
-          const blue = hexColor.substr(2, 2);
-          const green = hexColor.substr(4, 2);
-          const color = parseInt(`FF${green}${blue}${red}`, 16);
-          const source = effectToActivate.sources[0];
+        // calculate color for obs websocket plugin format
+        // default to FF alpha because it seems to act unusually for certain colors anyway
+        // Example: 00AD9F
+        const red = hexColor.substr(0, 2);
+        const blue = hexColor.substr(2, 2);
+        const green = hexColor.substr(4, 2);
+        const color = parseInt(`FF${green}${blue}${red}`, 16);
+        const source = effectToActivate.sources[0];
 
-          this.colorWaveEffectQueue.push({ color, source });
+        this.colorWaveEffectQueue.push({
+          color,
+          source,
+          chatUser: options.chatUser,
+        });
 
-          this.triggerColorWaveEffect();
-        } else {
-          throw Error(`${options.color} is not a valid color`);
-        }
+        return await this.triggerColorWaveEffect();
+      } else {
+        throw Error(`${options.color} is not a valid color`);
       }
+    } else {
+      return;
     }
-    return;
   }
 
   private async triggerColorWaveEffect() {
@@ -273,13 +276,14 @@ export default class EffectsManager {
           // In case the modifier causes it to have a value below zero
           if (opacity <= 0) {
             clearInterval(fadeOutIntveral);
-            this.obsHandler.toggleSceneSource(source.sourceName, false);
+            await this.obsHandler.toggleSceneSource(source.sourceName, false);
             this.isColorWaveActive = false;
-            this.triggerColorWaveEffect();
+            return await this.triggerColorWaveEffect();
           }
         }, config.cameraShadowFadeDelayInMilliseconds);
       }, config.cameraShadowDurationInMilliseconds);
-
+    } else {
+      // Effect completed
       return;
     }
   }
