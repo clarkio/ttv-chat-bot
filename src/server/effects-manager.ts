@@ -255,7 +255,8 @@ export default class EffectsManager {
           { opacity }
         );
 
-        if (opacity === 100) {
+        // In case the modifier causes it to have a value above 100
+        if (opacity >= 100) {
           clearInterval(fadeInterval);
         }
       }, config.cameraShadowFadeDelayInMilliseconds);
@@ -268,6 +269,8 @@ export default class EffectsManager {
             source.filterName,
             { opacity }
           );
+
+          // In case the modifier causes it to have a value below zero
           if (opacity <= 0) {
             clearInterval(fadeOutIntveral);
             this.obsHandler.toggleSceneSource(source.sourceName, false);

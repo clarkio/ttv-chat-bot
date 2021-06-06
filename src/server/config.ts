@@ -55,7 +55,7 @@ export const cameraShadowDurationInMilliseconds: number =
 export const cameraShadowFadeDelayInMilliseconds: number =
   CAMERA_SHADOW_FADE_MILLISECONDS ||
   fileConfig.cameraShadowFadeDelayInMilliseconds ||
-  500;
+  250;
 
 export const cameraShadowOpacityModifier: number =
   CAMERA_SHADOW_OPACITY_MODIFIER || fileConfig.cameraShadowOpacityModifier || 2;
