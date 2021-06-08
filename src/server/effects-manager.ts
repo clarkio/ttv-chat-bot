@@ -1,3 +1,4 @@
+import chroma from 'chroma-js';
 import { AzureBot } from './azure-bot';
 import * as config from './config';
 import { effectsManager as constants, StopCommands } from './constants';
@@ -22,6 +23,8 @@ export default class EffectsManager {
   private overlay!: Overlay;
   private joinSoundEffects: any[] | undefined;
   private playedUserJoinSounds: string[] = [];
+  private colorWaveEffectQueue: any[] = [];
+  private isColorWaveActive: boolean = false;
 
   constructor(public appServer: AppServer) {
     this.loadEffects().then(this.initEffectControllers);
@@ -158,7 +161,8 @@ export default class EffectsManager {
     ) {
       // TODO: add to effects queue instead
       const sceneEffect = await this.obsHandler.determineSceneEffect(message);
-      this.obsHandler.applySceneEffect(sceneEffect)
+      this.obsHandler
+        .applySceneEffect(sceneEffect)
         .catch((error) => log('error', error));
       setTimeout(() => {
         this.obsHandler.deactivateSceneEffect(sceneEffect);
@@ -196,6 +200,94 @@ export default class EffectsManager {
     return alertEffectKey && this.alertEffects[alertEffectKey];
   };
 
+  public async activateSceneEffectByName(effectName: string, options: any) {
+    const effectToActivate =
+      this.obsHandler.determineSceneEffectByName(effectName);
+    if (
+      effectToActivate &&
+      effectToActivate.name === constants.cameraColorShadowEffectName &&
+      options
+    ) {
+      if (chroma.valid(options.color)) {
+        const hexColor = chroma(options.color).hex().substr(1);
+
+        // calculate color for obs websocket plugin format
+        // default to FF alpha because it seems to act unusually for certain colors anyway
+        // Example: 00AD9F
+        const red = hexColor.substr(0, 2);
+        const blue = hexColor.substr(2, 2);
+        const green = hexColor.substr(4, 2);
+        const color = parseInt(`FF${green}${blue}${red}`, 16);
+        const source = effectToActivate.sources[0];
+
+        this.colorWaveEffectQueue.push({
+          color,
+          source,
+          chatUser: options.chatUser,
+        });
+
+        return await this.triggerColorWaveEffect();
+      } else {
+        throw Error(`${options.color} is not a valid color`);
+      }
+    } else {
+      return;
+    }
+  }
+
+  private async triggerColorWaveEffect() {
+    if (this.colorWaveEffectQueue.length > 0 && !this.isColorWaveActive) {
+      this.isColorWaveActive = true;
+
+      let { source, color } = this.colorWaveEffectQueue.shift() as any;
+      // start with 0 opacity and work up to 100
+      let opacity: number = 0;
+      await this.obsHandler.setSourceFilterSettings(
+        source.sourceName,
+        source.filterName,
+        { color, opacity }
+      );
+
+      await this.obsHandler.toggleSceneSource(source.sourceName, true);
+
+      let fadeInterval = setInterval(async () => {
+        opacity += config.cameraShadowOpacityModifier;
+        await this.obsHandler.setSourceFilterSettings(
+          source.sourceName,
+          source.filterName,
+          { opacity }
+        );
+
+        // In case the modifier causes it to have a value above 100
+        if (opacity >= 100) {
+          clearInterval(fadeInterval);
+        }
+      }, config.cameraShadowFadeDelayInMilliseconds);
+
+      setTimeout(async () => {
+        let fadeOutIntveral = setInterval(async () => {
+          opacity -= config.cameraShadowOpacityModifier;
+          await this.obsHandler.setSourceFilterSettings(
+            source.sourceName,
+            source.filterName,
+            { opacity }
+          );
+
+          // In case the modifier causes it to have a value below zero
+          if (opacity <= 0) {
+            clearInterval(fadeOutIntveral);
+            await this.obsHandler.toggleSceneSource(source.sourceName, false);
+            this.isColorWaveActive = false;
+            return await this.triggerColorWaveEffect();
+          }
+        }, config.cameraShadowFadeDelayInMilliseconds);
+      }, config.cameraShadowDurationInMilliseconds);
+    } else {
+      // Effect completed
+      return;
+    }
+  }
+
   private hasJoinSoundPlayed(username: string): boolean {
     return this.playedUserJoinSounds.includes(username);
   }
@@ -208,7 +300,8 @@ export default class EffectsManager {
       this.alertEffects = this.allEffects.alertEffects;
       this.sceneEffects = this.allEffects.sceneEffects;
       this.soundEffects = this.allEffects.soundEffects;
-      this.permittedScenesForCommand = this.allEffects.permittedScenesForCommand;
+      this.permittedScenesForCommand =
+        this.allEffects.permittedScenesForCommand;
       this.sceneAliases = this.allEffects.sceneAliases;
       this.joinSoundEffects = this.allEffects.joinSoundEffects;
       return;
@@ -271,7 +364,8 @@ export default class EffectsManager {
     sceneEffect: SceneEffect,
     soundEffect: SoundFxFile
   ) {
-    this.obsHandler.activateSceneEffect(sceneEffect)
+    this.obsHandler
+      .activateSceneEffect(sceneEffect)
       .catch((error) => log('error', error));
     // automatically deactivate the scene effect based on the duration of the corresponding sound effect that triggered it
     const duration = sceneEffect.duration || soundEffect.duration * 1000;

@@ -19,6 +19,7 @@ export const azureBot = {
 };
 
 export const effectsManager = {
+  cameraColorShadowEffectName: 'camera-color-shadow',
   audioFinishedEvent: 'audio-finished',
   failedSoundEffectMessage: 'failed to play the sorry sound effect',
   heccSoundEffect: 'hecc',

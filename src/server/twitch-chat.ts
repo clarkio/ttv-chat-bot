@@ -6,11 +6,20 @@ import {
   ttvClientToken,
   ttvClientUsername,
 } from './config';
-import { twitchChat as constants } from './constants';
+import {
+  twitchChat as constants,
+  effectsManager as emConstants,
+} from './constants';
 import EffectsManager from './effects-manager';
 import { log } from './log';
 import TwitchUser from './twitch-user';
 
+// TODO: after moving to TAU for events we can
+// key off redemptions by name instead of reward-id
+enum ChannelRewards {
+  TextToSpeech = '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb',
+  ColorWave = 'b690c37e-5cec-4771-a463-8b492ad6107c',
+}
 
 export class TwitchChat {
   public ttvChatClient: Client;
@@ -188,20 +197,33 @@ export class TwitchChat {
    * @param message the message sent by a user
    * @param userName the user who sent the message
    */
-  private parseChat = (
+  private parseChat = async (
     message: string,
     user: TwitchUser,
     customRewardId: string
   ) => {
     const userName = user.username;
-    if (
-      customRewardId &&
-      customRewardId === '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb'
-    ) {
+    if (customRewardId && customRewardId === ChannelRewards.TextToSpeech) {
       const ttsMessage = this.isTrustedUser(user)
         ? `${userName} says ${message}`
         : message;
       this.effectsManager.appServer.io.emit('tts', ttsMessage);
+    }
+
+    if (customRewardId && customRewardId === ChannelRewards.ColorWave) {
+      const options = { color: message, chatUser: userName };
+      // get result of activating and if it fails send a response in chat
+      try {
+        await this.effectsManager.activateSceneEffectByName(
+          emConstants.cameraColorShadowEffectName,
+          options
+        );
+      } catch (error) {
+        log('error', error.message);
+        this.sendChatMessage(
+          `Hey @${userName}, "${error.message}"! Are you trolling?`
+        );
+      }
     }
 
     if ((user.isBroadcaster || user.isMod) && message.startsWith('!skip')) {

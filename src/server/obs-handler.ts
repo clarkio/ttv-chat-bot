@@ -34,7 +34,7 @@ export class SceneEffect {
     public scenes: string[],
     public sources: SceneEffectSource[],
     public duration: number
-  ) {}
+  ) { }
 }
 
 /**
@@ -44,8 +44,10 @@ export class SceneEffectSource {
   constructor(
     public name: string,
     public activeState: any,
-    public inactiveState: any
-  ) {}
+    public inactiveState: any,
+    public filterName?: string,
+    public sourceName?: string
+  ) { }
 }
 
 /**
@@ -145,7 +147,7 @@ export default class ObsHandler {
   public async getCurrentScene(): Promise<string> {
     return this.obs.send(ObsRequests.GetCurrentScene)
       .then((result: any) => {
-        return result
+        return result;
       })
       .catch((error: any) => {
         log('error', error);
@@ -183,6 +185,37 @@ export default class ObsHandler {
     });
   }
 
+
+  public async setSourceFilterSettings(sourceName: string, filterName: string, filterSettings: any) {
+    return this.obs.send('SetSourceFilterSettings', Object.assign({},
+      {
+        sourceName,
+        filterName,
+        filterSettings
+      }))
+      .then((result: any) => {
+        log('info', result);
+      })
+      .catch((error: any) => {
+        log('error', error);
+      });
+  }
+
+  public async resetSourceFilterSettings(sourceName: string, filterName: string, filterSettings: any) {
+    this.obs.send('SetSourceFilterSettings', Object.assign({},
+      {
+        sourceName,
+        filterName,
+        filterSettings
+      }))
+      .then((result: any) => {
+        log('info', result);
+      })
+      .catch((error: any) => {
+        log('error', error);
+      });
+  }
+
   public async deactivateSceneEffect(sceneEffect: SceneEffect): Promise<any> {
     const index = this.activeSceneEffects.indexOf(sceneEffect);
     this.activeSceneEffects.splice(index, 1);
@@ -213,6 +246,26 @@ export default class ObsHandler {
           .catch((error: any) => log('error', error));
       });
     });
+  }
+
+  public async toggleSceneSource(sourceName: string, sourceEnabled: boolean) {
+    const currentScene = await this.getCurrentScene();
+
+    return this.obs
+      .send(
+        'SetSceneItemProperties',
+        Object.assign(
+          {},
+          {
+            'scene-name': currentScene,
+            'item': sourceName,
+            'visible': sourceEnabled
+          }
+        )
+      )
+      .catch((error: any) => {
+        log('error', error);
+      });
   }
 
   public async deactivateAllSceneEffects(): Promise<any> {
@@ -264,12 +317,12 @@ export default class ObsHandler {
       });
   }
 
-  private handleObsConnectErrors (error: any): void {
-    if(error.code === ObsErrors.ConnectionError) {
+  private handleObsConnectErrors(error: any): void {
+    if (error.code === ObsErrors.ConnectionError) {
       log('info', `OBS Websocket Connection Failed: Retrying connection in ${this.retryConnectionWaitTime / 1000} seconds`);
 
       this.retryConnectionCount++;
-      if(this.retryConnectionCount >= this.retryConnectionLimit) return;
+      if (this.retryConnectionCount >= this.retryConnectionLimit) return;
 
       setTimeout(this.connectToObs.bind(this), this.retryConnectionWaitTime);
     }
@@ -279,7 +332,7 @@ export default class ObsHandler {
     log('error', error);
   }
 
-  private getSceneList(): void  {
+  private getSceneList(): void {
     this.obs.send(ObsRequests.GetSceneList).then((data: any) => {
       this.sceneList = data.scenes;
     });
@@ -313,7 +366,9 @@ export default class ObsHandler {
         new SceneEffectSource(
           source.name,
           source.activeState,
-          source.inactiveState
+          source.inactiveState,
+          source.filterName,
+          source.sourceName
         )
     );
   }

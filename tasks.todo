@@ -1,4 +1,17 @@
 
+// Current limitation is that I required channel point redemptions with text only in order to capture when they are redeemed
+
+☐ Change bot to listen to TAU for events @created(Fri 04/23/2021 - 03:56 PM)
+  ☐ Make sure to listen for channel point redemptions too @created(Fri 04/23/2021 - 03:57 PM)
+  ☐ Make sure to update channel point enum to use redemption name instead of reward-id @created(Fri 06/04/2021 - 03:46 PM)
+
+☐ Shadow Color effect: automatically set channel point redemption as complete @created(Sun 06/06/2021 - 02:05 PM)
+  - Might have to use this approach? https://github.com/twitchdev/channel-points-node-sample/blob/main/index.js#L145
+
+☐ Feature request by ayushsharma: Show hex color code on screen that is active @created(Fri 05/21/2021 - 02:41 PM)
+  - look into using chroma-js to accomplish this just like we do for the overlay colors
+☐ Suggestion by codephobia: are you able to hide the cam and only show the silhouette? @created(Fri 05/28/2021 - 05:25 PM)
+
 ☐ look into how to have a common constants file across two TS projects (client/server)?
 
 ☐ via Piq9117's suggestion: add ability to update title when Chair takes over the stream @created(Sat 03/21/2020 - 08:32 PM)
@@ -82,6 +95,16 @@ maybe !sfx <filename>?
 3. Apply input/data to command (execute the command using the input provide from the chat message)
 
 Archive:
+  ✔ As suggested by Whittypants: have some indication to the viewer when a color is not recognized or supported @created(Fri 05/21/2021 - 03:40 PM) @done(21-06-04 15:30)
+  ✔ Suggestion by wwsean08: it would be cool if it had a fade out @created(Fri 05/28/2021 - 04:30 PM) @done(21-05-28 17:21)
+  ✔ Actually toggle scenesource for cam-mirror instead of the filter @created(Fri 04/30/2021 - 05:05 PM) @done(21-05-21 14:37)
+    - https://github.com/Palakis/obs-websocket/blob/4.x-current/docs/generated/protocol.md#setsourcefiltersettings
+    - Need to determine the specific setting for the color correction filter that sets the color value
+    - Need to prepend hex color with alpha (default to FF) and then convert to an integer value (thanks to FiniteSingularity for digging into this and determining the correct value type needed)
+  ✔ Add queuing for color wave effect so folks don't override each other after redeeming the channel point @created(Fri 05/21/2021 - 02:37 PM) @done(21-05-21 15:21)
+  ✔ As mentioned by ElliottBrand: support other color formats and not just hex @created(Fri 05/21/2021 - 02:43 PM) @done(21-05-21 15:40)
+  ✔ For shadow color effect allow chat to choose a color @created(Fri 04/23/2021 - 04:00 PM) @done(21-04-30 17:05)
+  ✔ Update OBS Handler to change source filter settings @created(Fri 04/23/2021 - 04:00 PM) @done(21-04-30 17:05)
   ✔ Add some kind of indication that the !highfive is coming prior to actually showing it on screen so that you can react in time @created(Sat 03/21/2020 - 08:11 PM) @done(Thu 11/19/2020 - 04:40 PM)
   ✔ Refactor Manager file names: [13:27] roberttables: @Clarkio You know MPJ will harp on you for using "manager" in your names Kappa @created(Sat 03/21/2020 - 08:27 PM) @done(Fri 06/12/2020 - 02:11 PM)
   ✔ Finish implementation of the warning that the highfive animation is coming @created(Sat 03/28/2020 - 07:17 PM) @done(Sat 03/28/2020 - 09:12 PM)
