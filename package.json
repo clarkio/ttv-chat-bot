@@ -24,6 +24,7 @@
   "dependencies": {
     "bindings": "^1.4.0",
     "body-parser": "^1.18.3",
+    "chroma-js": "^2.1.2",
     "discord.js": "^11.3.2",
     "dotenv": "^5.0.1",
     "es6-promise": "^4.2.5",

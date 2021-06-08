@@ -7,7 +7,7 @@ import { log } from './log';
 enum ObsRequests {
   SetCurrentScene = 'SetCurrentScene',
   GetCurrentScene = 'GetCurrentScene',
-  GetSceneList = 'GetSceneList'
+  GetSceneList = 'GetSceneList',
 }
 
 /**
@@ -16,11 +16,11 @@ enum ObsRequests {
 enum EffectType {
   None = '',
   SourceChange = 'SourceChange',
-  SetSceneItemProperties = 'SetSceneItemProperties'
+  SetSceneItemProperties = 'SetSceneItemProperties',
 }
 
 enum ObsErrors {
-  ConnectionError = 'CONNECTION_ERROR'
+  ConnectionError = 'CONNECTION_ERROR',
 }
 
 type EffectTypeStrings = keyof typeof EffectType;
@@ -35,7 +35,7 @@ export class SceneEffect {
     public scenes: string[],
     public sources: SceneEffectSource[],
     public duration: number
-  ) { }
+  ) {}
 }
 
 /**
@@ -45,8 +45,10 @@ export class SceneEffectSource {
   constructor(
     public name: string,
     public activeState: any,
-    public inactiveState: any
-  ) { }
+    public inactiveState: any,
+    public filterName?: string,
+    public sourceName?: string
+  ) {}
 }
 
 /**
@@ -65,7 +67,8 @@ export default class ObsHandler {
   private retryConnectionLimit: number = 5;
   private retryConnectionWaitTime: number = 60000; // in milliseconds
 
-  public init(sceneEffectSettings: any,
+  public init(
+    sceneEffectSettings: any,
     permittedScenesForCommand: any,
     sceneAliases: any
   ) {
@@ -93,11 +96,9 @@ export default class ObsHandler {
     const sceneToActivate = this.determineSceneFromMessage(message);
     if (sceneToActivate) {
       // tell OBS via websockets to activate the scene
-      this.obs!
-        .send(ObsRequests.SetCurrentScene, {
-          'scene-name': sceneToActivate.name
-        })
-        .catch((error: any) => log('error', error));
+      this.obs!.send(ObsRequests.SetCurrentScene, {
+        'scene-name': sceneToActivate.name,
+      }).catch((error: any) => log('error', error));
     }
   }
 
@@ -143,8 +144,7 @@ export default class ObsHandler {
    * @param sceneEffect the scene effect to apply within OBS
    */
   public async applySceneEffect(sceneEffect: SceneEffect) {
-    this.activateSceneEffect(sceneEffect)
-      .catch((error) => log('error', error));
+    this.activateSceneEffect(sceneEffect).catch((error) => log('error', error));
   }
 
   /**
@@ -153,7 +153,7 @@ export default class ObsHandler {
   public async getCurrentScene(): Promise<string> {
     return this.obs!.send(ObsRequests.GetCurrentScene)
       .then((result: any) => {
-        return result
+        return result;
       })
       .catch((error: any) => {
         log('error', error);
@@ -174,21 +174,67 @@ export default class ObsHandler {
     sceneEffect.scenes.forEach((scene: string | undefined) => {
       scene = isForAllScenes ? currentScene : scene;
       sceneEffect.sources.forEach((source: SceneEffectSource) => {
-        this.obs!
-          .send(
-            sceneEffect.effectType,
-            Object.assign(
-              {},
-              {
-                item: source.name,
-                'scene-name': scene
-              },
-              source.activeState
-            )
+        this.obs!.send(
+          sceneEffect.effectType,
+          Object.assign(
+            {},
+            {
+              item: source.name,
+              'scene-name': scene,
+            },
+            source.activeState
           )
-          .catch((error: any) => log('error', error));
+        ).catch((error: any) => log('error', error));
       });
     });
+  }
+
+  public async setSourceFilterSettings(
+    sourceName: string,
+    filterName: string,
+    filterSettings: any
+  ) {
+    return this.obs!.send(
+      'SetSourceFilterSettings',
+      Object.assign(
+        {},
+        {
+          sourceName,
+          filterName,
+          filterSettings,
+        }
+      )
+    )
+      .then((result: any) => {
+        log('info', result);
+      })
+      .catch((error: any) => {
+        log('error', error);
+      });
+  }
+
+  public async resetSourceFilterSettings(
+    sourceName: string,
+    filterName: string,
+    filterSettings: any
+  ) {
+    this.obs!.send(
+      'SetSourceFilterSettings',
+      Object.assign(
+        {},
+        {
+          sourceName,
+          filterName,
+          filterSettings,
+        }
+      )
+    )
+      .then((result: any) => {
+        log('info', result);
+      })
+      .catch((error: any) => {
+        log('error', error);
+      });
   }
 
   public async deactivateSceneEffect(sceneEffect: SceneEffect): Promise<any> {
@@ -206,20 +252,36 @@ export default class ObsHandler {
       scene = isForAllScenes ? currentScene : scene;
       sceneEffect.sources.forEach((source: SceneEffectSource) => {
         // Note: using Object.assign to merge the JSON objects together and allow for flexibility in applying the effect simply from the object found in the effects.json file
-        this.obs!
-          .send(
-            sceneEffect.effectType,
-            Object.assign(
-              {},
-              {
-                item: source.name,
-                'scene-name': scene
-              },
-              source.inactiveState
-            )
+        this.obs!.send(
+          sceneEffect.effectType,
+          Object.assign(
+            {},
+            {
+              item: source.name,
+              'scene-name': scene,
+            },
+            source.inactiveState
           )
-          .catch((error: any) => log('error', error));
+        ).catch((error: any) => log('error', error));
       });
+    });
+  }
+
+  public async toggleSceneSource(sourceName: string, sourceEnabled: boolean) {
+    const currentScene = await this.getCurrentScene();
+
+    return this.obs!.send(
+      'SetSceneItemProperties',
+      Object.assign(
+        {},
+        {
+          'scene-name': currentScene,
+          item: sourceName,
+          visible: sourceEnabled,
+        }
+      )
+    ).catch((error: any) => {
+      log('error', error);
     });
   }
 
@@ -232,19 +294,17 @@ export default class ObsHandler {
         }
         sceneEffect.sources.forEach((source: SceneEffectSource) => {
           // Note: using Object.assign to merge the JSON objects together and allow for flexibility in applying the effect simply from the object found in the effects.json file
-          this.obs!
-            .send(
-              sceneEffect.effectType,
-              Object.assign(
-                {},
-                {
-                  item: source.name,
-                  'scene-name': scene
-                },
-                source.inactiveState
-              )
+          this.obs!.send(
+            sceneEffect.effectType,
+            Object.assign(
+              {},
+              {
+                item: source.name,
+                'scene-name': scene,
+              },
+              source.inactiveState
             )
-            .catch((error: any) => log('error', error));
+          ).catch((error: any) => log('error', error));
         });
       });
     });
@@ -258,11 +318,10 @@ export default class ObsHandler {
   }
 
   private connectToObs(): void {
-    this.obs!
-      .connect({
-        address: config.obsSocketsServer,
-        password: config.obsSocketsKey
-      })
+    this.obs!.connect({
+      address: config.obsSocketsServer,
+      password: config.obsSocketsKey,
+    })
       .then(() => {
         log('log', constants.logs.obsConnectionSuccessfulMessage);
         return this.getSceneList();
@@ -274,7 +333,12 @@ export default class ObsHandler {
 
   private handleObsConnectErrors(error: any): void {
     if (error.code === ObsErrors.ConnectionError) {
-      log('info', `OBS Websocket Connection Failed: Retrying connection in ${this.retryConnectionWaitTime / 1000} seconds`);
+      log(
+        'info',
+        `OBS Websocket Connection Failed: Retrying connection in ${
+          this.retryConnectionWaitTime / 1000
+        } seconds`
+      );
 
       this.retryConnectionCount++;
       if (this.retryConnectionCount >= this.retryConnectionLimit) return;
@@ -321,7 +385,9 @@ export default class ObsHandler {
         new SceneEffectSource(
           source.name,
           source.activeState,
-          source.inactiveState
+          source.inactiveState,
+          source.filterName,
+          source.sourceName
         )
     );
   }

@@ -7,13 +7,23 @@ import {
   ttvClientToken,
   ttvClientUsername,
 } from './config';
-import { twitchChat as constants } from './constants';
+import {
+  twitchChat as constants,
+  effectsManager as emConstants,
+} from './constants';
 import EffectsManager from './effects-manager';
 import { log } from './log';
 import TwitchUser from './twitch-user';
 import { TYPES } from './types';
 import TextToSpeech from './text-to-speech';
 import { container } from './container';
+
+// TODO: after moving to TAU for events we can
+// key off redemptions by name instead of reward-id
+enum ChannelRewards {
+  TextToSpeech = '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb',
+  ColorWave = 'b690c37e-5cec-4771-a463-8b492ad6107c',
+}
 
 @injectable()
 export default class TwitchChat {
@@ -26,7 +36,10 @@ export default class TwitchChat {
   ];
   private isChatClientEnabled: boolean = true;
 
-  constructor(@inject(TYPES.EffectsManager) private effectsManager: EffectsManager, @inject(TYPES.TextToSpeech) private textToSpeech: TextToSpeech) {
+  constructor(
+    @inject(TYPES.EffectsManager) private effectsManager: EffectsManager,
+    @inject(TYPES.TextToSpeech) private textToSpeech: TextToSpeech
+  ) {
     this.ttvChatClient = Client(this.setTwitchChatOptions());
     this.ttvChatClient.on('join', this.ttvJoin);
     this.ttvChatClient.on('part', this.ttvPart);
@@ -187,9 +200,9 @@ export default class TwitchChat {
     return { hours, minutes };
   };
 
-  private determineCustomRewardRedemption (customRewardId: string): string {
+  private determineCustomRewardRedemption(customRewardId: string): string {
     let redemptionType = '';
-    if(customRewardId === '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb') {
+    if (customRewardId === '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb') {
       redemptionType = 'tts';
     }
     return redemptionType;
@@ -202,25 +215,39 @@ export default class TwitchChat {
    * @param message the message sent by a user
    * @param userName the user who sent the message
    */
-  private parseChat = (
+  private parseChat = async (
     message: string,
     user: TwitchUser,
     customRewardId: string
   ) => {
     const userName = user.username;
-    if (
-      customRewardId
-    ) {
-      const redemptionType = this.determineCustomRewardRedemption(customRewardId);
-      if(redemptionType === 'tts') {
+    if (customRewardId) {
+      const redemptionType =
+        this.determineCustomRewardRedemption(customRewardId);
+      if (redemptionType === 'tts') {
+        this.textToSpeech.emitTextToSpeech(
+          user,
+          message,
+          this.isTrustedUser(user)
+        );
+      }
+    }
 
-        this.textToSpeech.emitTextToSpeech(user, message, this.isTrustedUser(user));
-        // TODO: move to separate class to handle this
-        // const ttsMessage = this.isTrustedUser(user)
-        //   ? `${userName} says ${message}`
-        //   : message;
-        // // determine voice to use
-        // this.effectsManager.appServer.io.emit('tts', ttsMessage);
+    // TODO: use this.determineCustomRewardRedemption function?
+    // Although when we switch to TAU we'll be able to get the reward name
+    if (customRewardId && customRewardId === ChannelRewards.ColorWave) {
+      const options = { color: message, chatUser: userName };
+      // get result of activating and if it fails send a response in chat
+      try {
+        await this.effectsManager.activateSceneEffectByName(
+          emConstants.cameraColorShadowEffectName,
+          options
+        );
+      } catch (error) {
+        log('error', error.message);
+        this.sendChatMessage(
+          `Hey @${userName}, "${error.message}"! Are you trolling?`
+        );
       }
     }
 

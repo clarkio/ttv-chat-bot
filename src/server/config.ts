@@ -37,7 +37,10 @@ const {
   STREAMELEMENTS_JWT,
   STREAMELEMENTS_WEBSOCKET_URL,
   TAU_TOKEN,
-  TAU_URL
+  TAU_URL,
+  CAMERA_SHADOW_DURATION_MILLISECONDS,
+  CAMERA_SHADOW_FADE_MILLISECONDS,
+  CAMERA_SHADOW_OPACITY_MODIFIER,
 } = process.env;
 
 const requireConfigMessage = 'REQUIRED CONFIGURATION WAS NOT PROVIDED';
@@ -46,9 +49,24 @@ export const tauToken: string =
   TAU_TOKEN || fileConfig.tauToken || requireConfigMessage;
 
 export const tauURL: string =
-  TAU_URL ||
-  fileConfig.tauURL ||
-  requireConfigMessage;
+  TAU_URL || fileConfig.tauURL || requireConfigMessage;
+
+/*****************************************************************************
+ * Other
+ *****************************************************************************/
+
+export const cameraShadowDurationInMilliseconds: number =
+  CAMERA_SHADOW_DURATION_MILLISECONDS ||
+  fileConfig.cameraShadowDurationInMilliseconds ||
+  30000;
+
+export const cameraShadowFadeDelayInMilliseconds: number =
+  CAMERA_SHADOW_FADE_MILLISECONDS ||
+  fileConfig.cameraShadowFadeDelayInMilliseconds ||
+  250;
+
+export const cameraShadowOpacityModifier: number =
+  CAMERA_SHADOW_OPACITY_MODIFIER || fileConfig.cameraShadowOpacityModifier || 2;
 
 /*****************************************************************************
  * App
@@ -113,8 +131,8 @@ export const azureSpeechToken: string =
 
 export const tokens: any = {
   azureBotToken,
-  azureSpeechToken
-}
+  azureSpeechToken,
+};
 
 /*****************************************************************************
  * Discord
