@@ -33,7 +33,7 @@
     "isomorphic-fetch": "^3.0.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.14.1",
     "mp3-duration": "^1.1.0",
-    "obs-websocket-js": "^2.0.1",
+    "obs-websocket-js": "^3.1.0",
     "pug": "^3.0.1",
     "request-promise-native": "^1.0.5",
     "socket.io": "^2.4.1",
