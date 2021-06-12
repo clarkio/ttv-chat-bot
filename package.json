@@ -33,15 +33,15 @@
     "isomorphic-fetch": "^3.0.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.14.1",
     "mp3-duration": "^1.1.0",
-    "obs-websocket-js": "^2.0.1",
+    "obs-websocket-js": "^3.1.0",
     "pug": "^3.0.1",
     "request-promise-native": "^1.0.5",
     "socket.io": "^2.4.1",
     "socket.io-client": "^2.1.1",
-    "tmi.js": "^1.4.2",
+    "tmi.js": "^1.8.3",
     "ts-node": "^7.0.1",
     "uws": "^9.14.0",
-    "ws": "^6.2.1"
+    "ws": "^6.2.2"
   },
   "snyk": true,
   "devDependencies": {
@@ -66,7 +66,7 @@
     "nodemon": "^2.0.6",
     "obs-websocket-js-types": "^4.4.0",
     "reflect-metadata": "^0.1.13",
-    "snyk": "^1.564.0",
+    "snyk": "^1.622.0",
     "tslint": "^5.20.0",
     "tslint-config-airbnb-base": "^0.2.0",
     "tslint-config-prettier": "^1.18.0",
