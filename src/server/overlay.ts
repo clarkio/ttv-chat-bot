@@ -1,10 +1,15 @@
+import { injectable } from 'inversify';
 import { overlay as constants } from './constants';
 
+@injectable()
 export default class Overlay {
   public static readonly PORT: number = constants.defaultPort;
   public currentBulbColor: string = constants.defaultColor;
+  private io?: SocketIO.Server;
 
-  constructor(private io: SocketIO.Server) {}
+  public init (io: SocketIO.Server) {
+    this.io = io;
+  }
 
   /**
    * @returns The current Bulb Color
@@ -18,7 +23,7 @@ export default class Overlay {
    */
   public triggerSpecialEffect = (colors: string[]): void => {
     if (colors) {
-      this.io.emit(constants.colorEffectEvent, colors);
+      this.io!.emit(constants.colorEffectEvent, colors);
     }
   };
 
@@ -28,6 +33,6 @@ export default class Overlay {
    * @param command - What to change to overlay to
    */
   public updateOverlay = (command: string): void => {
-    this.io.emit(constants.colorChangeEvent, command);
+    this.io!.emit(constants.colorChangeEvent, command);
   };
 }

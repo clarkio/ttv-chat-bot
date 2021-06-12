@@ -3,6 +3,8 @@ text-to-speech todo
 ☐ determine best way to allow viewers to choose a voice @created(Mon 12/14/2020 - 09:36 PM)
 ☐ add ability to change voices @created(Mon 12/14/2020 - 09:36 PM)
 
+- wwsean08: use a database to capture viewer's choice on voice and then use that
+
 
 - Note: as of 12/13/2020 figured out how to get the audio to work via the text-to-speech REST API in Azure
   - Need to send the HTTP request with an option of 'requestType' and its value set to 'arraybuffer'

@@ -9,7 +9,8 @@
       "request": "launch",
       "name": "Server Break",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run-script", "debug-brk"],
+      "runtimeArgs": ["run-script", "debug"],
+      "stopOnEntry": true,
       "sourceMaps": true,
       "port": 9229,
       "preLaunchTask": "Compile",
@@ -23,7 +24,8 @@
       "runtimeArgs": ["run-script", "debug"],
       "port": 9229,
       "preLaunchTask": "Compile",
-      "skipFiles": ["<node_internals>/**/*.js"]
+      "skipFiles": ["<node_internals>/**/*.js"],
+      "outFiles": ["${workspaceFolder}/dist/server/**/*.js"]
     },
     {
       "type": "node",

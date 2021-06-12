@@ -1,4 +1,5 @@
 import { ChatUserstate, Client } from 'tmi.js';
+import { inject, injectable } from 'inversify';
 import * as config from './config';
 import {
   ttvChannels,
@@ -13,6 +14,9 @@ import {
 import EffectsManager from './effects-manager';
 import { log } from './log';
 import TwitchUser from './twitch-user';
+import { TYPES } from './types';
+import TextToSpeech from './text-to-speech';
+import { container } from './container';
 
 // TODO: after moving to TAU for events we can
 // key off redemptions by name instead of reward-id
@@ -21,7 +25,8 @@ enum ChannelRewards {
   ColorWave = 'b690c37e-5cec-4771-a463-8b492ad6107c',
 }
 
-export class TwitchChat {
+@injectable()
+export default class TwitchChat {
   public ttvChatClient: Client;
   private lightCommandUsed: string = '';
   private clientUsername: string = ttvClientUsername.toString();
@@ -31,7 +36,10 @@ export class TwitchChat {
   ];
   private isChatClientEnabled: boolean = true;
 
-  constructor(private effectsManager: EffectsManager) {
+  constructor(
+    @inject(TYPES.EffectsManager) private effectsManager: EffectsManager,
+    @inject(TYPES.TextToSpeech) private textToSpeech: TextToSpeech
+  ) {
     this.ttvChatClient = Client(this.setTwitchChatOptions());
     this.ttvChatClient.on('join', this.ttvJoin);
     this.ttvChatClient.on('part', this.ttvPart);
@@ -136,7 +144,9 @@ export class TwitchChat {
     userState: ChatUserstate,
     message: string
   ) => {
-    const user = new TwitchUser(userState, channel, ttvClientUsername);
+    const user = container.get<TwitchUser>(TYPES.TwitchUser);
+    user.init(userState, channel, ttvClientUsername);
+
     const lowerCaseMessage = message.toLowerCase();
     // @ts-ignore
     const isHighlightedMessage = userState['msg-id'] === 'highlighted-message';
@@ -190,6 +200,14 @@ export class TwitchChat {
     return { hours, minutes };
   };
 
+  private determineCustomRewardRedemption(customRewardId: string): string {
+    let redemptionType = '';
+    if (customRewardId === '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb') {
+      redemptionType = 'tts';
+    }
+    return redemptionType;
+  }
+
   /**
    * This weeds through the trolls and deciphers if the message is something that we want to do
    * something about
@@ -203,13 +221,20 @@ export class TwitchChat {
     customRewardId: string
   ) => {
     const userName = user.username;
-    if (customRewardId && customRewardId === ChannelRewards.TextToSpeech) {
-      const ttsMessage = this.isTrustedUser(user)
-        ? `${userName} says ${message}`
-        : message;
-      this.effectsManager.appServer.io.emit('tts', ttsMessage);
+    if (customRewardId) {
+      const redemptionType =
+        this.determineCustomRewardRedemption(customRewardId);
+      if (redemptionType === 'tts') {
+        this.textToSpeech.emitTextToSpeech(
+          user,
+          message,
+          this.isTrustedUser(user)
+        );
+      }
     }
 
+    // TODO: use this.determineCustomRewardRedemption function?
+    // Although when we switch to TAU we'll be able to get the reward name
     if (customRewardId && customRewardId === ChannelRewards.ColorWave) {
       const options = { color: message, chatUser: userName };
       // get result of activating and if it fails send a response in chat
@@ -227,7 +252,7 @@ export class TwitchChat {
     }
 
     if ((user.isBroadcaster || user.isMod) && message.startsWith('!skip')) {
-      this.effectsManager.appServer.io.emit('tts-skip');
+      this.effectsManager.emitEvent('tts-skip');
     }
 
     if (this.isLightControlCommand(message)) {
@@ -257,7 +282,7 @@ export class TwitchChat {
     return Promise.resolve(constants.logs.nothingToParseMessage);
   };
 
-  private isTrustedUser(user: TwitchUser): boolean {
+  public isTrustedUser(user: TwitchUser): boolean {
     return user.isBroadcaster || user.isMod || user.isSubscriber || user.isVIP;
   }
 

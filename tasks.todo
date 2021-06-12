@@ -1,4 +1,53 @@
 
+Old Structure:
+  Index
+    AppServer
+      EffectsManager
+        SocketIO.Server
+        AzureBot
+        ObsHandler
+        SoundFxManager
+        Overlay
+          SocketIO.Server
+------
+    TwitchChat
+      EffectsManager
+        AppServer
+      TextToSpeech
+    AlertsListener
+      EffectsManager
+        AppServer
+      TwitchChat
+
+New Structure:
+  Index
+    AppServer
+    Socket.IO
+    EffectsManager
+      SocketIO.Server
+      AzureBot
+      ObsHandler
+      SoundFxManager
+      Overlay
+        SocketIO.Server
+    TwitchChat
+      EffectsManager
+      TextToSpeech
+        TwitchChat?
+    AlertsListener
+      TwitchChat
+
+
+Last Working Item:
+Finished continuing the use of the IoC/DI pattern going and updating how we create/instantiate the ObsHandler, SoundFxManager and Overlay classes
+
+* Need to decide/talk through more how to approach TwitchUser. Should it be viewed/used more as a Factory type pattern?
+
+TIL: we must import 'reflect-metadata' before other imports or you'll see an error about "Reflect.hasOwnMetadata is not a function"
+
+☐ After refactoring for IoC and DI, make sure to restore the ability to determine the current overlay color in the AppServer route for /bulb/color @created(Fri 01/08/2021 - 03:46 PM)
+
+☐ abstract away text-to-speech operations/functionality @created(Fri 12/18/2020 - 03:14 PM)
 // Current limitation is that I required channel point redemptions with text only in order to capture when they are redeemed
 
 ☐ Change bot to listen to TAU for events @created(Fri 04/23/2021 - 03:56 PM)
@@ -95,6 +144,7 @@ maybe !sfx <filename>?
 3. Apply input/data to command (execute the command using the input provide from the chat message)
 
 Archive:
+  ✔ create function to use for the determination of custom reward types (aka channel point redemptions) @created(Fri 12/18/2020 - 03:13 PM) @done(Fri 12/18/2020 - 03:22 PM)
   ✔ As suggested by Whittypants: have some indication to the viewer when a color is not recognized or supported @created(Fri 05/21/2021 - 03:40 PM) @done(21-06-04 15:30)
   ✔ Suggestion by wwsean08: it would be cool if it had a fade out @created(Fri 05/28/2021 - 04:30 PM) @done(21-05-28 17:21)
   ✔ Actually toggle scenesource for cam-mirror instead of the filter @created(Fri 04/30/2021 - 05:05 PM) @done(21-05-21 14:37)

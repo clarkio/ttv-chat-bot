@@ -1,4 +1,4 @@
-import { appendFile, existsSync, writeFile, readFile, readdir } from 'fs';
+import { appendFile, existsSync, writeFile, readFile, readdir, readFileSync } from 'fs';
 import { resolve as resolvePath } from 'path';
 
 const CSS_FILE_NAME = resolvePath(
@@ -33,6 +33,10 @@ export function readEffects(): Promise<string> {
       handleFileActionCallback(err, data, resolve, reject)
     );
   });
+}
+
+export function readEffectsSync(): string {
+  return readFileSync(EFFECTS_FILE_FULL_PATH, { encoding: 'utf8'});
 }
 
 export function getSoundEffectsFiles(): Promise<string[]> {

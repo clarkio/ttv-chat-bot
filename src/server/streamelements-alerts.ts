@@ -1,27 +1,32 @@
+import { inject, injectable } from 'inversify';
 import io from 'socket.io-client';
 import * as config from './config';
 import { alertsListener as alertsConstants } from './constants';
 import EffectsManager from './effects-manager';
 import { log } from './log';
-import { TwitchChat } from './twitch-chat';
+import TwitchChat from './twitch-chat';
+import { TYPES } from './types';
 
-export class AlertsListener {
+@injectable()
+export default class StreamElementsAlerts {
   public socket!: SocketIOClient.Socket;
+  private accessToken?: string;
 
   constructor(
-    private accessToken: string,
-    private effectsManager: EffectsManager,
-    private twitchChat: TwitchChat
+    @inject(TYPES.EffectsManager) public effectsManager: EffectsManager,
+    @inject(TYPES.TwitchChat) public twitchChat: TwitchChat
   ) {
-    this.socket = io(config.streamElementsWebsocketsUrl, {
-      transports: [alertsConstants.connectionType],
-    });
+    this.accessToken = config.streamElementsJwt;
   }
 
   /**
-   * Set up handlers for listening to socket.io events that occur
+   * Start connection and set up handlers for listening to socket.io events that occur
    */
-  public listenToEvents() {
+  public startListening() {
+    this.socket = io(config.streamElementsWebsocketsUrl, {
+      transports: [alertsConstants.connectionType],
+    });
+
     this.socket.on('connect', this.onConnect);
     this.socket.on('disconnect', this.onDisconnect);
     this.socket.on('authenticated', this.onAuthenticated);
