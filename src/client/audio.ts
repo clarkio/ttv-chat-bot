@@ -1,6 +1,9 @@
+import socket from './sockets';
+import { captains } from './stream';
+
 const audioPath = '/assets/sounds/';
 const playNext = new CustomEvent('playNext', {
-  bubbles: true
+  bubbles: true,
 });
 let currentlyPlayingAudio: HTMLAudioElement[] = [];
 
@@ -21,7 +24,7 @@ function stopAllAudio() {
 }
 
 function stopCurrentAudio() {
-  currentlyPlayingAudio.forEach(audio => audio.pause());
+  currentlyPlayingAudio.forEach((audio) => audio.pause());
   currentlyPlayingAudio = [];
 }
 
@@ -40,7 +43,7 @@ function playAudio(fileName: string) {
 
   if (playPromise !== undefined) {
     playPromise
-      .then(_ => {
+      .then((_) => {
         captains.log('audio playback started');
       })
       .catch((error: any) => {

@@ -1,4 +1,8 @@
-const captains = console;
+import * as chroma from 'chroma-js';
+
+import socket from './sockets';
+
+export const captains = console;
 const STORE_OVERLAY_COLOR_NAME = 'streamOverlayColor';
 
 socket.on('color-effect', (effectColors: string[]) => {
