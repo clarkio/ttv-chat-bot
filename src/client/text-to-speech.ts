@@ -77,9 +77,11 @@ function loadText() {
     isSpeaking = true;
     const textToSpeak = speechQueue.shift() as string;
 
+    // Note: Standard voices will no longer be supported for new speech resources
+    // https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support#standard-voices
     const body = `
     <speak version='1.0' xml:lang='en-US'>
-      <voice xml:lang='en-US' xml:gender='Female' name='en-US-AriaRUS'>
+      <voice xml:lang='en-US' xml:gender='Female' name='en-US-AriaNeural'>
         ${textToSpeak}
       </voice>
     </speak>`;

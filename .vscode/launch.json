@@ -38,7 +38,7 @@
     },
     {
       "name": "Client Debug",
-      "type": "edge",
+      "type": "pwa-msedge",
       "request": "launch",
       "url": "http://localhost:1338/scenes?sceneName=alerts",
       "webRoot": "${workspaceFolder}/dist/client",
