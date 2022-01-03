@@ -6,6 +6,7 @@
   "scripts": {
     "prestart": "echo prestart... && npm run build && echo starting...",
     "start": "node dist/server/index.js",
+    "start-wsl": "OBS_SOCKETS_SERVER=$(hostname).local:4444 node dist/server/index.js",
     "debug": "node --inspect dist/server/index.js",
     "predebug-compile": "npm run prestart",
     "debug-compile": "node --inspect dist/server/index.js",

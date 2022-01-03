@@ -318,16 +318,16 @@ export default class ObsHandler {
   }
 
   private connectToObs(): void {
-    this.obs!.connect({
+    return this.obs!.connect({
       address: config.obsSocketsServer,
       password: config.obsSocketsKey,
     })
       .then(() => {
         log('log', constants.logs.obsConnectionSuccessfulMessage);
-        return this.getSceneList();
+        this.getSceneList();
       })
       .catch((error: any) => {
-        return this.handleObsConnectErrors(error);
+        this.handleObsConnectErrors(error);
       });
   }
 
@@ -344,6 +344,8 @@ export default class ObsHandler {
       if (this.retryConnectionCount >= this.retryConnectionLimit) return;
 
       setTimeout(this.connectToObs.bind(this), this.retryConnectionWaitTime);
+    } else {
+      log('error', error);
     }
   }
 
