@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
 import io from 'socket.io';
-import express = require('express');
+import express from 'express';
+import helmet from 'helmet';
 import { Server } from 'http';
 import { resolve as resolvePath } from 'path';
 
@@ -22,7 +23,9 @@ export default class AppServer {
   private http?: Server;
 
   constructor() {
+    // deepcode ignore UseCsurfForExpress: no forms being used for the API at this time 12/15/2021
     this.app = express();
+    this.app.use(helmet());
     this.configApp();
     this.defineRoutes();
   }
@@ -31,7 +34,7 @@ export default class AppServer {
     this.app.use((req, res, next) => {
       req.socketServer = socketServer;
       return next();
-    })
+    });
   }
 
   /**
@@ -96,9 +99,9 @@ export default class AppServer {
    * Start the Node.js server
    */
   private listen = (): void => {
-    if(!this.http) {
+    if (!this.http) {
       log('warn', 'The http server has not been set up');
-    };
+    }
 
     const runningMessage = `App server is running on port http://localhost:${config.port}`;
     this.http!.listen(config.port, () => {
