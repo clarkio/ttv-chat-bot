@@ -30,6 +30,7 @@ export const effectsManager = {
   stopCurrentAudioEvent: 'stop-current-audio',
   unsupportedSoundEffectMessage:
     'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported',
+  camCommand: 'cam',
 };
 
 export const index = {
@@ -45,6 +46,7 @@ export const obsHandler = {
       'Connected successfully to websockets server in OBS',
   },
   sceneCommand: 'scene',
+  camCommand: 'cam',
 };
 
 export const overlay = {

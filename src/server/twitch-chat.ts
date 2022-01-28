@@ -276,7 +276,7 @@ export default class TwitchChat {
     }
 
     if (this.isOtherCommand(message)) {
-      this.effectsManager.checkForCommand(message);
+      this.effectsManager.checkForCommand(message, user);
     }
 
     return Promise.resolve(constants.logs.nothingToParseMessage);

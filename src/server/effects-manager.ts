@@ -9,6 +9,7 @@ import * as config from './config';
 import { effectsManager as constants, StopCommands } from './constants';
 import { readEffectsSync } from './file-handler';
 import { log } from './log';
+import TwitchUser from './twitch-user';
 import ObsHandler, { SceneEffect } from './obs-handler';
 import Overlay from './overlay';
 import SoundFxManager, { SoundFxFile } from './sound-fx';
@@ -32,6 +33,7 @@ export default class EffectsManager {
   private playedUserJoinSounds: string[] = [];
   private colorWaveEffectQueue: any[] = [];
   private isColorWaveActive: boolean = false;
+  private isCameraCommandEnabled: boolean = false;
 
   constructor() {
     this.loadEffects();
@@ -114,7 +116,10 @@ export default class EffectsManager {
   };
 
   // TODO: abstract command checking/parsing work into a command parser class (commander?)
-  public async checkForCommand(message: string): Promise<string | undefined> {
+  public async checkForCommand(
+    message: string,
+    user: TwitchUser
+  ): Promise<string | undefined> {
     // Remove the command prefix from the message (example: '!')
     message = message.replace(config.chatCommandPrefix, '');
     message =
@@ -192,8 +197,35 @@ export default class EffectsManager {
       this.obsHandler.executeSceneCommand(message);
     }
 
+    // Is it a camera control command?
+    if (await this.obsHandler.isCameraCommand(message)) {
+      if (user.isBroadcaster && this.checkCommandStatus('cam', message)) {
+        return;
+      }
+
+      if (this.isCameraCommandEnabled) {
+        this.obsHandler.executeCameraCommand(message);
+      }
+    }
+
     // This return is a last resort
     return constants.unsupportedSoundEffectMessage;
+  }
+
+  private checkCommandStatus(commandName: string, message: string) {
+    if (this.obsHandler.isCameraCommand(commandName)) {
+      message = message
+        .replace(`${constants.camCommand}`, '')
+        .toLowerCase()
+        .trim();
+      const isCommandStatusUpdate =
+        message.includes('on') || message.includes('off');
+      if (isCommandStatusUpdate) {
+        this.isCameraCommandEnabled = message === 'on' ? true : false;
+        return true;
+      }
+      return false;
+    }
   }
 
   /**
