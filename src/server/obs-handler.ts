@@ -102,6 +102,52 @@ export default class ObsHandler {
     }
   }
 
+  public isCameraCommand(message: string) {
+    return message.startsWith(constants.camCommand);
+  }
+
+  private cameraSceneMap = new Map<number, string>([
+    [1, '[C] Big Zoom Cam'],
+    [2, '[C] Alt-Cam'],
+    [3, '[C] Phone Cam 6s'],
+    [4, '[C] Phone Cam X'],
+  ]);
+
+  // [14:35] FiniteSingularity: you should do a !cam next
+  public async executeCameraCommand(message: string) {
+    // cam 1
+    message = message
+      .replace(`${constants.camCommand}`, '')
+      .toLowerCase()
+      .trim();
+    // 1
+    let cameraNumber: number = 1;
+    try {
+      cameraNumber = parseInt(message, 10);
+      if (cameraNumber > 4 || cameraNumber < 1 || isNaN(cameraNumber)) {
+        const currentScene = await this.getCurrentScene();
+        const currentCameraNumber = this.getKey(
+          this.cameraSceneMap,
+          currentScene
+        );
+        cameraNumber = (currentCameraNumber % 4) + 1;
+      }
+      // translate camera number to actual scene name
+      const sceneName = this.cameraSceneMap.get(cameraNumber);
+      this.obs!.send(ObsRequests.SetCurrentScene, {
+        'scene-name': sceneName || '',
+      }).catch((error: any) => log('error', error));
+    } catch (error) {
+      console.error(`The camera number provided is not supported`);
+      return;
+    }
+  }
+
+  private getKey(map: Map<number, string>, value: string) {
+    const key = [...map].find(([key, val]) => val == value);
+    return key ? key[0] : 1;
+  }
+
   public isScenePermitted(sceneName: string): boolean {
     return this.permittedScenesForCommand.some(
       (permittedScene: string) =>
@@ -153,7 +199,7 @@ export default class ObsHandler {
   public async getCurrentScene(): Promise<string> {
     return this.obs!.send(ObsRequests.GetCurrentScene)
       .then((result: any) => {
-        return result;
+        return result.name;
       })
       .catch((error: any) => {
         log('error', error);
@@ -318,16 +364,16 @@ export default class ObsHandler {
   }
 
   private connectToObs(): void {
-    this.obs!.connect({
+    return this.obs!.connect({
       address: config.obsSocketsServer,
       password: config.obsSocketsKey,
     })
       .then(() => {
         log('log', constants.logs.obsConnectionSuccessfulMessage);
-        return this.getSceneList();
+        this.getSceneList();
       })
       .catch((error: any) => {
-        return this.handleObsConnectErrors(error);
+        this.handleObsConnectErrors(error);
       });
   }
 
@@ -344,6 +390,8 @@ export default class ObsHandler {
       if (this.retryConnectionCount >= this.retryConnectionLimit) return;
 
       setTimeout(this.connectToObs.bind(this), this.retryConnectionWaitTime);
+    } else {
+      log('error', error);
     }
   }
 

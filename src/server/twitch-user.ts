@@ -14,7 +14,7 @@ export default class TwitchUser {
   public userColor?: string;
   public badges: any = {};
 
-  public init (userstate: Userstate, channel: string, mainUserName: string) {
+  public init(userstate: Userstate, channel: string, mainUserName: string) {
     try {
       this.username =
         userstate['display-name'] || userstate.username || mainUserName;

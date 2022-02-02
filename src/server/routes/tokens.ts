@@ -2,7 +2,7 @@ import express from 'express';
 import * as config from '../config';
 
 export const tokensRoute = (req: express.Request, res: express.Response) => {
-  const { name } = req.query;
+  const name: string = req.query.name as string;
   if (name && isSupported(name) && config.tokens[name]) {
     res.send(config.tokens[name]);
   } else {
