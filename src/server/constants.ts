@@ -31,6 +31,7 @@ export const effectsManager = {
   unsupportedSoundEffectMessage:
     'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported',
   camCommand: 'cam',
+  flashBangCommand: 'flashbang',
 };
 
 export const index = {

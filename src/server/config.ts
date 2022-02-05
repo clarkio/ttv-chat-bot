@@ -41,9 +41,13 @@ const {
   CAMERA_SHADOW_DURATION_MILLISECONDS,
   CAMERA_SHADOW_FADE_MILLISECONDS,
   CAMERA_SHADOW_OPACITY_MODIFIER,
+  ELGATO_KEYLIGHT_IPS,
 } = process.env;
 
 const requireConfigMessage = 'REQUIRED CONFIGURATION WAS NOT PROVIDED';
+
+export const elgatoKeyLightIps: string =
+  ELGATO_KEYLIGHT_IPS || fileConfig.elgatoKeyLightIps || requireConfigMessage;
 
 export const tauToken: string =
   TAU_TOKEN || fileConfig.tauToken || requireConfigMessage;

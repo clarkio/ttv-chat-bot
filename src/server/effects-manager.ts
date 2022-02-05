@@ -1,4 +1,5 @@
 import io from 'socket.io';
+import fetch from 'isomorphic-fetch';
 
 import { container } from './container';
 import { TYPES } from './types';
@@ -34,6 +35,18 @@ export default class EffectsManager {
   private colorWaveEffectQueue: any[] = [];
   private isColorWaveActive: boolean = false;
   private isCameraCommandEnabled: boolean = false;
+  private elgatoKeyLightStates: any[] = [];
+  private elgatoKeyLightIps: string[] = [];
+  private elgatoKeyLightFlashbangSetting: any = {
+    numberOfLights: 1,
+    lights: [
+      {
+        on: 1,
+        brightness: 100,
+        temperature: Math.round(987007 * 7000 ** -0.999),
+      },
+    ],
+  };
 
   constructor() {
     this.loadEffects();
@@ -205,11 +218,22 @@ export default class EffectsManager {
 
       if (this.isCameraCommandEnabled) {
         this.obsHandler.executeCameraCommand(message);
+        return;
       }
+    }
+
+    if (this.isFlashbangCommand(message)) {
+      await this.executeFlashbangEffect();
+      return;
     }
 
     // This return is a last resort
     return constants.unsupportedSoundEffectMessage;
+  }
+
+  private isFlashbangCommand(message: string) {
+    message = message.toLowerCase().trim();
+    return message === constants.flashBangCommand;
   }
 
   private checkCommandStatus(commandName: string, message: string) {
@@ -423,8 +447,90 @@ export default class EffectsManager {
     }, duration);
   }
 
+  public async executeFlashbangEffect() {
+    // Set each light to the flashbang settings
+    const fetchOptions: RequestInit = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+      mode: 'cors',
+      body: JSON.stringify(this.elgatoKeyLightFlashbangSetting),
+    };
+
+    // Example URL path: http://192.168.1.1:9123/elgato/lights
+    for (const ip of this.elgatoKeyLightIps) {
+      try {
+        // fetch the state of the light at that ip
+        await fetch(`http://${ip}:9123/elgato/lights`, fetchOptions);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Hold the lights to that status for X seconds?
+    await new Promise((resolve, reject) => {
+      setTimeout(() => this.resetFlashbangEffect(resolve), 500);
+    });
+  }
+
+  private async resetFlashbangEffect(resolve: (value: unknown) => void) {
+    const fetchOptions: RequestInit = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+      mode: 'cors',
+    };
+
+    // Example URL path: http://192.168.1.1:9123/elgato/lights
+    for (let i = 0; i < this.elgatoKeyLightIps.length; i++) {
+      try {
+        // fetch the state of the light at that ip
+        fetchOptions.body = JSON.stringify(this.elgatoKeyLightStates[i]);
+        await fetch(
+          `http://${this.elgatoKeyLightIps[i]}:9123/elgato/lights`,
+          fetchOptions
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    return resolve(true);
+  }
+
+  private async initializeFlashbangEffect() {
+    // Read current state of the lights and store in memory
+    this.elgatoKeyLightIps = config.elgatoKeyLightIps.split(',');
+
+    const fetchOptions: RequestInit = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      mode: 'cors',
+    };
+
+    // Example URL path: http://192.168.1.1:9123/elgato/lights
+    for (const ip of this.elgatoKeyLightIps) {
+      try {
+        // fetch the state of the light at that ip
+        const state = await fetch(
+          `http://${ip}:9123/elgato/lights`,
+          fetchOptions
+        );
+
+        // store the state in this.elgatoKeyLightStates
+        this.elgatoKeyLightStates.push(await state.json());
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
   /**
-   * Initialize classes that assist in controlling effects
+   * Initialize classes and functions that assist in controlling effects
    */
   public initEffectControllers = (): void => {
     // All effects will have been read from the file system at this point
@@ -440,5 +546,7 @@ export default class EffectsManager {
 
     this.overlay = container.get<Overlay>(TYPES.Overlay);
     this.overlay.init(this.socketServer!);
+
+    this.initializeFlashbangEffect();
   };
 }
