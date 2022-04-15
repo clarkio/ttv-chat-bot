@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import io from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import * as config from './config';
 import { alertsListener as alertsConstants } from './constants';
 import EffectsManager from './effects-manager';
@@ -9,7 +9,7 @@ import { TYPES } from './types';
 
 @injectable()
 export default class StreamElementsAlerts {
-  public socket!: SocketIOClient.Socket;
+  public socket!: Socket;
   private accessToken?: string;
 
   constructor(

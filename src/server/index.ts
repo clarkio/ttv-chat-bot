@@ -1,4 +1,5 @@
-import io from 'socket.io';
+import { Server as io } from 'socket.io';
+
 
 import StreamElementsAlerts from './streamelements-alerts';
 import * as config from './config';
@@ -18,7 +19,7 @@ if (!config.hasLoadedConfigJSON) {
 const appServer = container.get<AppServer>(TYPES.AppServer);
 const httpServer = appServer.startServer();
 
-const socketServer = io(httpServer);
+const socketServer = new io(httpServer);
 appServer.setSocket(socketServer);
 
 const effectsManager = container.get<EffectsManager>(TYPES.EffectsManager);

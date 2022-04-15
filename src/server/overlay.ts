@@ -1,13 +1,14 @@
 import { injectable } from 'inversify';
+import { Server } from 'socket.io';
 import { overlay as constants } from './constants';
 
 @injectable()
 export default class Overlay {
   public static readonly PORT: number = constants.defaultPort;
   public currentBulbColor: string = constants.defaultColor;
-  private io?: SocketIO.Server;
+  private io?: Server;
 
-  public init (io: SocketIO.Server) {
+  public init (io: Server) {
     this.io = io;
   }
 

@@ -19,6 +19,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "WSL Server Debug",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run-script", "debug-wsl"],
+      "sourceMaps": true,
+      "port": 9229,
+      "preLaunchTask": "Compile",
+      "skipFiles": ["<node_internals>/**/*.js"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Server Debug",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run-script", "debug"],
@@ -45,12 +56,26 @@
       "sourceMaps": true,
       "preLaunchTask": "compile client",
       "runtimeArgs": ["--autoplay-policy=no-user-gesture-required"]
+    },
+    {
+      "name": "WSL Client Debug",
+      "type": "pwa-msedge",
+      "request": "launch",
+      "url": "http://localhost:8337/scenes?sceneName=alerts",
+      "webRoot": "${workspaceFolder}/dist/client",
+      "sourceMaps": true,
+      "preLaunchTask": "compile client",
+      "runtimeArgs": ["--autoplay-policy=no-user-gesture-required"]
     }
   ],
   "compounds": [
     {
       "name": "Server/Client Debug",
       "configurations": ["Server Debug", "Client Debug"]
+    },
+    {
+      "name": "WSL Server/Client Debug",
+      "configurations": ["WSL Server Debug", "WSL Client Debug"]
     }
   ]
 }
