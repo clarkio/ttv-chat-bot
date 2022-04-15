@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
 import io from 'socket.io';
 import express = require('express');
+import csrf from 'csurf';
 import { Server } from 'http';
 import { resolve as resolvePath } from 'path';
 
@@ -52,6 +53,8 @@ export default class AppServer {
    * Configure Express to parse json, setup pug as our html view engine for generating html pages and host the client resources
    */
   private configApp(): void {
+    this.app.disable('x-powered-by');
+    this.app.use(csrf({ cookie: true }));
     this.app.use(bodyParser.json());
     this.app.set('view engine', 'pug');
     this.app.set('views', resolvePath(`${__dirname}`, '../../views'));
