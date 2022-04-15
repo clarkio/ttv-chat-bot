@@ -62,9 +62,7 @@ export default class StreamElementsAlerts {
    */
   private onEvent = (event: any) => {
     const alert = this.effectsManager.determineAlertEffect(event.type);
-    if (alert) {
-      this.startAlertEffect(alert, event.data.username);
-    } else {
+    if (!alert) {
       log('info', alertsConstants.unhandledAlertTypeLog + event.type);
     }
     if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.follow) {
@@ -73,16 +71,5 @@ export default class StreamElementsAlerts {
     if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.raid) {
       this.twitchChat.sendChatMessage('!new');
     }
-  };
-
-  /**
-   * After determining that an alert happened trigger any corresponding effects for that alert
-   *
-   * @param alertEffect alert type sent
-   * @param userName user triggered the alert
-   */
-  private startAlertEffect = (alertEffect: any, userName: string) => {
-    // this.effectsManager.triggerSpecialEffect(alertEffect.colors);
-    this.effectsManager.triggerAzureBotEffect(alertEffect, userName);
   };
 }

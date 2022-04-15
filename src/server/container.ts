@@ -9,7 +9,6 @@ import StreamElementsAlerts from './streamelements-alerts';
 import ObsHandler from './obs-handler';
 import SoundFxManager from './sound-fx';
 import Overlay from './overlay';
-import { AzureBot } from './azure-bot';
 import TwitchUser from './twitch-user';
 import TauAlerts from './tau-alerts';
 
@@ -24,7 +23,6 @@ container.bind<TextToSpeech>(TYPES.TextToSpeech).to(TextToSpeech);
 container.bind<ObsHandler>(TYPES.ObsHandler).to(ObsHandler);
 container.bind<SoundFxManager>(TYPES.SoundFxManager).to(SoundFxManager);
 container.bind<Overlay>(TYPES.Overlay).to(Overlay);
-container.bind<AzureBot>(TYPES.AzureBot).to(AzureBot);
 container.bind<TwitchUser>(TYPES.TwitchUser).to(TwitchUser).inTransientScope();
 
 export { container };
