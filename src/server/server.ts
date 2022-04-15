@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import io from 'socket.io';
 import express = require('express');
 import csrf from 'csurf';
+import rateLimit from 'express-rate-limit';
 import { Server } from 'http';
 import { resolve as resolvePath } from 'path';
 
@@ -12,6 +13,13 @@ import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
 import { tokensRoute } from './routes/tokens';
 import { injectable } from 'inversify';
+
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 
 /**
  * The base Express Application. This is where most of the other parts of the application
@@ -55,6 +63,8 @@ export default class AppServer {
   private configApp(): void {
     this.app.disable('x-powered-by');
     this.app.use(csrf({ cookie: true }));
+    // Apply the rate limiting middleware to all requests
+    this.app.use(limiter);
     this.app.use(bodyParser.json());
     this.app.set('view engine', 'pug');
     this.app.set('views', resolvePath(`${__dirname}`, '../../views'));

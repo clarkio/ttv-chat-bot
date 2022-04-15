@@ -1,5 +1,6 @@
 import express from 'express';
 
+// deepcode ignore NoRateLimitingForExpensiveWebOperation: we have a limiter set up at the app level in server.ts in the configApp function
 export const scenesRoute = (req: express.Request, res: express.Response) => {
   const { sceneName } = req.query;
   if (sceneName) {
