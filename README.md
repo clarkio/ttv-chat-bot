@@ -11,7 +11,9 @@
 
 Twitch TV chat reader to change the color of overlays loaded from streamelements and/or colors of internet connected lights via Azure Bot Service and Language Understanding AI (LUIS)
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## Clarkio
 This chatbot was built with 💙 live on stream with the programming community. Come and hang out with us over on Twitch!
