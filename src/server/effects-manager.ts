@@ -5,6 +5,7 @@ import { container } from './container';
 import { TYPES } from './types';
 import { injectable } from 'inversify';
 import chroma from 'chroma-js';
+import { AzureBot } from './azure-bot';
 import * as config from './config';
 import { effectsManager as constants, StopCommands } from './constants';
 import { readEffectsSync } from './file-handler';
@@ -16,6 +17,7 @@ import SoundFxManager, { SoundFxFile } from './sound-fx';
 
 @injectable()
 export default class EffectsManager {
+  public azureBot!: AzureBot;
   public socketServer!: io.Server;
 
   private allEffects: any | undefined;
@@ -48,6 +50,7 @@ export default class EffectsManager {
 
   constructor() {
     this.loadEffects();
+    this.startAzureBot();
     this.playedUserJoinSounds = [];
   }
 
@@ -72,6 +75,12 @@ export default class EffectsManager {
       const userSoundEffect = userEffect[username];
       this.activateSoundEffectByText(userSoundEffect);
       this.playedUserJoinSounds.push(username);
+    }
+  }
+
+  public triggerAzureBotEffect(alertEffect: any, userName: string) {
+    if (this.azureBot) {
+      return this.azureBot.triggerEffect(alertEffect, userName);
     }
   }
 
@@ -365,6 +374,16 @@ export default class EffectsManager {
     this.sceneAliases = this.allEffects.sceneAliases;
     this.joinSoundEffects = this.allEffects.joinSoundEffects;
     return;
+  };
+
+  /**
+   * Create the AzureBot
+   */
+  private startAzureBot = () => {
+    if (config.azureBotEnabled) {
+      this.azureBot = container.get<AzureBot>(TYPES.AzureBot);
+      this.azureBot.createNewBotConversation();
+    }
   };
 
   private async activateSoundEffect(

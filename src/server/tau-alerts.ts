@@ -97,4 +97,16 @@ export default class TauAlerts {
     //   this.twitchChat.sendChatMessage('!new');
     // }
   };
+
+  /**
+   * After determining that an alert happened trigger any corresponding effects for that alert
+   *
+   * @param alertEffect alert type sent
+   * @param userName user triggered the alert
+   */
+  //@ts-ignore
+  private startAlertEffect = (alertEffect: any, userName: string) => {
+    // this.effectsManager.triggerSpecialEffect(alertEffect.colors);
+    this.effectsManager.triggerAzureBotEffect(alertEffect, userName);
+  };
 }
