@@ -1,9 +1,22 @@
+<div align="center">
+  
 # ttv-chat-bot
-[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors)
+
+[![Known Vulnerabilities](https://snyk.io/test/github/clarkio/ttv-chat-bot/badge.svg)](https://snyk.io/test/github/clarkio/ttv-chat-bot)
+![GitHub](https://img.shields.io/github/license/clarkio/ttv-chat-bot)
+[![Discord](https://img.shields.io/discord/421902136457035777)](https://discord.gg/xB95beJ)
+[![Twitch Status](https://img.shields.io/twitch/status/clarkio)](https://twitch.tv/clarkio)
+
+</div>
 
 Twitch TV chat reader to change the color of overlays loaded from streamelements and/or colors of internet connected lights via Azure Bot Service and Language Understanding AI (LUIS)
 
-> Join Clarkio live on Wednesdays at 10 AM ET and Fridays at 12:30 PM ET for the coding streams. https://twitch.tv/clarkio
+[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors)
+
+## Clarkio
+This chatbot was built with 💙 live on stream with the programming community. Come and hang out with us over on Twitch!
+
+> https://twitch.tv/clarkio
 
 ## Getting Started
 
