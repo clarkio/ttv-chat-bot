@@ -65,7 +65,10 @@ export default class AppServer {
    */
   private configApp(): void {
     this.app.disable('x-powered-by');
-    this.app.use(helmet());
+    this.app.use(helmet({
+      contentSecurityPolicy: false,
+      crossOriginEmbedderPolicy: false,
+    }));
     this.app.use(cookieParser());
     this.app.use(csrf({ cookie: true }));
     // Apply the rate limiting middleware to all requests
