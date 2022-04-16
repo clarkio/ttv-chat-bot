@@ -2,8 +2,8 @@ export const alertsListener = {
   authenticateMethod: 'jwt',
   connectionType: 'websocket',
   eventTypes: {
-    follow: 'follow',
-    raid: 'raid',
+    follow: 'channel-follow',
+    raid: 'channel-raid',
   },
   logs: {
     authenticated: 'Successfully authenticated for the channel',

@@ -1,6 +1,8 @@
 import bodyParser from 'body-parser';
 import io from 'socket.io';
-import express = require('express');
+import express from 'express';
+// import express = require('express');
+import helmet from 'helmet';
 import csrf from 'csurf';
 import rateLimit from 'express-rate-limit';
 import { Server } from 'http';
@@ -62,6 +64,7 @@ export default class AppServer {
    */
   private configApp(): void {
     this.app.disable('x-powered-by');
+    this.app.use(helmet());
     this.app.use(csrf({ cookie: true }));
     // Apply the rate limiting middleware to all requests
     this.app.use(limiter);

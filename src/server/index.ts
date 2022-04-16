@@ -1,7 +1,4 @@
 import { Server as io } from 'socket.io';
-
-
-import StreamElementsAlerts from './streamelements-alerts';
 import * as config from './config';
 import { index as indexConstants } from './constants';
 import { log } from './log';
@@ -28,9 +25,6 @@ effectsManager.initEffectControllers();
 
 const twitchChat = container.get<TwitchChat>(TYPES.TwitchChat);
 twitchChat.connect();
-
-const streamElementsAlerts = container.get<StreamElementsAlerts>(TYPES.StreamElementsAlerts);
-streamElementsAlerts.startListening();
 
 const tauAlerts = container.get<TauAlerts>(TYPES.TauAlerts);
 tauAlerts.startListening();

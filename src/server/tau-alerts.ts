@@ -29,14 +29,6 @@ export default class TauAlerts {
     this.socket.on('open', this.onConnect);
     this.socket.on('error', this.onError);
     this.socket.on('message', this.onEvent);
-    // this.socket.addEventListener('open', this.onConnect);
-    // this.socket.addEventListener('message', this.onEvent);
-    // this.socket.addEventListener('error', this.onError);
-
-    // this.socket.on('open', this.onConnect);
-    // this.socket.on('message', this.onEvent);
-    // this.socket.on('disconnect', this.onDisconnect);
-    // this.socket.on('authenticated', this.onAuthenticated);
   }
 
   /**
@@ -80,21 +72,19 @@ export default class TauAlerts {
   /**
    * A handler function to receive events that occur on the socket.io channel and take action upon those events. In this case we'll be trying to determine if there was an alert
    */
-  private onEvent = (event: { data: any; type: string; target: WebSocket }) => {
+  private onEvent = (event: string) => {
+    const eventData = JSON.parse(event);
     //@ts-ignore
-    console.log('TAU EVENT: ', event);
-
-    // const alert = this.effectsManager.determineAlertEffect(event.type);
-    // if (alert) {
-    //   this.startAlertEffect(alert, event.data.username);
-    // } else {
-    //   log('info', alertsConstants.unhandledAlertTypeLog + event.type);
-    // }
-    // if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.follow) {
-    //   this.twitchChat.sendChatMessage(`!followthx ${event.data.username}`);
-    // }
-    // if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.raid) {
-    //   this.twitchChat.sendChatMessage('!new');
-    // }
+    console.log('TAU EVENT: ', eventData);
+    const alert = this.effectsManager.determineAlertEffect(eventData.event_type);
+    if (!alert) {
+      log('info', alertsConstants.unhandledAlertTypeLog + eventData.event_type);
+    }
+    if (eventData.event_type.toLocaleLowerCase() === alertsConstants.eventTypes.follow) {
+      this.twitchChat.sendChatMessage(`!followthx ${eventData.event_data.user_name}`);
+    }
+    if (eventData.event_type.toLocaleLowerCase() === alertsConstants.eventTypes.raid) {
+      this.twitchChat.sendChatMessage('!new');
+    }
   };
 }
