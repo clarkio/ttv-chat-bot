@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import io from 'socket.io';
 import express from 'express';
 // import express = require('express');
@@ -65,6 +66,7 @@ export default class AppServer {
   private configApp(): void {
     this.app.disable('x-powered-by');
     this.app.use(helmet());
+    this.app.use(cookieParser());
     this.app.use(csrf({ cookie: true }));
     // Apply the rate limiting middleware to all requests
     this.app.use(limiter);
