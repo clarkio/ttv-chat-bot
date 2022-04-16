@@ -15,7 +15,7 @@ import Overlay from './overlay';
 import SoundFxManager, { SoundFxFile } from './sound-fx';
 
 @injectable()
-export default class EffectsManager {
+export default class EffectsService {
   public socketServer!: io.Server;
 
   private allEffects: any | undefined;

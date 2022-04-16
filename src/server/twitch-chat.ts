@@ -11,7 +11,7 @@ import {
   twitchChat as constants,
   effectsManager as emConstants,
 } from './constants';
-import EffectsManager from './effects-manager';
+import EffectsService from './effects-service';
 import { log } from './log';
 import TwitchUser from './twitch-user';
 import { TYPES } from './types';
@@ -37,7 +37,7 @@ export default class TwitchChat {
   private isChatClientEnabled: boolean = true;
 
   constructor(
-    @inject(TYPES.EffectsManager) private effectsManager: EffectsManager,
+    @inject(TYPES.EffectsService) private effectsService: EffectsService,
     @inject(TYPES.TextToSpeech) private textToSpeech: TextToSpeech
   ) {
     this.ttvChatClient = Client(this.setTwitchChatOptions());
@@ -87,7 +87,7 @@ export default class TwitchChat {
       channels,
       connection: {
         reconnect: true,
-        secure: false,
+        secure: true,
       },
       identity: {
         password: ttvClientToken,
@@ -122,7 +122,7 @@ export default class TwitchChat {
           log('error', `There was an error getting moderators: ${error}`)
         );
     } else {
-      this.effectsManager.activateJoinEffectIfFound(
+      this.effectsService.activateJoinEffectIfFound(
         username.toLocaleLowerCase()
       );
     }
@@ -239,11 +239,12 @@ export default class TwitchChat {
       const options = { color: message, chatUser: userName };
       // get result of activating and if it fails send a response in chat
       try {
-        await this.effectsManager.activateSceneEffectByName(
+        await this.effectsService.activateSceneEffectByName(
           emConstants.cameraColorShadowEffectName,
           options
         );
-      } catch (error) {
+      } catch (err: unknown) {
+        const error = err as Error;
         log('error', error.message);
         this.sendChatMessage(
           `Hey @${userName}, "${error.message}"! Are you trolling?`
@@ -252,7 +253,7 @@ export default class TwitchChat {
     }
 
     if ((user.isBroadcaster || user.isMod) && message.startsWith('!skip')) {
-      this.effectsManager.emitEvent('tts-skip');
+      this.effectsService.emitEvent('tts-skip');
     }
 
     if (this.isLightControlCommand(message)) {
@@ -276,7 +277,7 @@ export default class TwitchChat {
     }
 
     if (this.isOtherCommand(message)) {
-      this.effectsManager.checkForCommand(message, user);
+      this.effectsService.checkForCommand(message, user);
     }
 
     return Promise.resolve(constants.logs.nothingToParseMessage);
@@ -301,7 +302,7 @@ export default class TwitchChat {
    * Check if the message is for special effects!
    */
   private isSpecialEffectCommand = (message: string) =>
-    this.effectsManager.determineSpecialEffect(message);
+    this.effectsService.determineSpecialEffect(message);
 
   /**
    * Do something cool when there is a special effect triggered
@@ -310,7 +311,7 @@ export default class TwitchChat {
    * @param userName user who sent
    */
   private startSpecialEffects = (specialEffect: any, userName: string) => {
-    this.effectsManager.triggerSpecialEffect(specialEffect.colors);
+    this.effectsService.triggerSpecialEffect(specialEffect.colors);
     return;
   };
 
@@ -322,7 +323,7 @@ export default class TwitchChat {
    */
   private startColorChange = (commandMessage: string, userName: string) => {
     // TODO Convert color names to hex code before sending to the bot?
-    this.effectsManager.updateOverlay(commandMessage);
+    this.effectsService.updateOverlay(commandMessage);
   };
 
   /**

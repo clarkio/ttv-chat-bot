@@ -6,7 +6,7 @@ import AppServer from './server';
 import TwitchChat from './twitch-chat';
 import { container } from './container';
 import { TYPES } from './types';
-import EffectsManager from './effects-manager';
+import EffectsService from './effects-service';
 import TauAlerts from './tau-alerts';
 
 if (!config.hasLoadedConfigJSON) {
@@ -19,9 +19,9 @@ const httpServer = appServer.startServer();
 const socketServer = new io(httpServer);
 appServer.setSocket(socketServer);
 
-const effectsManager = container.get<EffectsManager>(TYPES.EffectsManager);
-effectsManager.setSocketServer(socketServer);
-effectsManager.initEffectControllers();
+const effectsService = container.get<EffectsService>(TYPES.EffectsService);
+effectsService.setSocketServer(socketServer);
+effectsService.initEffectControllers();
 
 const twitchChat = container.get<TwitchChat>(TYPES.TwitchChat);
 twitchChat.connect();

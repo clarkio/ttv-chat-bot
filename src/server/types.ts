@@ -1,6 +1,6 @@
 const TYPES = {
   AppServer: Symbol.for("AppServer"),
-  EffectsManager: Symbol.for("EffectsManager"),
+  EffectsService: Symbol.for("EffectsService"),
   StreamElementsAlerts: Symbol.for("StreamElementsAlerts"),
   TauAlerts: Symbol.for("TauAlerts"),
   TwitchChat: Symbol.for("TwitchChat"),

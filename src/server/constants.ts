@@ -94,7 +94,7 @@ export const twitchChat = {
     ignoredCommandMessage:
       'Command was ignored because the TTV Chat Listener is disabled',
     nothingToParseMessage: 'there was nothing to do',
-    twitchClientJoinedMessage: 'This client joined the channel...',
+    twitchClientJoinedMessage: 'This client joined the Twitch channel...',
     twitchConnectionAttemptMessage:
       'Client is online and attempting to connect to chat...',
     twitchConnectionFailMessage: 'Failed to connect to Twitch chat',

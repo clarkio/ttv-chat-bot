@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { io, Socket } from 'socket.io-client';
 import * as config from './config';
 import { alertsListener as alertsConstants } from './constants';
-import EffectsManager from './effects-manager';
+import EffectsService from './effects-service';
 import { log } from './log';
 import TwitchChat from './twitch-chat';
 import { TYPES } from './types';
@@ -13,7 +13,7 @@ export default class StreamElementsAlerts {
   private accessToken?: string;
 
   constructor(
-    @inject(TYPES.EffectsManager) public effectsManager: EffectsManager,
+    @inject(TYPES.EffectsService) public effectsService: EffectsService,
     @inject(TYPES.TwitchChat) public twitchChat: TwitchChat
   ) {
     this.accessToken = config.streamElementsJwt;
@@ -61,7 +61,7 @@ export default class StreamElementsAlerts {
    * A handler function to receive events that occur on the socket.io channel and take action upon those events. In this case we'll be trying to determine if there was an alert
    */
   private onEvent = (event: any) => {
-    const alert = this.effectsManager.determineAlertEffect(event.type);
+    const alert = this.effectsService.determineAlertEffect(event.type);
     if (!alert) {
       log('info', alertsConstants.unhandledAlertTypeLog + event.type);
     }

@@ -33,7 +33,8 @@ export default class TwitchUser {
       this.userId = userstate['user-id'];
       this.badges = userstate.badges;
       this.userColor = userstate.color;
-    } catch (error) {
+    } catch (err: unknown) {
+      const error = err as any;
       log('error', error);
     }
   }

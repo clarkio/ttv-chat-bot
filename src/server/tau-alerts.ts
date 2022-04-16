@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import * as config from './config';
 import WebSocket from 'ws';
 import { alertsListener as alertsConstants } from './constants';
-import EffectsManager from './effects-manager';
+import EffectsService from './effects-service';
 import { log } from './log';
 import TwitchChat from './twitch-chat';
 import { TYPES } from './types';
@@ -13,7 +13,7 @@ export default class TauAlerts {
   private accessToken?: string;
 
   constructor(
-    @inject(TYPES.EffectsManager) public effectsManager: EffectsManager,
+    @inject(TYPES.EffectsService) public effectsService: EffectsService,
     @inject(TYPES.TwitchChat) public twitchChat: TwitchChat
   ) {
     this.accessToken = config.tauToken;
@@ -76,7 +76,7 @@ export default class TauAlerts {
     const eventData = JSON.parse(event);
     //@ts-ignore
     console.log('TAU EVENT: ', eventData);
-    const alert = this.effectsManager.determineAlertEffect(eventData.event_type);
+    const alert = this.effectsService.determineAlertEffect(eventData.event_type);
     if (!alert) {
       log('info', alertsConstants.unhandledAlertTypeLog + eventData.event_type);
     }

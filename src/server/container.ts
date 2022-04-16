@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
 import { TYPES } from './types';
-import EffectsManager from './effects-manager';
+import EffectsService from './effects-service';
 import TwitchChat from './twitch-chat';
 import TextToSpeech from './text-to-speech';
 import AppServer from './server';
@@ -15,7 +15,7 @@ import TauAlerts from './tau-alerts';
 const container = new Container({ defaultScope: "Singleton" });
 
 container.bind<AppServer>(TYPES.AppServer).to(AppServer);
-container.bind<EffectsManager>(TYPES.EffectsManager).to(EffectsManager);
+container.bind<EffectsService>(TYPES.EffectsService).to(EffectsService);
 container.bind<StreamElementsAlerts>(TYPES.StreamElementsAlerts).to(StreamElementsAlerts);
 container.bind<TauAlerts>(TYPES.TauAlerts).to(TauAlerts);
 container.bind<TwitchChat>(TYPES.TwitchChat).to(TwitchChat);
