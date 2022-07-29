@@ -23,6 +23,7 @@ import { container } from './container';
 enum ChannelRewards {
   TextToSpeech = '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb',
   ColorWave = 'b690c37e-5cec-4771-a463-8b492ad6107c',
+  Default = ''
 }
 
 @injectable()
@@ -200,12 +201,8 @@ export default class TwitchChat {
     return { hours, minutes };
   };
 
-  private determineCustomRewardRedemption(customRewardId: string): string {
-    let redemptionType = '';
-    if (customRewardId === '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb') {
-      redemptionType = 'tts';
-    }
-    return redemptionType;
+  private determineCustomRewardRedemption(customRewardId: string): ChannelRewards {
+    return Object.values(ChannelRewards).find(id => id === customRewardId) ?? ChannelRewards.Default;
   }
 
   /**
@@ -224,7 +221,7 @@ export default class TwitchChat {
     if (customRewardId) {
       const redemptionType =
         this.determineCustomRewardRedemption(customRewardId);
-      if (redemptionType === 'tts') {
+      if (redemptionType === ChannelRewards.TextToSpeech) {
         this.textToSpeech.emitTextToSpeech(
           user,
           message,
