@@ -1,7 +1,8 @@
-import { inject, injectable } from 'inversify';
-import { TYPES } from './types';
-import { log } from './log';
+import { injectable } from 'inversify';
+import fetch from 'isomorphic-fetch';
 import * as config from './config';
+// import { TYPES } from './types';
+// import { log } from './log';
 
 @injectable()
 export default class TauApi {

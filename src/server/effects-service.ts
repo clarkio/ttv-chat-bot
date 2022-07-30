@@ -3,7 +3,7 @@ import fetch from 'isomorphic-fetch';
 
 import { container } from './container';
 import { TYPES } from './types';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import chroma from 'chroma-js';
 import * as config from './config';
 import { effectsManager as constants, StopCommands } from './constants';
@@ -13,6 +13,7 @@ import TwitchUser from './twitch-user';
 import ObsHandler, { SceneEffect } from './obs-handler';
 import Overlay from './overlay';
 import SoundFxManager, { SoundFxFile } from './sound-fx';
+import TauApi from './tau-api';
 
 @injectable()
 export default class EffectsService {
@@ -46,7 +47,7 @@ export default class EffectsService {
     ],
   };
 
-  constructor() {
+  constructor(@inject(TYPES.TauApi) private tauApi: TauApi) {
     this.loadEffects();
     this.playedUserJoinSounds = [];
   }
@@ -510,6 +511,13 @@ export default class EffectsService {
     }
   }
 
+  private initializeEventListeners() {
+    this.socketServer.on(
+      'tts-done',
+      this.tauApi.completeChannelPointRedemption
+    );
+  }
+
   /**
    * Initialize classes and functions that assist in controlling effects
    */
@@ -529,5 +537,7 @@ export default class EffectsService {
     this.overlay.init(this.socketServer!);
 
     this.initializeFlashbangEffect();
+
+    this.initializeEventListeners();
   };
 }

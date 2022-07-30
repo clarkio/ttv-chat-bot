@@ -11,13 +11,17 @@ import SoundFxManager from './sound-fx';
 import Overlay from './overlay';
 import TwitchUser from './twitch-user';
 import TauAlerts from './tau-alerts';
+import TauApi from './tau-api';
 
-const container = new Container({ defaultScope: "Singleton" });
+const container = new Container({ defaultScope: 'Singleton' });
 
 container.bind<AppServer>(TYPES.AppServer).to(AppServer);
 container.bind<EffectsService>(TYPES.EffectsService).to(EffectsService);
-container.bind<StreamElementsAlerts>(TYPES.StreamElementsAlerts).to(StreamElementsAlerts);
+container
+  .bind<StreamElementsAlerts>(TYPES.StreamElementsAlerts)
+  .to(StreamElementsAlerts);
 container.bind<TauAlerts>(TYPES.TauAlerts).to(TauAlerts);
+container.bind<TauApi>(TYPES.TauApi).to(TauApi);
 container.bind<TwitchChat>(TYPES.TwitchChat).to(TwitchChat);
 container.bind<TextToSpeech>(TYPES.TextToSpeech).to(TextToSpeech);
 container.bind<ObsHandler>(TYPES.ObsHandler).to(ObsHandler);

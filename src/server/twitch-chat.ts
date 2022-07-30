@@ -23,7 +23,7 @@ import { container } from './container';
 enum ChannelRewards {
   TextToSpeech = '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb',
   ColorWave = 'b690c37e-5cec-4771-a463-8b492ad6107c',
-  Default = ''
+  Default = '',
 }
 
 @injectable()
@@ -201,8 +201,13 @@ export default class TwitchChat {
     return { hours, minutes };
   };
 
-  private determineCustomRewardRedemption(customRewardId: string): ChannelRewards {
-    return Object.values(ChannelRewards).find(id => id === customRewardId) ?? ChannelRewards.Default;
+  private determineCustomRewardRedemption(
+    customRewardId: string
+  ): ChannelRewards {
+    return (
+      Object.values(ChannelRewards).find((id) => id === customRewardId) ??
+      ChannelRewards.Default
+    );
   }
 
   /**
