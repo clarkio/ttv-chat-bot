@@ -18,10 +18,10 @@ import { tokensRoute } from './routes/tokens';
 import { injectable } from 'inversify';
 
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
 /**
@@ -43,7 +43,7 @@ export default class AppServer {
     this.app.use((req, res, next) => {
       req.socketServer = socketServer;
       return next();
-    })
+    });
   }
 
   /**
@@ -65,10 +65,12 @@ export default class AppServer {
    */
   private configApp(): void {
     this.app.disable('x-powered-by');
-    this.app.use(helmet({
-      contentSecurityPolicy: false,
-      crossOriginEmbedderPolicy: false,
-    }));
+    this.app.use(
+      helmet({
+        contentSecurityPolicy: false,
+        crossOriginEmbedderPolicy: false,
+      })
+    );
     this.app.use(cookieParser());
     this.app.use(csrf({ cookie: true }));
     // Apply the rate limiting middleware to all requests
@@ -117,9 +119,9 @@ export default class AppServer {
    * Start the Node.js server
    */
   private listen = (): void => {
-    if(!this.http) {
+    if (!this.http) {
       log('warn', 'The http server has not been set up');
-    };
+    }
 
     const runningMessage = `App server is running on port http://localhost:${config.port}`;
     this.http!.listen(config.port, () => {
