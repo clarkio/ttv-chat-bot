@@ -310,7 +310,12 @@ export default class EffectsService {
     switch (reward.id) {
       case ChannelPointRedemptionTypes.TextToSpeech:
         const ttsMessage = `Message from ${user_name}: ${user_input}`;
-        this.socketServer.emit('tts', ttsMessage);
+        this.socketServer.emit('tts', {
+          message: ttsMessage,
+          rewardId: reward.id,
+          broadcasterId: broadcaster_user_id,
+          redemptionId: id,
+        });
         return;
       default:
         return;
@@ -531,9 +536,21 @@ export default class EffectsService {
   }
 
   private initializeEventListeners() {
-    this.socketServer.on(
-      'tts-done',
-      this.tauApi.completeChannelPointRedemption
+    this.socketServer.on('connection', (socket: io.Socket) => {
+      socket.on('tts-complete', (event) => {
+        this.handleTextToSpeechFinish(event);
+      });
+    });
+  }
+
+  private handleTextToSpeechFinish(event: any) {
+    console.log(`Received tts-complete event:`);
+    console.dir(event);
+    const { rewardId, broadcasterId, redemptionId } = event;
+    this.tauApi.completeChannelPointRedemption(
+      broadcasterId,
+      redemptionId,
+      rewardId
     );
   }
 

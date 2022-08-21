@@ -199,15 +199,6 @@ export default class TwitchChat {
     return { hours, minutes };
   };
 
-  private determineCustomRewardRedemption(
-    customRewardId: string
-  ): ChannelRewards {
-    return (
-      Object.values(ChannelRewards).find((id) => id === customRewardId) ??
-      ChannelRewards.Default
-    );
-  }
-
   /**
    * This weeds through the trolls and deciphers if the message is something that we want to do
    * something about

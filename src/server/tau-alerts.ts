@@ -35,7 +35,7 @@ export default class TauAlerts {
    */
   public startListening() {
     log('info', 'Attempting to connect to TAU...');
-    this.socket = new WebSocket(config.tauURL, {
+    this.socket = new WebSocket(`wss://${config.tauURL}/ws/twitch-events/`, {
       protocol: 'wss',
       passphrase: config.tauToken,
     });

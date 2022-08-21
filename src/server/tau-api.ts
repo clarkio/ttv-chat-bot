@@ -19,16 +19,19 @@ export default class TauApi {
     const fetchOptions: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Token ${config.tauToken}`,
       },
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify({ status: 'FULFILLED' }),
     };
 
-    const url = `${config.tauURL}/api/twitch/helix/channel_points/custom_rewards/redemptions?broadcaster_id=${broadcasterId}&reward_id=${rewardId}&id=${redemptionId}`;
+    const url = `https://${config.tauURL}/api/twitch/helix/channel_points/custom_rewards/redemptions?broadcaster_id=${broadcasterId}&reward_id=${rewardId}&id=${redemptionId}`;
 
     try {
-      await fetch(url, fetchOptions);
+      const result = await fetch(url, fetchOptions);
+      console.log('***RESULT***');
+      console.dir(result.json());
     } catch (error) {
       console.error(error);
     }

@@ -59,8 +59,8 @@ function getAzureSpeechApiToken() {
     });
 }
 
-socket.on('tts', (textToSpeak: string) => {
-  addToSpeakQueue(textToSpeak);
+socket.on('tts', (textToSpeakData: any) => {
+  addToSpeakQueue(textToSpeakData);
   loadText();
 });
 
@@ -69,14 +69,14 @@ socket.on('tts-skip', () => {
   loadText();
 });
 
-function addToSpeakQueue(textToSpeak: string): void {
-  speechQueue.push(textToSpeak);
+function addToSpeakQueue(textToSpeakData: any): void {
+  speechQueue.push(textToSpeakData);
 }
 
-function finishSpeaking(): void {
+function finishSpeaking(textToSpeakItem: any): void {
   isSpeaking = false;
   loadText();
-  socket.emit('tts-complete');
+  socket.emit('tts-complete', textToSpeakItem);
 }
 
 // TODO: restructure to the following
@@ -87,14 +87,14 @@ function finishSpeaking(): void {
 function loadText() {
   if (speechQueue.length > 0 && !isSpeaking) {
     isSpeaking = true;
-    const textToSpeak = speechQueue.shift() as string;
+    const textToSpeakItem = speechQueue.shift() as any;
 
     // Note: Standard voices will no longer be supported for new speech resources
     // https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support#standard-voices
     const body = `
     <speak version='1.0' xml:lang='en-US'>
       <voice xml:lang='en-US' xml:gender='Female' name='en-US-AriaNeural'>
-        ${textToSpeak}
+        ${textToSpeakItem.message}
       </voice>
     </speak>`;
 
@@ -115,7 +115,7 @@ function loadText() {
         currentAudio = audioSource;
         audioSource.start(0);
         audioSource.onended = function finishedPlayingAudio(ev: Event) {
-          finishSpeaking();
+          finishSpeaking(textToSpeakItem);
         };
       })
       .catch((error: any) => {
