@@ -15,6 +15,11 @@ import Overlay from './overlay';
 import SoundFxManager, { SoundFxFile } from './sound-fx';
 import TauApi from './tau-api';
 
+enum ChannelPointRedemptionTypes {
+  TextToSpeech = '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb',
+  Default = '',
+}
+
 @injectable()
 export default class EffectsService {
   public socketServer!: io.Server;
@@ -295,6 +300,20 @@ export default class EffectsService {
       }
     } else {
       return;
+    }
+  }
+
+  public handleChannelPointRedemption(eventData: any) {
+    const { broadcaster_user_id, id, reward, user_name, user_input } =
+      eventData;
+
+    switch (reward.id) {
+      case ChannelPointRedemptionTypes.TextToSpeech:
+        const ttsMessage = `Message from ${user_name}: ${user_input}`;
+        this.socketServer.emit('tts', ttsMessage);
+        return;
+      default:
+        return;
     }
   }
 

@@ -6,10 +6,11 @@ import { log } from './log';
 import TwitchChat from './twitch-chat';
 import { TYPES } from './types';
 import TauApi from './tau-api';
-import TextToSpeech from './text-to-speech';
+import EffectsService from './effects-service';
 
 enum TauEventTypes {
   ChannelPointRedemptionAdd = 'channel-channel_points_custom_reward_redemption-add',
+  ChannelPointRedemptionUpdate = 'channel-channel_points_custom_reward_redemption-update',
   Follow = 'channel-follow',
   Subscribe = 'channel-subscribe',
   Raid = 'channel-raid',
@@ -22,7 +23,7 @@ export default class TauAlerts {
   private accessToken?: string;
 
   constructor(
-    @inject(TYPES.TextToSpeech) public textToSpeech: TextToSpeech,
+    @inject(TYPES.EffectsService) public effectsService: EffectsService,
     @inject(TYPES.TwitchChat) public twitchChat: TwitchChat,
     @inject(TYPES.TauApi) public tauApi: TauApi
   ) {
@@ -108,10 +109,7 @@ export default class TauAlerts {
     switch (tauEvent) {
       case TauEventTypes.ChannelPointRedemptionAdd:
         console.log(eventData);
-        this.textToSpeech.executeTextToSpeech(
-          eventData.user_name,
-          eventData.user_input
-        );
+        this.effectsService.handleChannelPointRedemption(eventData.event_data);
         return;
       default:
         log(
