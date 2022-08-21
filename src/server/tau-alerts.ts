@@ -109,7 +109,7 @@ export default class TauAlerts {
     switch (tauEvent) {
       case TauEventTypes.ChannelPointRedemptionAdd:
         console.log(eventData);
-        this.effectsService.handleChannelPointRedemption(eventData.event_data);
+        this.effectsService.handleChannelPointRedemption(eventData);
         return;
       default:
         log(

@@ -21,7 +21,7 @@ export default class TauApi {
         'Content-Type': 'application/json',
         Authorization: `Token ${config.tauToken}`,
       },
-      method: 'POST',
+      method: 'PATCH',
       mode: 'cors',
       body: JSON.stringify({ status: 'FULFILLED' }),
     };
@@ -31,7 +31,7 @@ export default class TauApi {
     try {
       const result = await fetch(url, fetchOptions);
       console.log('***RESULT***');
-      console.dir(result.json());
+      console.dir(await result.json());
     } catch (error) {
       console.error(error);
     }

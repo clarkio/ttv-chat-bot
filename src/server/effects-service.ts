@@ -305,7 +305,7 @@ export default class EffectsService {
 
   public handleChannelPointRedemption(eventData: any) {
     const { broadcaster_user_id, id, reward, user_name, user_input } =
-      eventData;
+      eventData.event_data;
 
     switch (reward.id) {
       case ChannelPointRedemptionTypes.TextToSpeech:
