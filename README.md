@@ -11,7 +11,7 @@
 
 </div>
 
-Twitch TV chat reader to change the color of overlays loaded from streamelements and/or colors of internet connected lights via Azure Bot Service and Language Understanding AI (LUIS)
+Twitch livestream bot that can control colors for overlays from Stream Elements, play sound effects, handle custom rewards (like text-to-speech) and more!
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors)
