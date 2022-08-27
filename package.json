@@ -6,6 +6,7 @@
   "scripts": {
     "prestart": "echo prestart... && npm run build && echo starting...",
     "start": "node dist/server/index.js",
+    "dev": "nodemon -e ts,json -x \"ts-node --project src/server/tsconfig.json src/server/index.ts\"",
     "prestart-wsl": "echo prestart... && npm run build && echo starting...",
     "start-wsl": "OBS_SOCKETS_SERVER=$(hostname).local:4444 node dist/server/index.js",
     "debug": "node --inspect dist/server/index.js",
@@ -43,7 +44,6 @@
     "socket.io": "^3.1.2",
     "socket.io-client": "^3.1.3",
     "tmi.js": "^1.8.5",
-    "ts-node": "^7.0.1",
     "ws": "^6.2.2"
   },
   "snyk": true,
@@ -70,6 +70,7 @@
     "nodemon": "^2.0.6",
     "reflect-metadata": "^0.1.13",
     "snyk": "^1.622.0",
+    "ts-node": "^10.4.0",
     "tslint": "^5.20.0",
     "tslint-config-airbnb-base": "^0.2.0",
     "tslint-config-prettier": "^1.18.0",
