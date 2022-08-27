@@ -293,6 +293,7 @@ export default class EffectsService {
           color,
           source,
           chatUser: options.chatUser,
+          redemptionData: options.redemptionData,
         });
 
         return await this.triggerColorWaveEffect();
@@ -318,6 +319,21 @@ export default class EffectsService {
           redemptionId: id,
         });
         return;
+      case ChannelPointRedemptionTypes.Shadow:
+        const options = {
+          color: user_input,
+          chatUser: user_name,
+          redemptionData: {
+            rewardId: reward.id,
+            broadcasterId: broadcaster_user_id,
+            redemptionId: id,
+          },
+        };
+        this.activateSceneEffectByName(
+          constants.cameraColorShadowEffectName,
+          options
+        );
+        return;
       default:
         return;
     }
@@ -327,7 +343,8 @@ export default class EffectsService {
     if (this.colorWaveEffectQueue.length > 0 && !this.isColorWaveActive) {
       this.isColorWaveActive = true;
 
-      let { source, color } = this.colorWaveEffectQueue.shift() as any;
+      let { source, color, redemptionData } =
+        this.colorWaveEffectQueue.shift() as any;
       // start with 0 opacity and work up to 100
       let opacity: number = 0;
       await this.obsHandler.setSourceFilterSettings(
@@ -366,6 +383,11 @@ export default class EffectsService {
             clearInterval(fadeOutIntveral);
             await this.obsHandler.toggleSceneSource(source.sourceName, false);
             this.isColorWaveActive = false;
+            this.tauApi.completeChannelPointRedemption(
+              redemptionData.broadcasterId,
+              redemptionData.redemptionId,
+              redemptionData.rewardId
+            );
             return await this.triggerColorWaveEffect();
           }
         }, config.cameraShadowFadeDelayInMilliseconds);
@@ -545,8 +567,6 @@ export default class EffectsService {
   }
 
   private handleTextToSpeechFinish(event: any) {
-    console.log(`Received tts-complete event:`);
-    console.dir(event);
     const { rewardId, broadcasterId, redemptionId } = event;
     this.tauApi.completeChannelPointRedemption(
       broadcasterId,

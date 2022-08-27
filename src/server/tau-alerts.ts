@@ -96,11 +96,6 @@ export default class TauAlerts {
    */
   private onEvent = (event: string) => {
     const eventData = JSON.parse(event);
-    //@ts-ignore
-    console.log('TAU EVENT: ', eventData);
-
-    console.log(TauEventTypes.ChannelPointRedemptionAdd);
-
     // Convert event to enum for easier calculations
     const tauEvent =
       Object.values(TauEventTypes).find((id) => id === eventData.event_type) ??
@@ -108,7 +103,6 @@ export default class TauAlerts {
 
     switch (tauEvent) {
       case TauEventTypes.ChannelPointRedemptionAdd:
-        console.log(eventData);
         this.effectsService.handleChannelPointRedemption(eventData);
         return;
       default:
