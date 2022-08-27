@@ -2,8 +2,8 @@ export const alertsListener = {
   authenticateMethod: 'jwt',
   connectionType: 'websocket',
   eventTypes: {
-    follow: 'follow',
-    raid: 'raid',
+    follow: 'channel-follow',
+    raid: 'channel-raid',
   },
   logs: {
     authenticated: 'Successfully authenticated for the channel',
@@ -31,6 +31,7 @@ export const effectsManager = {
   unsupportedSoundEffectMessage:
     'the sound effect you entered is not supported. Please double check your spelling or use the !sfx command to see what is supported',
   camCommand: 'cam',
+  flashBangCommand: 'flashbang',
 };
 
 export const index = {
@@ -93,7 +94,7 @@ export const twitchChat = {
     ignoredCommandMessage:
       'Command was ignored because the TTV Chat Listener is disabled',
     nothingToParseMessage: 'there was nothing to do',
-    twitchClientJoinedMessage: 'This client joined the channel...',
+    twitchClientJoinedMessage: 'This client joined the Twitch channel...',
     twitchConnectionAttemptMessage:
       'Client is online and attempting to connect to chat...',
     twitchConnectionFailMessage: 'Failed to connect to Twitch chat',

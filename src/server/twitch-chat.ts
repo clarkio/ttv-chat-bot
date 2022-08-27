@@ -7,23 +7,12 @@ import {
   ttvClientToken,
   ttvClientUsername,
 } from './config';
-import {
-  twitchChat as constants,
-  effectsManager as emConstants,
-} from './constants';
-import EffectsManager from './effects-manager';
+import { twitchChat as constants } from './constants';
+import EffectsService from './effects-service';
 import { log } from './log';
 import TwitchUser from './twitch-user';
 import { TYPES } from './types';
-import TextToSpeech from './text-to-speech';
 import { container } from './container';
-
-// TODO: after moving to TAU for events we can
-// key off redemptions by name instead of reward-id
-enum ChannelRewards {
-  TextToSpeech = '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb',
-  ColorWave = 'b690c37e-5cec-4771-a463-8b492ad6107c',
-}
 
 @injectable()
 export default class TwitchChat {
@@ -37,8 +26,7 @@ export default class TwitchChat {
   private isChatClientEnabled: boolean = true;
 
   constructor(
-    @inject(TYPES.EffectsManager) private effectsManager: EffectsManager,
-    @inject(TYPES.TextToSpeech) private textToSpeech: TextToSpeech
+    @inject(TYPES.EffectsService) private effectsService: EffectsService
   ) {
     this.ttvChatClient = Client(this.setTwitchChatOptions());
     this.ttvChatClient.on('join', this.ttvJoin);
@@ -87,7 +75,7 @@ export default class TwitchChat {
       channels,
       connection: {
         reconnect: true,
-        secure: false,
+        secure: true,
       },
       identity: {
         password: ttvClientToken,
@@ -122,7 +110,7 @@ export default class TwitchChat {
           log('error', `There was an error getting moderators: ${error}`)
         );
     } else {
-      this.effectsManager.activateJoinEffectIfFound(
+      this.effectsService.activateJoinEffectIfFound(
         username.toLocaleLowerCase()
       );
     }
@@ -200,14 +188,6 @@ export default class TwitchChat {
     return { hours, minutes };
   };
 
-  private determineCustomRewardRedemption(customRewardId: string): string {
-    let redemptionType = '';
-    if (customRewardId === '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb') {
-      redemptionType = 'tts';
-    }
-    return redemptionType;
-  }
-
   /**
    * This weeds through the trolls and deciphers if the message is something that we want to do
    * something about
@@ -221,38 +201,9 @@ export default class TwitchChat {
     customRewardId: string
   ) => {
     const userName = user.username;
-    if (customRewardId) {
-      const redemptionType =
-        this.determineCustomRewardRedemption(customRewardId);
-      if (redemptionType === 'tts') {
-        this.textToSpeech.emitTextToSpeech(
-          user,
-          message,
-          this.isTrustedUser(user)
-        );
-      }
-    }
-
-    // TODO: use this.determineCustomRewardRedemption function?
-    // Although when we switch to TAU we'll be able to get the reward name
-    if (customRewardId && customRewardId === ChannelRewards.ColorWave) {
-      const options = { color: message, chatUser: userName };
-      // get result of activating and if it fails send a response in chat
-      try {
-        await this.effectsManager.activateSceneEffectByName(
-          emConstants.cameraColorShadowEffectName,
-          options
-        );
-      } catch (error) {
-        log('error', error.message);
-        this.sendChatMessage(
-          `Hey @${userName}, "${error.message}"! Are you trolling?`
-        );
-      }
-    }
 
     if ((user.isBroadcaster || user.isMod) && message.startsWith('!skip')) {
-      this.effectsManager.emitEvent('tts-skip');
+      this.effectsService.emitEvent('tts-skip');
     }
 
     if (this.isLightControlCommand(message)) {
@@ -276,7 +227,7 @@ export default class TwitchChat {
     }
 
     if (this.isOtherCommand(message)) {
-      this.effectsManager.checkForCommand(message, user);
+      this.effectsService.checkForCommand(message, user);
     }
 
     return Promise.resolve(constants.logs.nothingToParseMessage);
@@ -301,7 +252,7 @@ export default class TwitchChat {
    * Check if the message is for special effects!
    */
   private isSpecialEffectCommand = (message: string) =>
-    this.effectsManager.determineSpecialEffect(message);
+    this.effectsService.determineSpecialEffect(message);
 
   /**
    * Do something cool when there is a special effect triggered
@@ -310,20 +261,7 @@ export default class TwitchChat {
    * @param userName user who sent
    */
   private startSpecialEffects = (specialEffect: any, userName: string) => {
-    this.effectsManager.triggerSpecialEffect(specialEffect.colors);
-    if (this.effectsManager.azureBot) {
-      this.effectsManager.azureBot
-        .triggerEffect(specialEffect, userName)
-        .then(() => {
-          setTimeout(
-            this.checkForBotResponse,
-            config.azureBotResponseCheckDelay
-          );
-        })
-        .catch((error) => {
-          log('error', error);
-        });
-    }
+    this.effectsService.triggerSpecialEffect(specialEffect.colors);
     return;
   };
 
@@ -335,39 +273,9 @@ export default class TwitchChat {
    */
   private startColorChange = (commandMessage: string, userName: string) => {
     // TODO Convert color names to hex code before sending to the bot?
-    this.effectsManager.updateOverlay(commandMessage);
-
-    // TODO update so that effects manager handles azure bot related workload
-    if (this.effectsManager.azureBot) {
-      return this.effectsManager.azureBot
-        .sendCommand(commandMessage, userName)
-        .then((result: any) => {
-          log('info', `Successfully sent the command from ${userName}`);
-          setTimeout(
-            this.checkForBotResponse,
-            config.azureBotResponseCheckDelay
-          );
-          return result;
-        })
-        .catch((error: any) => {
-          log('error', error);
-          return error;
-        });
-    }
+    this.effectsService.updateOverlay(commandMessage);
   };
 
-  private checkForBotResponse = () => {
-    // TODO update so that effects manager handles azure bot related workload
-    this.effectsManager.azureBot
-      .getConversationMessages()
-      .then((result: any) => {
-        const messages = result.messages;
-        const lastMessage = messages[messages.length - 1].text;
-        log('info', `Bot response: ${lastMessage}`);
-        this.ttvChatClient.say('clarkio', lastMessage);
-      })
-      .catch((error) => log('error', error));
-  };
   /**
    * USER OUR BOT TO SEE OTHER BOTS
    */

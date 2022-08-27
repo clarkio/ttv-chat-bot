@@ -1,19 +1,19 @@
 import { inject, injectable } from 'inversify';
-import io from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import * as config from './config';
 import { alertsListener as alertsConstants } from './constants';
-import EffectsManager from './effects-manager';
+import EffectsService from './effects-service';
 import { log } from './log';
 import TwitchChat from './twitch-chat';
 import { TYPES } from './types';
 
 @injectable()
 export default class StreamElementsAlerts {
-  public socket!: SocketIOClient.Socket;
+  public socket!: Socket;
   private accessToken?: string;
 
   constructor(
-    @inject(TYPES.EffectsManager) public effectsManager: EffectsManager,
+    @inject(TYPES.EffectsService) public effectsService: EffectsService,
     @inject(TYPES.TwitchChat) public twitchChat: TwitchChat
   ) {
     this.accessToken = config.streamElementsJwt;
@@ -61,10 +61,8 @@ export default class StreamElementsAlerts {
    * A handler function to receive events that occur on the socket.io channel and take action upon those events. In this case we'll be trying to determine if there was an alert
    */
   private onEvent = (event: any) => {
-    const alert = this.effectsManager.determineAlertEffect(event.type);
-    if (alert) {
-      this.startAlertEffect(alert, event.data.username);
-    } else {
+    const alert = this.effectsService.determineAlertEffect(event.type);
+    if (!alert) {
       log('info', alertsConstants.unhandledAlertTypeLog + event.type);
     }
     if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.follow) {
@@ -73,16 +71,5 @@ export default class StreamElementsAlerts {
     if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.raid) {
       this.twitchChat.sendChatMessage('!new');
     }
-  };
-
-  /**
-   * After determining that an alert happened trigger any corresponding effects for that alert
-   *
-   * @param alertEffect alert type sent
-   * @param userName user triggered the alert
-   */
-  private startAlertEffect = (alertEffect: any, userName: string) => {
-    // this.effectsManager.triggerSpecialEffect(alertEffect.colors);
-    this.effectsManager.triggerAzureBotEffect(alertEffect, userName);
   };
 }

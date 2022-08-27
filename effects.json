@@ -16,7 +16,7 @@
     }
   },
   "alertEffects": {
-    "follow": {
+    "channel-follow": {
       "type": "pulse",
       "colors": [
         "purple",
@@ -30,7 +30,7 @@
         "white"
       ]
     },
-    "subscriber": {
+    "channel-subscribe": {
       "type": "pulse",
       "colors": [
         "purple",
@@ -44,14 +44,14 @@
         "green"
       ]
     },
-    "cheer": {
+    "channel-cheer": {
       "type": "pulse",
       "colors": [
         "purple",
         "green"
       ]
     },
-    "raid": {
+    "channel-raid": {
       "type": "pulse",
       "colors": [
         "purple",
@@ -505,9 +505,6 @@
     },
     {
       "dhanishgajjar": "heybrian"
-    },
-    {
-      "roberttables": "hecc"
     },
     {
       "electrichavoc": "shock"

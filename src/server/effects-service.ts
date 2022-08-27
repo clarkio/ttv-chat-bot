@@ -1,10 +1,10 @@
 import io from 'socket.io';
+import fetch from 'isomorphic-fetch';
 
 import { container } from './container';
 import { TYPES } from './types';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import chroma from 'chroma-js';
-import { AzureBot } from './azure-bot';
 import * as config from './config';
 import { effectsManager as constants, StopCommands } from './constants';
 import { readEffectsSync } from './file-handler';
@@ -13,10 +13,16 @@ import TwitchUser from './twitch-user';
 import ObsHandler, { SceneEffect } from './obs-handler';
 import Overlay from './overlay';
 import SoundFxManager, { SoundFxFile } from './sound-fx';
+import TauApi from './tau-api';
+
+enum ChannelPointRedemptionTypes {
+  TextToSpeech = 'Text to Speech',
+  Shadow = 'Clarkio Shadow',
+  Default = '',
+}
 
 @injectable()
-export default class EffectsManager {
-  public azureBot!: AzureBot;
+export default class EffectsService {
   public socketServer!: io.Server;
 
   private allEffects: any | undefined;
@@ -34,10 +40,21 @@ export default class EffectsManager {
   private colorWaveEffectQueue: any[] = [];
   private isColorWaveActive: boolean = false;
   private isCameraCommandEnabled: boolean = false;
+  private elgatoKeyLightStates: any[] = [];
+  private elgatoKeyLightIps: string[] = [];
+  private elgatoKeyLightFlashbangSetting: any = {
+    numberOfLights: 1,
+    lights: [
+      {
+        on: 1,
+        brightness: 100,
+        temperature: Math.round(987007 * 7000 ** -0.999),
+      },
+    ],
+  };
 
-  constructor() {
+  constructor(@inject(TYPES.TauApi) private tauApi: TauApi) {
     this.loadEffects();
-    this.startAzureBot();
     this.playedUserJoinSounds = [];
   }
 
@@ -62,12 +79,6 @@ export default class EffectsManager {
       const userSoundEffect = userEffect[username];
       this.activateSoundEffectByText(userSoundEffect);
       this.playedUserJoinSounds.push(username);
-    }
-  }
-
-  public triggerAzureBotEffect(alertEffect: any, userName: string) {
-    if (this.azureBot) {
-      return this.azureBot.triggerEffect(alertEffect, userName);
     }
   }
 
@@ -205,11 +216,22 @@ export default class EffectsManager {
 
       if (this.isCameraCommandEnabled) {
         this.obsHandler.executeCameraCommand(message);
+        return;
       }
+    }
+
+    if (this.isFlashbangCommand(message)) {
+      await this.executeFlashbangEffect();
+      return;
     }
 
     // This return is a last resort
     return constants.unsupportedSoundEffectMessage;
+  }
+
+  private isFlashbangCommand(message: string) {
+    message = message.toLowerCase().trim();
+    return message === constants.flashBangCommand;
   }
 
   private checkCommandStatus(commandName: string, message: string) {
@@ -271,6 +293,7 @@ export default class EffectsManager {
           color,
           source,
           chatUser: options.chatUser,
+          redemptionData: options.redemptionData,
         });
 
         return await this.triggerColorWaveEffect();
@@ -282,11 +305,46 @@ export default class EffectsManager {
     }
   }
 
+  public handleChannelPointRedemption(eventData: any) {
+    const { broadcaster_user_id, id, reward, user_name, user_input } =
+      eventData.event_data;
+
+    switch (reward.title) {
+      case ChannelPointRedemptionTypes.TextToSpeech:
+        const ttsMessage = `Message from ${user_name}: ${user_input}`;
+        this.socketServer.emit('tts', {
+          message: ttsMessage,
+          rewardId: reward.id,
+          broadcasterId: broadcaster_user_id,
+          redemptionId: id,
+        });
+        return;
+      case ChannelPointRedemptionTypes.Shadow:
+        const options = {
+          color: user_input,
+          chatUser: user_name,
+          redemptionData: {
+            rewardId: reward.id,
+            broadcasterId: broadcaster_user_id,
+            redemptionId: id,
+          },
+        };
+        this.activateSceneEffectByName(
+          constants.cameraColorShadowEffectName,
+          options
+        );
+        return;
+      default:
+        return;
+    }
+  }
+
   private async triggerColorWaveEffect() {
     if (this.colorWaveEffectQueue.length > 0 && !this.isColorWaveActive) {
       this.isColorWaveActive = true;
 
-      let { source, color } = this.colorWaveEffectQueue.shift() as any;
+      let { source, color, redemptionData } =
+        this.colorWaveEffectQueue.shift() as any;
       // start with 0 opacity and work up to 100
       let opacity: number = 0;
       await this.obsHandler.setSourceFilterSettings(
@@ -325,6 +383,11 @@ export default class EffectsManager {
             clearInterval(fadeOutIntveral);
             await this.obsHandler.toggleSceneSource(source.sourceName, false);
             this.isColorWaveActive = false;
+            this.tauApi.completeChannelPointRedemption(
+              redemptionData.broadcasterId,
+              redemptionData.redemptionId,
+              redemptionData.rewardId
+            );
             return await this.triggerColorWaveEffect();
           }
         }, config.cameraShadowFadeDelayInMilliseconds);
@@ -350,16 +413,6 @@ export default class EffectsManager {
     this.sceneAliases = this.allEffects.sceneAliases;
     this.joinSoundEffects = this.allEffects.joinSoundEffects;
     return;
-  };
-
-  /**
-   * Create the AzureBot
-   */
-  private startAzureBot = () => {
-    if (config.azureBotEnabled) {
-      this.azureBot = container.get<AzureBot>(TYPES.AzureBot);
-      this.azureBot.createNewBotConversation();
-    }
   };
 
   private async activateSoundEffect(
@@ -423,8 +476,107 @@ export default class EffectsManager {
     }, duration);
   }
 
+  public async executeFlashbangEffect() {
+    // Set each light to the flashbang settings
+    const fetchOptions: RequestInit = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+      mode: 'cors',
+      body: JSON.stringify(this.elgatoKeyLightFlashbangSetting),
+    };
+
+    // Example URL path: http://192.168.1.1:9123/elgato/lights
+    for (const ip of this.elgatoKeyLightIps) {
+      try {
+        // fetch the state of the light at that ip
+        await fetch(`http://${ip}:9123/elgato/lights`, fetchOptions);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Hold the lights to that status for X seconds?
+    await new Promise((resolve, reject) => {
+      setTimeout(() => this.resetFlashbangEffect(resolve), 500);
+    });
+  }
+
+  private async resetFlashbangEffect(resolve: (value: unknown) => void) {
+    const fetchOptions: RequestInit = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+      mode: 'cors',
+    };
+
+    // Example URL path: http://192.168.1.1:9123/elgato/lights
+    for (let i = 0; i < this.elgatoKeyLightIps.length; i++) {
+      try {
+        // fetch the state of the light at that ip
+        fetchOptions.body = JSON.stringify(this.elgatoKeyLightStates[i]);
+        await fetch(
+          `http://${this.elgatoKeyLightIps[i]}:9123/elgato/lights`,
+          fetchOptions
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    return resolve(true);
+  }
+
+  private async initializeFlashbangEffect() {
+    // Read current state of the lights and store in memory
+    this.elgatoKeyLightIps = config.elgatoKeyLightIps.split(',');
+
+    const fetchOptions: RequestInit = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      mode: 'cors',
+    };
+
+    // Example URL path: http://192.168.1.1:9123/elgato/lights
+    for (const ip of this.elgatoKeyLightIps) {
+      try {
+        // fetch the state of the light at that ip
+        const state = await fetch(
+          `http://${ip}:9123/elgato/lights`,
+          fetchOptions
+        );
+
+        // store the state in this.elgatoKeyLightStates
+        this.elgatoKeyLightStates.push(await state.json());
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  private initializeEventListeners() {
+    this.socketServer.on('connection', (socket: io.Socket) => {
+      socket.on('tts-complete', (event) => {
+        this.handleTextToSpeechFinish(event);
+      });
+    });
+  }
+
+  private handleTextToSpeechFinish(event: any) {
+    const { rewardId, broadcasterId, redemptionId } = event;
+    this.tauApi.completeChannelPointRedemption(
+      broadcasterId,
+      redemptionId,
+      rewardId
+    );
+  }
+
   /**
-   * Initialize classes that assist in controlling effects
+   * Initialize classes and functions that assist in controlling effects
    */
   public initEffectControllers = (): void => {
     // All effects will have been read from the file system at this point
@@ -440,5 +592,9 @@ export default class EffectsManager {
 
     this.overlay = container.get<Overlay>(TYPES.Overlay);
     this.overlay.init(this.socketServer!);
+
+    this.initializeFlashbangEffect();
+
+    this.initializeEventListeners();
   };
 }
