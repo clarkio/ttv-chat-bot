@@ -252,7 +252,7 @@ export default class ObsHandler {
       )
     )
       .then((result: any) => {
-        log('info', result);
+        return result;
       })
       .catch((error: any) => {
         log('error', error);
@@ -276,7 +276,7 @@ export default class ObsHandler {
       )
     )
       .then((result: any) => {
-        log('info', result);
+        return result;
       })
       .catch((error: any) => {
         log('error', error);

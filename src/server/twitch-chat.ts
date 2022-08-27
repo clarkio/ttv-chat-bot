@@ -7,23 +7,12 @@ import {
   ttvClientToken,
   ttvClientUsername,
 } from './config';
-import {
-  twitchChat as constants,
-  effectsManager as emConstants,
-} from './constants';
+import { twitchChat as constants } from './constants';
 import EffectsService from './effects-service';
 import { log } from './log';
 import TwitchUser from './twitch-user';
 import { TYPES } from './types';
 import { container } from './container';
-
-// TODO: after moving to TAU for events we can
-// key off redemptions by name instead of reward-id
-enum ChannelRewards {
-  TextToSpeech = '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb',
-  ColorWave = 'b690c37e-5cec-4771-a463-8b492ad6107c',
-  Default = '',
-}
 
 @injectable()
 export default class TwitchChat {
@@ -212,25 +201,6 @@ export default class TwitchChat {
     customRewardId: string
   ) => {
     const userName = user.username;
-
-    // TODO: use this.determineCustomRewardRedemption function?
-    // Although when we switch to TAU we'll be able to get the reward name
-    if (customRewardId && customRewardId === ChannelRewards.ColorWave) {
-      const options = { color: message, chatUser: userName };
-      // get result of activating and if it fails send a response in chat
-      try {
-        await this.effectsService.activateSceneEffectByName(
-          emConstants.cameraColorShadowEffectName,
-          options
-        );
-      } catch (err: unknown) {
-        const error = err as Error;
-        log('error', error.message);
-        this.sendChatMessage(
-          `Hey @${userName}, "${error.message}"! Are you trolling?`
-        );
-      }
-    }
 
     if ((user.isBroadcaster || user.isMod) && message.startsWith('!skip')) {
       this.effectsService.emitEvent('tts-skip');

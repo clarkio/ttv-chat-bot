@@ -30,8 +30,7 @@ export default class TauApi {
 
     try {
       const result = await fetch(url, fetchOptions);
-      console.log('***RESULT***');
-      console.dir(await result.json());
+      return result;
     } catch (error) {
       console.error(error);
     }
