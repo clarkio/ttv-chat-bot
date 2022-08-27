@@ -5,6 +5,25 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Watch WSL Server Debug",
+      "request": "launch",
+      "runtimeArgs": ["run-script", "dev-wsl"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "Watch Server Debug",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "args": ["${workspaceFolder}/src/server/index.ts"],
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceFolder}/src/server/tsconfig.json"
+      }
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "Server Break",
@@ -12,7 +31,6 @@
       "runtimeArgs": ["run-script", "debug"],
       "stopOnEntry": true,
       "sourceMaps": true,
-      "port": 9229,
       "preLaunchTask": "Compile",
       "skipFiles": ["<node_internals>/**/*.js"]
     },
@@ -23,7 +41,6 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run-script", "debug-wsl"],
       "sourceMaps": true,
-      "port": 9229,
       "preLaunchTask": "Compile",
       "skipFiles": ["<node_internals>/**/*.js"]
     },
@@ -33,7 +50,6 @@
       "name": "Server Debug",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run-script", "debug"],
-      "port": 9229,
       "preLaunchTask": "Compile",
       "skipFiles": ["<node_internals>/**/*.js"],
       "outFiles": ["${workspaceFolder}/dist/server/**/*.js"]
@@ -44,12 +60,11 @@
       "name": "Server Start",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["start"],
-      "port": 9229,
       "skipFiles": ["<node_internals>/**/*.js"]
     },
     {
       "name": "Client Debug",
-      "type": "pwa-msedge",
+      "type": "msedge",
       "request": "launch",
       "url": "http://localhost:1338/scenes?sceneName=alerts",
       "webRoot": "${workspaceFolder}/dist/client",
@@ -59,7 +74,7 @@
     },
     {
       "name": "WSL Client Debug",
-      "type": "pwa-msedge",
+      "type": "msedge",
       "request": "launch",
       "url": "http://localhost:8337/scenes?sceneName=alerts",
       "webRoot": "${workspaceFolder}/dist/client",

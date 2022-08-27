@@ -41,6 +41,7 @@ export default class AppServer {
 
   public setSocket(socketServer: io.Server) {
     this.app.use((req, res, next) => {
+      //@ts-ignore
       req.socketServer = socketServer;
       return next();
     });

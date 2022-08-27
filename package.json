@@ -7,6 +7,7 @@
     "prestart": "echo prestart... && npm run build && echo starting...",
     "start": "node dist/server/index.js",
     "dev": "nodemon -e ts,json -x \"ts-node --project src/server/tsconfig.json src/server/index.ts\"",
+    "dev-wsl": "OBS_SOCKETS_SERVER=$(hostname).local:4444 nodemon -e ts,json -x \"ts-node --project src/server/tsconfig.json src/server/index.ts\"",
     "prestart-wsl": "echo prestart... && npm run build && echo starting...",
     "start-wsl": "OBS_SOCKETS_SERVER=$(hostname).local:4444 node dist/server/index.js",
     "debug": "node --inspect dist/server/index.js",
@@ -74,7 +75,7 @@
     "tslint": "^5.20.0",
     "tslint-config-airbnb-base": "^0.2.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^4.6.3"
+    "typescript": "^4.8.2"
   },
   "eslintIgnore": [
     "/dist"
