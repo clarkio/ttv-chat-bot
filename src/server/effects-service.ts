@@ -16,7 +16,8 @@ import SoundFxManager, { SoundFxFile } from './sound-fx';
 import TauApi from './tau-api';
 
 enum ChannelPointRedemptionTypes {
-  TextToSpeech = '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb',
+  TextToSpeech = 'Text to Speech',
+  Shadow = 'Clarkio Shadow',
   Default = '',
 }
 
@@ -307,7 +308,7 @@ export default class EffectsService {
     const { broadcaster_user_id, id, reward, user_name, user_input } =
       eventData.event_data;
 
-    switch (reward.id) {
+    switch (reward.title) {
       case ChannelPointRedemptionTypes.TextToSpeech:
         const ttsMessage = `Message from ${user_name}: ${user_input}`;
         this.socketServer.emit('tts', {
