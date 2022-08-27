@@ -2,10 +2,20 @@ import { inject, injectable } from 'inversify';
 import * as config from './config';
 import WebSocket from 'ws';
 import { alertsListener as alertsConstants } from './constants';
-import EffectsService from './effects-service';
 import { log } from './log';
 import TwitchChat from './twitch-chat';
 import { TYPES } from './types';
+import TauApi from './tau-api';
+import EffectsService from './effects-service';
+
+enum TauEventTypes {
+  ChannelPointRedemptionAdd = 'channel-channel_points_custom_reward_redemption-add',
+  ChannelPointRedemptionUpdate = 'channel-channel_points_custom_reward_redemption-update',
+  Follow = 'channel-follow',
+  Subscribe = 'channel-subscribe',
+  Raid = 'channel-raid',
+  Default = '',
+}
 
 @injectable()
 export default class TauAlerts {
@@ -14,7 +24,8 @@ export default class TauAlerts {
 
   constructor(
     @inject(TYPES.EffectsService) public effectsService: EffectsService,
-    @inject(TYPES.TwitchChat) public twitchChat: TwitchChat
+    @inject(TYPES.TwitchChat) public twitchChat: TwitchChat,
+    @inject(TYPES.TauApi) public tauApi: TauApi
   ) {
     this.accessToken = config.tauToken;
   }
@@ -23,8 +34,11 @@ export default class TauAlerts {
    * Start connection and set up handlers for listening to socket.io events that occur
    */
   public startListening() {
-    log('info', 'Attempting to connect to TAU...')
-    this.socket = new WebSocket(config.tauURL, { protocol: 'wss', passphrase: config.tauToken });
+    log('info', 'Attempting to connect to TAU...');
+    this.socket = new WebSocket(`wss://${config.tauURL}/ws/twitch-events/`, {
+      protocol: 'wss',
+      passphrase: config.tauToken,
+    });
 
     this.socket.on('open', this.onConnect);
     this.socket.on('error', this.onError);
@@ -46,9 +60,12 @@ export default class TauAlerts {
     if (error) {
       log('error', 'There was an issue authenticating with TAU');
     } else {
-      log('info', 'Successfully authenticated with TAU and listening for events...');
+      log(
+        'info',
+        'Successfully authenticated with TAU and listening for events...'
+      );
     }
-  }
+  };
 
   //@ts-ignore
   private onDisconnect = (ev: Event) => {
@@ -56,10 +73,15 @@ export default class TauAlerts {
     // TODO: Handle Reconnect
   };
 
-  private onError = (event: { error: any, message: any, type: string, target: WebSocket }) => {
+  private onError = (event: {
+    error: any;
+    message: any;
+    type: string;
+    target: WebSocket;
+  }) => {
     log('error', 'There was an issue connecting to TAU');
     log('error', event.message);
-  }
+  };
 
   /**
    * A handler function to receive the result of successfully authenticating with the socket.io server and storing the channelId for that server
@@ -76,15 +98,24 @@ export default class TauAlerts {
     const eventData = JSON.parse(event);
     //@ts-ignore
     console.log('TAU EVENT: ', eventData);
-    const alert = this.effectsService.determineAlertEffect(eventData.event_type);
-    if (!alert) {
-      log('info', alertsConstants.unhandledAlertTypeLog + eventData.event_type);
-    }
-    if (eventData.event_type.toLocaleLowerCase() === alertsConstants.eventTypes.follow) {
-      this.twitchChat.sendChatMessage(`!followthx ${eventData.event_data.user_name}`);
-    }
-    if (eventData.event_type.toLocaleLowerCase() === alertsConstants.eventTypes.raid) {
-      this.twitchChat.sendChatMessage('!new');
+
+    console.log(TauEventTypes.ChannelPointRedemptionAdd);
+
+    // Convert event to enum for easier calculations
+    const tauEvent =
+      Object.values(TauEventTypes).find((id) => id === eventData.event_type) ??
+      TauEventTypes.Default;
+
+    switch (tauEvent) {
+      case TauEventTypes.ChannelPointRedemptionAdd:
+        console.log(eventData);
+        this.effectsService.handleChannelPointRedemption(eventData);
+        return;
+      default:
+        log(
+          'info',
+          `A TAU event was received that this bot hasn't been configured to support yet: ${tauEvent}`
+        );
     }
   };
 }

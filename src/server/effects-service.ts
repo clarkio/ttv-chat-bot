@@ -3,7 +3,7 @@ import fetch from 'isomorphic-fetch';
 
 import { container } from './container';
 import { TYPES } from './types';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import chroma from 'chroma-js';
 import * as config from './config';
 import { effectsManager as constants, StopCommands } from './constants';
@@ -13,6 +13,12 @@ import TwitchUser from './twitch-user';
 import ObsHandler, { SceneEffect } from './obs-handler';
 import Overlay from './overlay';
 import SoundFxManager, { SoundFxFile } from './sound-fx';
+import TauApi from './tau-api';
+
+enum ChannelPointRedemptionTypes {
+  TextToSpeech = '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb',
+  Default = '',
+}
 
 @injectable()
 export default class EffectsService {
@@ -46,7 +52,7 @@ export default class EffectsService {
     ],
   };
 
-  constructor() {
+  constructor(@inject(TYPES.TauApi) private tauApi: TauApi) {
     this.loadEffects();
     this.playedUserJoinSounds = [];
   }
@@ -297,6 +303,25 @@ export default class EffectsService {
     }
   }
 
+  public handleChannelPointRedemption(eventData: any) {
+    const { broadcaster_user_id, id, reward, user_name, user_input } =
+      eventData.event_data;
+
+    switch (reward.id) {
+      case ChannelPointRedemptionTypes.TextToSpeech:
+        const ttsMessage = `Message from ${user_name}: ${user_input}`;
+        this.socketServer.emit('tts', {
+          message: ttsMessage,
+          rewardId: reward.id,
+          broadcasterId: broadcaster_user_id,
+          redemptionId: id,
+        });
+        return;
+      default:
+        return;
+    }
+  }
+
   private async triggerColorWaveEffect() {
     if (this.colorWaveEffectQueue.length > 0 && !this.isColorWaveActive) {
       this.isColorWaveActive = true;
@@ -510,6 +535,25 @@ export default class EffectsService {
     }
   }
 
+  private initializeEventListeners() {
+    this.socketServer.on('connection', (socket: io.Socket) => {
+      socket.on('tts-complete', (event) => {
+        this.handleTextToSpeechFinish(event);
+      });
+    });
+  }
+
+  private handleTextToSpeechFinish(event: any) {
+    console.log(`Received tts-complete event:`);
+    console.dir(event);
+    const { rewardId, broadcasterId, redemptionId } = event;
+    this.tauApi.completeChannelPointRedemption(
+      broadcasterId,
+      redemptionId,
+      rewardId
+    );
+  }
+
   /**
    * Initialize classes and functions that assist in controlling effects
    */
@@ -529,5 +573,7 @@ export default class EffectsService {
     this.overlay.init(this.socketServer!);
 
     this.initializeFlashbangEffect();
+
+    this.initializeEventListeners();
   };
 }

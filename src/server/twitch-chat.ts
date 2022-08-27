@@ -15,7 +15,6 @@ import EffectsService from './effects-service';
 import { log } from './log';
 import TwitchUser from './twitch-user';
 import { TYPES } from './types';
-import TextToSpeech from './text-to-speech';
 import { container } from './container';
 
 // TODO: after moving to TAU for events we can
@@ -23,6 +22,7 @@ import { container } from './container';
 enum ChannelRewards {
   TextToSpeech = '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb',
   ColorWave = 'b690c37e-5cec-4771-a463-8b492ad6107c',
+  Default = '',
 }
 
 @injectable()
@@ -37,8 +37,7 @@ export default class TwitchChat {
   private isChatClientEnabled: boolean = true;
 
   constructor(
-    @inject(TYPES.EffectsService) private effectsService: EffectsService,
-    @inject(TYPES.TextToSpeech) private textToSpeech: TextToSpeech
+    @inject(TYPES.EffectsService) private effectsService: EffectsService
   ) {
     this.ttvChatClient = Client(this.setTwitchChatOptions());
     this.ttvChatClient.on('join', this.ttvJoin);
@@ -200,14 +199,6 @@ export default class TwitchChat {
     return { hours, minutes };
   };
 
-  private determineCustomRewardRedemption(customRewardId: string): string {
-    let redemptionType = '';
-    if (customRewardId === '5fccfdfc-0248-4786-8ab7-68bed4fcb2cb') {
-      redemptionType = 'tts';
-    }
-    return redemptionType;
-  }
-
   /**
    * This weeds through the trolls and deciphers if the message is something that we want to do
    * something about
@@ -221,17 +212,6 @@ export default class TwitchChat {
     customRewardId: string
   ) => {
     const userName = user.username;
-    if (customRewardId) {
-      const redemptionType =
-        this.determineCustomRewardRedemption(customRewardId);
-      if (redemptionType === 'tts') {
-        this.textToSpeech.emitTextToSpeech(
-          user,
-          message,
-          this.isTrustedUser(user)
-        );
-      }
-    }
 
     // TODO: use this.determineCustomRewardRedemption function?
     // Although when we switch to TAU we'll be able to get the reward name
