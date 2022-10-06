@@ -70,7 +70,7 @@
     "inversify": "^5.0.5",
     "nodemon": "^2.0.6",
     "reflect-metadata": "^0.1.13",
-    "snyk": "^1.622.0",
+    "snyk": "^1.996.0",
     "ts-node": "^10.4.0",
     "tslint": "^5.20.0",
     "tslint-config-airbnb-base": "^0.2.0",
