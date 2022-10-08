@@ -39,6 +39,7 @@
       "request": "launch",
       "name": "WSL Server Debug",
       "runtimeExecutable": "npm",
+      "stopOnEntry": true,
       "runtimeArgs": ["run-script", "debug-wsl"],
       "sourceMaps": true,
       "preLaunchTask": "Compile",

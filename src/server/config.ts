@@ -161,7 +161,7 @@ export const obsSocketsKey: string =
   OBS_SOCKETS_KEY || fileConfig.obsSocketsKey || requireConfigMessage;
 
 export const obsSocketsServer: string =
-  OBS_SOCKETS_SERVER || fileConfig.obsSocketsServer || 'localhost:4444';
+  OBS_SOCKETS_SERVER || fileConfig.obsSocketsServer || 'ws://127.0.0.1:4455';
 
 /*****************************************************************************
  * StreamElements
