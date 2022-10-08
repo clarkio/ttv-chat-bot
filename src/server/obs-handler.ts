@@ -248,17 +248,11 @@ export default class ObsHandler {
     filterSettings: any
   ) {
     return this.obs
-      .call(
-        'SetSourceFilterSettings',
-        Object.assign(
-          {},
-          {
-            sourceName,
-            filterName,
-            filterSettings,
-          }
-        )
-      )
+      .call('SetSourceFilterSettings', {
+        sourceName,
+        filterName,
+        filterSettings,
+      })
       .then((result: any) => {
         return result;
       })
@@ -321,9 +315,13 @@ export default class ObsHandler {
     });
   }
 
-  public async toggleSceneSource(sourceName: string, sourceEnabled: boolean) {
+  public async toggleSceneSource(
+    sourceName: string,
+    sourceEnabled: boolean,
+    sceneName?: string
+  ) {
     try {
-      const currentScene = await this.getCurrentScene();
+      const currentScene = sceneName ?? (await this.getCurrentScene());
 
       const sceneItem = await this.obs.call('GetSceneItemId', {
         sceneName: currentScene,

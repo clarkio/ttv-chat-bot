@@ -353,7 +353,11 @@ export default class EffectsService {
         { color, opacity }
       );
 
-      await this.obsHandler.toggleSceneSource(source.sourceName, true);
+      await this.obsHandler.toggleSceneSource(
+        source.sourceName,
+        true,
+        '[C] Camera Group'
+      );
 
       let fadeInterval = setInterval(async () => {
         opacity += config.cameraShadowOpacityModifier;
@@ -381,7 +385,11 @@ export default class EffectsService {
           // In case the modifier causes it to have a value below zero
           if (opacity <= 0) {
             clearInterval(fadeOutIntveral);
-            await this.obsHandler.toggleSceneSource(source.sourceName, false);
+            await this.obsHandler.toggleSceneSource(
+              source.sourceName,
+              false,
+              '[C] Camera Group'
+            );
             this.isColorWaveActive = false;
             this.tauApi.completeChannelPointRedemption(
               redemptionData.broadcasterId,
