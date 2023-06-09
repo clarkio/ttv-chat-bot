@@ -1,28 +1,32 @@
-import io from 'socket.io-client';
-
-import { log } from './log';
+import { inject, injectable } from 'inversify';
+import { io, Socket } from 'socket.io-client';
 import * as config from './config';
-import EffectsManager from './effects-manager';
-import { TwitchChat } from './twitch-chat';
-import { alertsManager as alertsConstants } from './constants';
+import { alertsListener as alertsConstants } from './constants';
+import EffectsService from './effects-service';
+import { log } from './log';
+import TwitchChat from './twitch-chat';
+import { TYPES } from './types';
 
-export class AlertsManager {
-  public socket!: SocketIOClient.Socket;
+@injectable()
+export default class StreamElementsAlerts {
+  public socket!: Socket;
+  private accessToken?: string;
 
   constructor(
-    private accessToken: string,
-    private effectsManager: EffectsManager,
-    private twitchChat: TwitchChat
+    @inject(TYPES.EffectsService) public effectsService: EffectsService,
+    @inject(TYPES.TwitchChat) public twitchChat: TwitchChat
   ) {
-    this.socket = io(config.streamElementsWebsocketsUrl, {
-      transports: [alertsConstants.connectionType]
-    });
+    this.accessToken = config.streamElementsJwt;
   }
 
   /**
-   * Set up handlers for listening to socket.io events that occur
+   * Start connection and set up handlers for listening to socket.io events that occur
    */
-  public listenToEvents() {
+  public startListening() {
+    this.socket = io(config.streamElementsWebsocketsUrl, {
+      transports: [alertsConstants.connectionType],
+    });
+
     this.socket.on('connect', this.onConnect);
     this.socket.on('disconnect', this.onDisconnect);
     this.socket.on('authenticated', this.onAuthenticated);
@@ -37,7 +41,7 @@ export class AlertsManager {
 
     this.socket.emit('authenticate', {
       method: alertsConstants.authenticateMethod,
-      token: this.accessToken
+      token: this.accessToken,
     });
   };
 
@@ -57,13 +61,8 @@ export class AlertsManager {
    * A handler function to receive events that occur on the socket.io channel and take action upon those events. In this case we'll be trying to determine if there was an alert
    */
   private onEvent = (event: any) => {
-    const alert = this.effectsManager.determineAlertEffect(event.type);
-    if (alert) {
-      this.startAlertEffect(alert, event.data.username);
-      if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.raid) {
-        this.effectsManager.checkForCommand('sandstorm');
-      }
-    } else {
+    const alert = this.effectsService.determineAlertEffect(event.type);
+    if (!alert) {
       log('info', alertsConstants.unhandledAlertTypeLog + event.type);
     }
     if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.follow) {
@@ -72,16 +71,5 @@ export class AlertsManager {
     if (event.type.toLocaleLowerCase() === alertsConstants.eventTypes.raid) {
       this.twitchChat.sendChatMessage('!new');
     }
-  };
-
-  /**
-   * After determining that an alert happened trigger any corresponding effects for that alert
-   *
-   * @param alertEffect alert type sent
-   * @param userName user triggered the alert
-   */
-  private startAlertEffect = (alertEffect: any, userName: string) => {
-    this.effectsManager.triggerSpecialEffect(alertEffect.colors);
-    this.effectsManager.triggerAzureBotEffect(alertEffect, userName);
   };
 }

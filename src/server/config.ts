@@ -28,16 +28,49 @@ const {
   SPECIAL_EFFECTS_CHAT_COMMANDS,
   AZURE_BOT_TOKEN,
   AZURE_BOT_RESPONSE_CHECK_DELAY,
+  AZURE_SPEECH_TOKEN,
   DISCORD_HOOK_ENABLED,
   DISCORD_HOOK_ID,
   DISCORD_HOOK_TOKEN,
   OBS_SOCKETS_KEY,
   OBS_SOCKETS_SERVER,
   STREAMELEMENTS_JWT,
-  STREAMELEMENTS_WEBSOCKET_URL
+  STREAMELEMENTS_WEBSOCKET_URL,
+  TAU_TOKEN,
+  TAU_URL,
+  CAMERA_SHADOW_DURATION_MILLISECONDS,
+  CAMERA_SHADOW_FADE_MILLISECONDS,
+  CAMERA_SHADOW_OPACITY_MODIFIER,
+  ELGATO_KEYLIGHT_IPS,
 } = process.env;
 
 const requireConfigMessage = 'REQUIRED CONFIGURATION WAS NOT PROVIDED';
+
+export const elgatoKeyLightIps: string =
+  ELGATO_KEYLIGHT_IPS || fileConfig.elgatoKeyLightIps || requireConfigMessage;
+
+export const tauToken: string =
+  TAU_TOKEN || fileConfig.tauToken || requireConfigMessage;
+
+export const tauURL: string =
+  TAU_URL || fileConfig.tauURL || requireConfigMessage;
+
+/*****************************************************************************
+ * Other
+ *****************************************************************************/
+
+export const cameraShadowDurationInMilliseconds: number =
+  CAMERA_SHADOW_DURATION_MILLISECONDS ||
+  fileConfig.cameraShadowDurationInMilliseconds ||
+  30000;
+
+export const cameraShadowFadeDelayInMilliseconds: number =
+  CAMERA_SHADOW_FADE_MILLISECONDS ||
+  fileConfig.cameraShadowFadeDelayInMilliseconds ||
+  250;
+
+export const cameraShadowOpacityModifier: number =
+  CAMERA_SHADOW_OPACITY_MODIFIER || fileConfig.cameraShadowOpacityModifier || 2;
 
 /*****************************************************************************
  * App
@@ -97,6 +130,14 @@ export const azureBotResponseCheckDelay: number =
   fileConfig.azureBotResponseCheckDelay ||
   4000;
 
+export const azureSpeechToken: string =
+  AZURE_SPEECH_TOKEN || fileConfig.azureSpeechToken || requireConfigMessage;
+
+export const tokens: any = {
+  azureBotToken,
+  azureSpeechToken,
+};
+
 /*****************************************************************************
  * Discord
  *****************************************************************************/
@@ -120,7 +161,7 @@ export const obsSocketsKey: string =
   OBS_SOCKETS_KEY || fileConfig.obsSocketsKey || requireConfigMessage;
 
 export const obsSocketsServer: string =
-  OBS_SOCKETS_SERVER || fileConfig.obsSocketsServer || 'localhost:4444';
+  OBS_SOCKETS_SERVER || fileConfig.obsSocketsServer || 'ws://127.0.0.1:4455';
 
 /*****************************************************************************
  * StreamElements

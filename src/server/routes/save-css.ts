@@ -1,4 +1,4 @@
-import { writeCssFile } from '../file-manager';
+import { writeCssFile } from '../file-handler';
 import express from 'express';
 
 export const saveCssRoute = (req: express.Request, res: express.Response) => {
@@ -9,7 +9,8 @@ export const saveCssRoute = (req: express.Request, res: express.Response) => {
       res.send({ message: 'Saved' });
     })
     .catch((error: any) => {
-      res.status(500).send(error);
+      console.error(error);
+      res.status(500).send("There was an issue saving the CSS you created");
     });
 };
 

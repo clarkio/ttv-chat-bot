@@ -1,0 +1,20 @@
+text-to-speech todo
+
+☐ determine best way to allow viewers to choose a voice @created(Mon 12/14/2020 - 09:36 PM)
+☐ add ability to change voices @created(Mon 12/14/2020 - 09:36 PM)
+
+- wwsean08: use a database to capture viewer's choice on voice and then use that
+
+
+- Note: as of 12/13/2020 figured out how to get the audio to work via the text-to-speech REST API in Azure
+  - Need to send the HTTP request with an option of 'requestType' and its value set to 'arraybuffer'
+  - Also make sure the request header for 'X-Microsoft-OutputFormat' is set to 'audio-16khz-64kbitrate-mono-mp3'
+
+synthesizerCompleted may actually just mean completed processing the text but not completed playing the audio from the result of it
+
+  look into IPlayer
+  https://docs.microsoft.com/en-us/javascript/api/microsoft-cognitiveservices-speech-sdk/iplayer?view=azure-node-latest#onAudioEnd
+
+Archive:
+  ✔ fix queue to only play one tts at a time @created(Fri 12/11/2020 - 10:35 PM) @done(Mon 12/14/2020 - 09:35 PM)
+  ✔ figure out a way to stop/skip a tts @created(Fri 12/11/2020 - 10:35 PM) @done(Mon 12/14/2020 - 09:35 PM)

@@ -1,11 +1,16 @@
-import SoundFxManager from './sound-fx';
+import { injectable } from 'inversify';
+import { Server } from 'socket.io';
 import { overlay as constants } from './constants';
 
-export default class OverlayManager {
+@injectable()
+export default class Overlay {
   public static readonly PORT: number = constants.defaultPort;
   public currentBulbColor: string = constants.defaultColor;
+  private io?: Server;
 
-  constructor(private soundFx: SoundFxManager, private io: SocketIO.Server) {}
+  public init (io: Server) {
+    this.io = io;
+  }
 
   /**
    * @returns The current Bulb Color
@@ -19,12 +24,7 @@ export default class OverlayManager {
    */
   public triggerSpecialEffect = (colors: string[]): void => {
     if (colors) {
-      this.io.emit(constants.colorEffectEvent, colors);
-      if (colors[0].includes(constants.copColorName)) {
-        this.soundFx.playSoundEffect(
-          `${this.soundFx.SOUND_FX_DIRECTORY}/${constants.minionSoundEffectFileName}`
-        );
-      }
+      this.io!.emit(constants.colorEffectEvent, colors);
     }
   };
 
@@ -34,6 +34,6 @@ export default class OverlayManager {
    * @param command - What to change to overlay to
    */
   public updateOverlay = (command: string): void => {
-    this.io.emit(constants.colorChangeEvent, command);
+    this.io!.emit(constants.colorChangeEvent, command);
   };
 }

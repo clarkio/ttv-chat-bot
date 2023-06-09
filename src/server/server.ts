@@ -1,37 +1,50 @@
 import bodyParser from 'body-parser';
-import { WebhookClient } from 'discord.js';
-import express = require('express');
+import cookieParser from 'cookie-parser';
+import io from 'socket.io';
+import express from 'express';
+// import express = require('express');
+import helmet from 'helmet';
+import csrf from 'csurf';
+import rateLimit from 'express-rate-limit';
 import { Server } from 'http';
 import { resolve as resolvePath } from 'path';
-import io from 'socket.io';
 
 import * as config from './config';
-import { DiscordBot } from './discord-bot';
 import { log } from './log';
 import { lightsRouter } from './routes/lights';
 import { saveCssRoute } from './routes/save-css';
 import { scenesRoute } from './routes/scenes';
-import EffectsManager from './effects-manager';
+import { tokensRoute } from './routes/tokens';
+import { injectable } from 'inversify';
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 
 /**
  * The base Express Application. This is where most of the other parts of the application
  * will live. This allows for easy enabling and disabling of features within the application
  */
-export class AppServer {
+@injectable()
+export default class AppServer {
   public app: express.Application;
-  public io!: SocketIO.Server;
-  public discordHook!: WebhookClient;
-  public effectsManager!: EffectsManager;
-  private http!: Server;
+  private http?: Server;
 
   constructor() {
     this.app = express();
     this.configApp();
-    this.startDiscordHook();
-    this.startOverlay();
     this.defineRoutes();
-    this.listen();
-    this.effectsManager = new EffectsManager(this);
+  }
+
+  public setSocket(socketServer: io.Server) {
+    this.app.use((req, res, next) => {
+      //@ts-ignore
+      req.socketServer = socketServer;
+      return next();
+    });
   }
 
   /**
@@ -42,24 +55,27 @@ export class AppServer {
   /**
    * Create a socket.io server to use for overlay effects
    */
-  private startOverlay = () => {
+  public startServer = () => {
     this.http = new Server(this.app);
-    this.io = io(this.http);
+    this.listen();
+    return this.http;
   };
 
   /**
-   * Start the Discord Hook used for logging purposes right now
-   */
-  private startDiscordHook = () => {
-    if (config.discordHookEnabled) {
-      this.discordHook = new DiscordBot().createDiscordHook();
-    }
-  };
-
-  /**
-   * Configure Express to parse json, setup pug as our html view engine for generating html pages and host the resources
+   * Configure Express to parse json, setup pug as our html view engine for generating html pages and host the client resources
    */
   private configApp(): void {
+    this.app.disable('x-powered-by');
+    this.app.use(
+      helmet({
+        contentSecurityPolicy: false,
+        crossOriginEmbedderPolicy: false,
+      })
+    );
+    this.app.use(cookieParser());
+    this.app.use(csrf({ cookie: true }));
+    // Apply the rate limiting middleware to all requests
+    this.app.use(limiter);
     this.app.use(bodyParser.json());
     this.app.set('view engine', 'pug');
     this.app.set('views', resolvePath(`${__dirname}`, '../../views'));
@@ -78,10 +94,10 @@ export class AppServer {
    */
   private defineRoutes(): void {
     const router: express.Router = express.Router();
-    const { changeLightColor, sendLightEffect } = lightsRouter(this);
+    const { changeLightColor, sendLightEffect } = lightsRouter();
 
     router.get('/scenes', scenesRoute);
-
+    router.get('/tokens', tokensRoute);
     router.post('/save', saveCssRoute);
 
     router.get('/overlay-colors', (req, res) => {
@@ -91,8 +107,10 @@ export class AppServer {
     router.get('/lights/:color', changeLightColor);
     router.get('/lights/effects/:effect', sendLightEffect);
 
+    // TODO: after refactoring for IoC and DI, make sure to restore the ability to determine the current overlay color
     router.get('/bulb/color', (req, res) => {
-      res.json({ color: this.effectsManager.getCurrentOverlayColor() });
+      // res.json({ color: this.effectsManager.getCurrentOverlayColor() });
+      res.json({ color: 'deepskyblue' });
     });
 
     this.app.use('/', router);
@@ -102,8 +120,12 @@ export class AppServer {
    * Start the Node.js server
    */
   private listen = (): void => {
-    const runningMessage = `Overlay server is running on port http://localhost:${config.port}`;
-    this.http.listen(config.port, () => {
+    if (!this.http) {
+      log('warn', 'The http server has not been set up');
+    }
+
+    const runningMessage = `App server is running on port http://localhost:${config.port}`;
+    this.http!.listen(config.port, () => {
       log('info', runningMessage);
     });
   };

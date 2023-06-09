@@ -1,32 +1,33 @@
-import { AppServer } from './server';
-import { TwitchChat } from './twitch-chat';
-import { AlertsManager } from './alerts-manager';
+import { Server as io } from 'socket.io';
 import * as config from './config';
-import { log, setHook } from './log';
 import { index as indexConstants } from './constants';
+import { log } from './log';
+import AppServer from './server';
+import TwitchChat from './twitch-chat';
+import { container } from './container';
+import { TYPES } from './types';
+import EffectsService from './effects-service';
+import TauAlerts from './tau-alerts';
 
 if (!config.hasLoadedConfigJSON) {
   log('log', indexConstants.logs.configFileReadWarningMessage);
 }
 
-const appServer = new AppServer();
+const appServer = container.get<AppServer>(TYPES.AppServer);
+const httpServer = appServer.startServer();
 
-setHook(message => {
-  if (config.discordHookEnabled) {
-    appServer.discordHook
-      .send(message)
-      .catch(error => log('error', `Discord: ${error}`));
-  }
-});
+const socketServer = new io(httpServer);
+appServer.setSocket(socketServer);
 
-const twitchChat = new TwitchChat(appServer.effectsManager);
+const effectsService = container.get<EffectsService>(TYPES.EffectsService);
+effectsService.setSocketServer(socketServer);
+effectsService.initEffectControllers();
+
+const twitchChat = container.get<TwitchChat>(TYPES.TwitchChat);
 twitchChat.connect();
 
-const alertManager = new AlertsManager(
-  config.streamElementsJwt,
-  appServer.effectsManager,
-  twitchChat
-);
-alertManager.listenToEvents();
+const tauAlerts = container.get<TauAlerts>(TYPES.TauAlerts);
+tauAlerts.startListening();
 
 export { appServer };
+

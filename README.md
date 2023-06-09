@@ -1,9 +1,26 @@
+<div align="center">
+  
 # ttv-chat-bot
-[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors)
 
-Twitch TV chat reader to change the color of overlays loaded from streamelements and/or colors of internet connected lights via Azure Bot Service and Language Understanding AI (LUIS)
+[![Known Vulnerabilities](https://snyk.io/test/github/clarkio/ttv-chat-bot/badge.svg)](https://snyk.io/test/github/clarkio/ttv-chat-bot)
+![GitHub](https://img.shields.io/github/license/clarkio/ttv-chat-bot)
+[![Discord](https://img.shields.io/discord/421902136457035777)](https://discord.gg/xB95beJ)
+[![Twitch Status](https://img.shields.io/twitch/status/clarkio)](https://twitch.tv/clarkio)
+<br>
+[![Twitter Follow](https://img.shields.io/twitter/follow/_clarkio?style=social)](https://twitter.com/intent/follow?screen_name=_clarkio)
 
-> Join Clarkio live on Wednesdays at 10 AM ET and Fridays at 12:30 PM ET for the coding streams. https://twitch.tv/clarkio
+</div>
+
+Twitch livestream bot that can control colors for overlays from Stream Elements, play sound effects, handle custom rewards (like text-to-speech) and more!
+
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+## Clarkio
+This chatbot was built with 💙 live on stream with the programming community. Come and hang out with us over on Twitch!
+
+> https://twitch.tv/clarkio
 
 ## Getting Started
 
@@ -118,6 +135,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://toefrog.github.io/Blog/"><img src="https://avatars0.githubusercontent.com/u/1122675?v=4" width="100px;" alt=""/><br /><sub><b>Chris Gargotta</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=ToeFrog" title="Code">💻</a> <a href="#ideas-ToeFrog" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/Wingysam"><img src="https://avatars3.githubusercontent.com/u/18403742?v=4" width="100px;" alt=""/><br /><sub><b>Wingysam</b></sub></a><br /><a href="#ideas-Wingysam" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/LuckyNoS7evin"><img src="https://avatars2.githubusercontent.com/u/30657709?v=4" width="100px;" alt=""/><br /><sub><b>LuckyNoS7evin</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=LuckyNoS7evin" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://wwsean08.com"><img src="https://avatars1.githubusercontent.com/u/839261?v=4" width="100px;" alt=""/><br /><sub><b>Sean Smith</b></sub></a><br /><a href="https://github.com/clarkio/ttv-chat-bot/commits?author=wwsean08" title="Code">💻</a></td>
   </tr>
 </table>
 

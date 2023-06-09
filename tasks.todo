@@ -1,0 +1,170 @@
+
+Old Structure:
+  Index
+    AppServer
+      EffectsManager
+        SocketIO.Server
+        AzureBot
+        ObsHandler
+        SoundFxManager
+        Overlay
+          SocketIO.Server
+------
+    TwitchChat
+      EffectsManager
+        AppServer
+      TextToSpeech
+    AlertsListener
+      EffectsManager
+        AppServer
+      TwitchChat
+
+New Structure:
+  Index
+    AppServer
+    Socket.IO
+    EffectsManager
+      SocketIO.Server
+      AzureBot
+      ObsHandler
+      SoundFxManager
+      Overlay
+        SocketIO.Server
+    TwitchChat
+      EffectsManager
+      TextToSpeech
+        TwitchChat?
+    AlertsListener
+      TwitchChat
+
+
+Last Working Item:
+Finished continuing the use of the IoC/DI pattern going and updating how we create/instantiate the ObsHandler, SoundFxManager and Overlay classes
+
+* Need to decide/talk through more how to approach TwitchUser. Should it be viewed/used more as a Factory type pattern?
+
+TIL: we must import 'reflect-metadata' before other imports or you'll see an error about "Reflect.hasOwnMetadata is not a function"
+
+☐ After refactoring for IoC and DI, make sure to restore the ability to determine the current overlay color in the AppServer route for /bulb/color @created(Fri 01/08/2021 - 03:46 PM)
+
+☐ abstract away text-to-speech operations/functionality @created(Fri 12/18/2020 - 03:14 PM)
+// Current limitation is that I required channel point redemptions with text only in order to capture when they are redeemed
+
+☐ Change bot to listen to TAU for events @created(Fri 04/23/2021 - 03:56 PM)
+  ☐ Make sure to listen for channel point redemptions too @created(Fri 04/23/2021 - 03:57 PM)
+  ☐ Make sure to update channel point enum to use redemption name instead of reward-id @created(Fri 06/04/2021 - 03:46 PM)
+
+☐ Shadow Color effect: automatically set channel point redemption as complete @created(Sun 06/06/2021 - 02:05 PM)
+  - Might have to use this approach? https://github.com/twitchdev/channel-points-node-sample/blob/main/index.js#L145
+
+☐ Feature request by ayushsharma: Show hex color code on screen that is active @created(Fri 05/21/2021 - 02:41 PM)
+  - look into using chroma-js to accomplish this just like we do for the overlay colors
+☐ Suggestion by codephobia: are you able to hide the cam and only show the silhouette? @created(Fri 05/28/2021 - 05:25 PM)
+
+☐ look into how to have a common constants file across two TS projects (client/server)?
+
+☐ via Piq9117's suggestion: add ability to update title when Chair takes over the stream @created(Sat 03/21/2020 - 08:32 PM)
+
+☐ [15:23] Junicus: could you set a fs.watch to reload it if [the config] changed? @created(Fri 03/27/2020 - 03:29 PM)
+
+☐ [21:44] HobartJenkins: are you usin dependency injection there? Could split up lot of big classes. @created(Sat 03/28/2020 - 09:45 PM)
+  [21:46] HobartJenkins: Good framework to use: inversify. Super dynamic and could solve your problem with the effectsmanager using @multiInject
+
+☐ [15:16] Brookzerker: What do you think about creating a simple queue that takes an array of effects, which will then loop over and play them one after the other? That way you can create chains of effects pretty easily @created(Fri 03/27/2020 - 03:37 PM)
+
+☐ Need to do this too ==> [20:11] nallaj: @Clarkio I mean my sound only applied when I sent a message @created(Sat 03/28/2020 - 08:12 PM)
+
+☐ Add this sound effect plz [20:33] FBoucheros: !begoodbrian @created(Sat 03/28/2020 - 08:34 PM)
+
+☐ [20:50] roberttables: A Dr Phil scene would be great. "I want you to get excited about your programming language! And stop stealing money from. your mother-in-law to buy meth" @created(Sat 03/28/2020 - 08:52 PM)
+
+☐ !mute command that lets chat mute the music while I'm lip syncing and dancing @created(Fri 02/28/2020 - 02:35 PM)
+    - potentially lowering/muting the background music (pretzel.rocks)
+      - this should automatically happen via audio ducking
+    - then cut the audio from the stream for the sfx/song but keep it playing in my headphones/speakers
+☐ Update to support Azure Bot Service 4.0 as a client (need to update server-side in house-bot project as well) @created(Fri 03/13/2020 - 01:04 AM)
+- instead of having code handle parsing the commands and having to know all the chat commands let's leverage the trained AI to determine if a message is a command and parse the arguments out of the message for us
+- speech to text
+- game idea (yet to be revealed on stream): viewers send commands in chat to participate in a game. if chat wins and solves the game then that triggers something to happen to clarkio otherwise.
+- Maybe refactor to this: [13:26] nallaj: @Clarkio why not use TS enums for this?
+- Add tests (Kappa): [13:29] roberttables: Wait, do we have tests for this code @Clarkio ??
+☐ [13:36] MusicalBookworm: for your logging - append something to the message indicating file/where the error is coming from @created(Fri 03/06/2020 - 01:38 PM)
+
+// TODO for stream note taker tool
+- Allow !mark to update part of the stream title (e.g. BuildUpDevs - <mark message>)
+  - make sure to only allow mods or people with permission to do that though
+
+*** Make the bot more platform agnostic ***
+- Something that will actively listen for channel events in a stream.
+  Figure out all the alerts/events per platform to see where there are overlaps that can be included in a core package
+    - Twitch: Follows, Subscriptions (Gifted Subs, Prime Subs), Cheers (Bits), Raid/Host, Join Chat, Part Chat
+    - Mixer: Follows, Subscriptsion, Embers, Sparks
+    - YouTube:
+    - Facebook:
+
+  - As of 20-02-21 we have things mostly working. We need to figure out a way to get the timing of the visual effects to align with the sound effects now that we're queuing the sound effects and they won't necessarily play immediately when the command is received.
+      - Effect queue objects:
+        {
+          effecttype: audio, scene, both
+        }
+      - Chat voted and decided we don't prefer to queue any audio and/or visual effects because we enjoy the chaos @created(Fri 03/06/2020 - 01:40 PM)
+           - I think we're ok here because when we stop the audio it's only stored in memory via the `currentlyPlayingAudio` array and we clear that out once the audio is paused @created(Fri 03/06/2020 - 02:23 PM)
+           - Confirmed on mozilla docs: https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement/Audio#Memory_usage_and_management @created(Fri 03/06/2020 - 02:30 PM)
+
+  ☐ Add code to limit permissions for !scene commands @created(19-03-22 20:27)
+  ☐ Determine a way to automatically stop any scene effects that correspond to this sound effect when the sound effect is done
+  Problem: Audio file is long and the effect is overplayed
+      Solution: stop audio on command
+  Problem: When a soundfx is triggered and there is a corresponding scene effect it needs to stop when the soundfx is stopped
+  ☐ Draw/write out the flow of effects @created(19-03-08 00:30)
+     - This is to better manage the different types of effects and what actions to take since things are getting a bit unwieldy (light, overlay, sound, etc.)
+  - Effects Manager is to be the main brain of the project
+      - It receives triggers from Alerts Manager and Chat Manager
+      - It will determine if the alert or chat trigger maps to a supported command and therefore has some associated effect to apply
+      - Once an effect is found to be applied the effects manager will handle starting all the various effects that go with it (such as sound, light, scene, overlay)
+
+// tslint:ignore
+J
+robert68Hecc
+
+!bulb <color> (!bulb blue)
+!bulb <effect> (e.g. !bulb cop mode)
+!scene <scene name> (e.g. !scene cam)
+!<sound> (!fart)
+other text !<sound> more text
+maybe !sfx <filename>?
+
+1. Identify the command being used (parse chat for a command)
+2. Get command definitions which describes command signatures (meaning its options)
+  Example: !bulb blue or !bulb cop mode
+  yargs, minimist
+  {
+
+  }
+3. Apply input/data to command (execute the command using the input provide from the chat message)
+
+Archive:
+  ✔ create function to use for the determination of custom reward types (aka channel point redemptions) @created(Fri 12/18/2020 - 03:13 PM) @done(Fri 12/18/2020 - 03:22 PM)
+  ✔ As suggested by Whittypants: have some indication to the viewer when a color is not recognized or supported @created(Fri 05/21/2021 - 03:40 PM) @done(21-06-04 15:30)
+  ✔ Suggestion by wwsean08: it would be cool if it had a fade out @created(Fri 05/28/2021 - 04:30 PM) @done(21-05-28 17:21)
+  ✔ Actually toggle scenesource for cam-mirror instead of the filter @created(Fri 04/30/2021 - 05:05 PM) @done(21-05-21 14:37)
+    - https://github.com/Palakis/obs-websocket/blob/4.x-current/docs/generated/protocol.md#setsourcefiltersettings
+    - Need to determine the specific setting for the color correction filter that sets the color value
+    - Need to prepend hex color with alpha (default to FF) and then convert to an integer value (thanks to FiniteSingularity for digging into this and determining the correct value type needed)
+  ✔ Add queuing for color wave effect so folks don't override each other after redeeming the channel point @created(Fri 05/21/2021 - 02:37 PM) @done(21-05-21 15:21)
+  ✔ As mentioned by ElliottBrand: support other color formats and not just hex @created(Fri 05/21/2021 - 02:43 PM) @done(21-05-21 15:40)
+  ✔ For shadow color effect allow chat to choose a color @created(Fri 04/23/2021 - 04:00 PM) @done(21-04-30 17:05)
+  ✔ Update OBS Handler to change source filter settings @created(Fri 04/23/2021 - 04:00 PM) @done(21-04-30 17:05)
+  ✔ Add some kind of indication that the !highfive is coming prior to actually showing it on screen so that you can react in time @created(Sat 03/21/2020 - 08:11 PM) @done(Thu 11/19/2020 - 04:40 PM)
+  ✔ Refactor Manager file names: [13:27] roberttables: @Clarkio You know MPJ will harp on you for using "manager" in your names Kappa @created(Sat 03/21/2020 - 08:27 PM) @done(Fri 06/12/2020 - 02:11 PM)
+  ✔ Finish implementation of the warning that the highfive animation is coming @created(Sat 03/28/2020 - 07:17 PM) @done(Sat 03/28/2020 - 09:12 PM)
+  ✔ play a toilet flushing sound first when !flush is used to stop all audio (as suggested by ToeFrog) @created(Sat 03/21/2020 - 08:12 PM) @done(Sat 03/21/2020 - 08:12 PM)
+  ✔ Figure out the bug for the overlay getting stuck on a color after an alert is triggered @done(Sat 01/11/2020 - 05:07 PM)
+  ✔ remove hard-coded strings to be constants (when appropriate) @created(Sat 12/14/2019 - 12:49 AM) @done(19-12-14 00:49)
+  ✔ play any sound files via the browser sources instead of via node.js directly @done(Fri 03/06/2020 - 04:20 PM)
+  ✔ steal code from the michael jolley for handling this (hahahahaha) JK JK @done(Fri 02/21/2020 - 03:44 PM)
+  ✔ We most likely can accomplish this by moving the queue of the audio files to play from the client to the server so we can trigger both the audio and scene at the same time @created(Sun 02/23/2020 - 12:46 AM) @done(20-02-23 00:46)
+  ✘ After further exploration we'll need to create an overall "effect" queue of some sort to properly track and trigger sound and scene effects together @cancelled(Fri 03/06/2020 - 01:37 PM)
+  ✔ NEXT TASK: Test this implementation @done(Fri 02/28/2020 - 02:35 PM)
+  ✔ Check if we need to cleanup previous audioplayer elements when stopping sounds @created(Fri 03/06/2020 - 02:30 PM) @done(Fri 03/06/2020 - 02:30 PM)
+  ✔ Fix issue where bot thinks an incorrect command is used and plays a sound effect to indicate it @done(20-02-22 23:26)
