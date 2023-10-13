@@ -19,7 +19,6 @@ export default class TwitchChat {
   public ttvChatClient: Client;
   private lightCommandUsed: string = '';
   private clientUsername: string = ttvClientUsername.toString();
-  private moderators: string[] = [this.clientUsername];
   private lightControlCommands: string[] = [
     constants.defaultLightControlCommand,
   ];

@@ -19,8 +19,6 @@
     "debug-compile-brk": "node --inspect-brk dist/server/index.js",
     "test": "snyk test",
     "build": "echo build... && npm run compile",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect",
     "compile": "tsc -p ./src/client && tsc -p ./src/server",
     "compile-client": "tsc -p ./src/client"
   },
