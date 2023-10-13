@@ -595,8 +595,6 @@ export default class EffectsService {
     this.overlay = container.get<Overlay>(TYPES.Overlay);
     this.overlay.init(this.socketServer!);
 
-    this.initializeFlashbangEffect();
-
     this.initializeEventListeners();
   };
 }
