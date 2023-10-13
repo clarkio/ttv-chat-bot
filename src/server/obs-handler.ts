@@ -460,8 +460,8 @@ export default class ObsHandler {
     if (!sceneName) return undefined;
     return this.sceneList?.find(
       (scene: any) =>
-        scene.name.toLowerCase().includes(sceneName) &&
-        this.isScenePermitted(scene.name)
+        scene.sceneName?.toLowerCase().includes(sceneName) &&
+        this.isScenePermitted(scene.sceneName || '')
     );
   }
 }

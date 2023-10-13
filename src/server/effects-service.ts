@@ -52,7 +52,7 @@ export default class EffectsService {
       },
     ],
   };
-
+  //@ts-ignore
   constructor(@inject(TYPES.TauApi) private tauApi: TauApi) {
     this.loadEffects();
     this.playedUserJoinSounds = [];
