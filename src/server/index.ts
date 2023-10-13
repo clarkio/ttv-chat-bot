@@ -7,7 +7,6 @@ import TwitchChat from './twitch-chat';
 import { container } from './container';
 import { TYPES } from './types';
 import EffectsService from './effects-service';
-import TauAlerts from './tau-alerts';
 
 if (!config.hasLoadedConfigJSON) {
   log('log', indexConstants.logs.configFileReadWarningMessage);
