@@ -311,13 +311,7 @@ export default class EffectsService {
 
     switch (reward.title) {
       case ChannelPointRedemptionTypes.TextToSpeech:
-        const ttsMessage = `Message from ${user_name}: ${user_input}`;
-        this.socketServer.emit('tts', {
-          message: ttsMessage,
-          rewardId: reward.id,
-          broadcasterId: broadcaster_user_id,
-          redemptionId: id,
-        });
+        // Removed
         return;
       case ChannelPointRedemptionTypes.Shadow:
         const options = {
