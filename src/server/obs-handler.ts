@@ -35,7 +35,7 @@ export class SceneEffect {
     public scenes: string[],
     public sources: SceneEffectSource[],
     public duration: number
-  ) {}
+  ) { }
 }
 
 /**
@@ -48,7 +48,7 @@ export class SceneEffectSource {
     public inactiveState: any,
     public filterName?: string,
     public sourceName?: string
-  ) {}
+  ) { }
 }
 
 /**
@@ -103,6 +103,8 @@ export default class ObsHandler {
           sceneName: sceneToActivate.name,
         })
         .catch((error: any) => log('error', error));
+    } else {
+      log('info', 'Did not find a scene with the name provided');
     }
   }
 
@@ -390,8 +392,7 @@ export default class ObsHandler {
     if (error.code === ObsErrors.ConnectionError) {
       log(
         'info',
-        `OBS Websocket Connection Failed: Retrying connection in ${
-          this.retryConnectionWaitTime / 1000
+        `OBS Websocket Connection Failed: Retrying connection in ${this.retryConnectionWaitTime / 1000
         } seconds`
       );
 
@@ -455,10 +456,11 @@ export default class ObsHandler {
   private determineSceneFromMessage(message: string): any | undefined {
     message = message.toLowerCase();
     const sceneAlias = this.sceneAliases.find((alias: any) => alias[message]);
-    message = sceneAlias ? sceneAlias[message].toLowerCase() : message;
-    return this.sceneList.find(
+    const sceneName = sceneAlias ? sceneAlias[message].toLowerCase() : undefined;
+    if (!sceneName) return undefined;
+    return this.sceneList?.find(
       (scene: any) =>
-        scene.name.toLowerCase().includes(message) &&
+        scene.name.toLowerCase().includes(sceneName) &&
         this.isScenePermitted(scene.name)
     );
   }
