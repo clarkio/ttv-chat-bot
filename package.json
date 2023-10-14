@@ -18,6 +18,7 @@
     "predebug-compile-brk": "npm run prestart",
     "debug-compile-brk": "node --inspect-brk dist/server/index.js",
     "test": "snyk test",
+    "lint": "eslint src --ext ts",
     "build": "echo build... && npm run compile",
     "compile": "tsc -p ./src/client && tsc -p ./src/server",
     "compile-client": "tsc -p ./src/client"
