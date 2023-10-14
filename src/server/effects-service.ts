@@ -531,6 +531,7 @@ export default class EffectsService {
     return resolve(true);
   }
 
+  // @ts-ignore
   private async initializeFlashbangEffect() {
     // Read current state of the lights and store in memory
     this.elgatoKeyLightIps = config.elgatoKeyLightIps.split(',');
