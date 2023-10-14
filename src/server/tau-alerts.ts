@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import * as config from './config';
-import WebSocket from 'ws';
+import WebSocket, { CloseEvent, ErrorEvent } from 'ws';
 import { alertsListener as alertsConstants } from './constants';
 import { log } from './log';
 import TwitchChat from './twitch-chat';
@@ -19,7 +19,7 @@ enum TauEventTypes {
 
 @injectable()
 export default class TauAlerts {
-  public socket?: WebSocket;
+  public socket!: WebSocket;
   private accessToken?: string;
 
   constructor(
@@ -40,25 +40,40 @@ export default class TauAlerts {
       passphrase: config.tauToken,
     });
 
-    this.socket.on('open', this.onConnect);
+    this.socket.on('open', this.onOpen);
     this.socket.on('error', this.onError);
-    this.socket.on('message', this.onEvent);
+    this.socket.on('message', this.onMessage);
+    this.socket.on('close', this.onClose);
+    this.socket.on('redirect', this.onGenericEvent);
+    this.socket.on('unexpected-response', this.onGenericEvent);
+  }
+
+  private onGenericEvent(event: any) {
+    log('info', 'Something happened');
+    console.dir(event);
+  }
+
+  private onClose(event: CloseEvent) {
+    log('info', `Closing connection to TAU`);
+    log('info', `Close event: ${event}`);
+    log('info', `Closed for reason: ${event.reason}`);
   }
 
   /**
-   * A handler that is used when a connection has successfully completed for the socket.io server and then initiates the authentication flow
+   * A handler that is used when a connection has successfully completed for the socket  server and then initiates the authentication flow
    */
-  private onConnect = (event: { target: WebSocket }) => {
+  private onOpen = (socket: WebSocket) => {
     log('info', 'Successfully connected to TAU');
     log('info', 'Attempting to authenticate with TAU');
 
     const message = `{ "token": "${this.accessToken}" }`;
-    this.socket!.send(message, this.socketMessageResult);
+    this.socket.send(message, this.socketMessageResult);
   };
 
   private socketMessageResult = (error?: Error) => {
     if (error) {
       log('error', 'There was an issue authenticating with TAU');
+      log('error', `TAU Authentication Error: ${error}`);
     } else {
       log(
         'info',
@@ -67,20 +82,14 @@ export default class TauAlerts {
     }
   };
 
-  //@ts-ignore
-  private onDisconnect = (ev: Event) => {
-    log('info', alertsConstants.logs.disconnected);
-    // TODO: Handle Reconnect
-  };
-
-  private onError = (event: {
-    error: any;
-    message: any;
-    type: string;
-    target: WebSocket;
-  }) => {
-    log('error', 'There was an issue connecting to TAU');
+  private onError = (event: ErrorEvent) => {
+    log(
+      'error',
+      'There was an error found within the TAU websocket connection'
+    );
+    log('error', event.type);
     log('error', event.message);
+    log('error', event.error);
   };
 
   /**
@@ -94,11 +103,14 @@ export default class TauAlerts {
   /**
    * A handler function to receive events that occur on the socket.io channel and take action upon those events. In this case we'll be trying to determine if there was an alert
    */
-  private onEvent = (event: string) => {
+  private onMessage = (event: string) => {
     const eventData = JSON.parse(event);
+    if (eventData.event && eventData.event === 'keep_alive') return;
+
+    const eventType = eventData.event_type;
     // Convert event to enum for easier calculations
     const tauEvent =
-      Object.values(TauEventTypes).find((id) => id === eventData.event_type) ??
+      Object.values(TauEventTypes).find((id) => id === eventType) ??
       TauEventTypes.Default;
 
     switch (tauEvent) {
@@ -108,7 +120,7 @@ export default class TauAlerts {
       default:
         log(
           'info',
-          `A TAU event was received that this bot hasn't been configured to support yet: ${tauEvent}`
+          `A TAU event was received that this bot hasn't been configured to support yet: ${eventType}`
         );
     }
   };
