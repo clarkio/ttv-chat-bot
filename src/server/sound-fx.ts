@@ -28,7 +28,8 @@ export class SoundFxSetting {
     public name: string,
     public fileName: string,
     public sceneEffectName: string | undefined,
-    public volume: number | 1
+    public volume: number | 1,
+    public restrictedToUsername?: string
   ) { }
 }
 @injectable()

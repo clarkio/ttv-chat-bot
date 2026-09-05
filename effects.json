@@ -144,6 +144,12 @@
       "fileName": "applause",
       "sceneEffectName": "crowdapplause",
       "volume": 1
+    },
+    {
+      "name": "wwsean08",
+      "fileName": "wwsean08",
+      "restrictedToUsername": "wwsean08",
+      "volume": 1
     }
   ],
   "sceneEffects": [

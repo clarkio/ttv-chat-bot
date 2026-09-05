@@ -168,6 +168,14 @@ export default class EffectsService {
       );
       if (!soundEffect) return;
 
+      const restrictedToUsername = soundEffect.setting?.restrictedToUsername;
+      if (
+        restrictedToUsername &&
+        restrictedToUsername.toLowerCase() !== user.username.toLowerCase()
+      ) {
+        return;
+      }
+
       if (soundEffect.name === 'highfive') {
         const threeTwoOne = await this.soundFxManager.determineSoundEffect(
           'threetwoone'
