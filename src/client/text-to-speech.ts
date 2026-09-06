@@ -93,7 +93,7 @@ function loadText() {
     // https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support#standard-voices
     const body = `
     <speak version='1.0' xml:lang='en-US'>
-      <voice xml:lang='en-US' xml:gender='Female' name='en-US-AriaNeural'>
+      <voice xml:lang='en-IE' xml:gender='Male' name='en-IE-ConnorNeural'>
         ${textToSpeakItem.message}
       </voice>
     </speak>`;

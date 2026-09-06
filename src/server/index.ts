@@ -7,7 +7,6 @@ import TwitchChat from './twitch-chat';
 import { container } from './container';
 import { TYPES } from './types';
 import EffectsService from './effects-service';
-import TauAlerts from './tau-alerts';
 
 if (!config.hasLoadedConfigJSON) {
   log('log', indexConstants.logs.configFileReadWarningMessage);
@@ -25,9 +24,6 @@ effectsService.initEffectControllers();
 
 const twitchChat = container.get<TwitchChat>(TYPES.TwitchChat);
 twitchChat.connect();
-
-const tauAlerts = container.get<TauAlerts>(TYPES.TauAlerts);
-tauAlerts.startListening();
 
 export { appServer };
 

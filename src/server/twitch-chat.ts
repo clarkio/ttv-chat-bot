@@ -19,7 +19,6 @@ export default class TwitchChat {
   public ttvChatClient: Client;
   private lightCommandUsed: string = '';
   private clientUsername: string = ttvClientUsername.toString();
-  private moderators: string[] = [this.clientUsername];
   private lightControlCommands: string[] = [
     constants.defaultLightControlCommand,
   ];
@@ -93,7 +92,6 @@ export default class TwitchChat {
    */
   private ttvJoin = (channel: string, username: string, self: boolean) => {
     const { hours, minutes } = this.getTime();
-    const channels = ttvChannels.toString().split(',');
 
     log('info', `[${hours}:${minutes}] ${username} has JOINED the channel`);
 
@@ -101,14 +99,6 @@ export default class TwitchChat {
       log('info', constants.logs.twitchClientJoinedMessage);
       // Assume first channel in channels array is 'self' - owner monitoring their own channel
       setTimeout(this.pingTtv, 30000);
-      this.ttvChatClient
-        .mods(channels[0])
-        .then((modsFromTwitch: any) => {
-          this.moderators = this.moderators.concat(modsFromTwitch);
-        })
-        .catch((error: any) =>
-          log('error', `There was an error getting moderators: ${error}`)
-        );
     } else {
       this.effectsService.activateJoinEffectIfFound(
         username.toLocaleLowerCase()

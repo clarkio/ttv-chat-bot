@@ -52,7 +52,7 @@ export default class EffectsService {
       },
     ],
   };
-
+  //@ts-ignore
   constructor(@inject(TYPES.TauApi) private tauApi: TauApi) {
     this.loadEffects();
     this.playedUserJoinSounds = [];
@@ -319,13 +319,7 @@ export default class EffectsService {
 
     switch (reward.title) {
       case ChannelPointRedemptionTypes.TextToSpeech:
-        const ttsMessage = `Message from ${user_name}: ${user_input}`;
-        this.socketServer.emit('tts', {
-          message: ttsMessage,
-          rewardId: reward.id,
-          broadcasterId: broadcaster_user_id,
-          redemptionId: id,
-        });
+        // Removed
         return;
       case ChannelPointRedemptionTypes.Shadow:
         const options = {
@@ -545,6 +539,7 @@ export default class EffectsService {
     return resolve(true);
   }
 
+  // @ts-ignore
   private async initializeFlashbangEffect() {
     // Read current state of the lights and store in memory
     this.elgatoKeyLightIps = config.elgatoKeyLightIps.split(',');
@@ -608,8 +603,6 @@ export default class EffectsService {
 
     this.overlay = container.get<Overlay>(TYPES.Overlay);
     this.overlay.init(this.socketServer!);
-
-    this.initializeFlashbangEffect();
 
     this.initializeEventListeners();
   };

@@ -116,12 +116,6 @@
       "volume": 1
     },
     {
-      "name": "fart",
-      "fileName": "fart",
-      "sceneEffectName": "fart-smoke",
-      "volume": 1
-    },
-    {
       "name": "juicyfart",
       "fileName": "juicyfart",
       "sceneEffectName": "fart-smoke",
@@ -339,25 +333,6 @@
           }
         }
       ]
-    },
-    {
-      "name": "fart-smoke",
-      "scenes": [
-        "*"
-      ],
-      "effectType": "SetSceneItemProperties",
-      "sources": [
-        {
-          "name": "[FX] fart",
-          "activeState": {
-            "visible": true
-          },
-          "inactiveState": {
-            "visible": false
-          }
-        }
-      ],
-      "duration": 2000
     },
     {
       "name": "xp-error",
